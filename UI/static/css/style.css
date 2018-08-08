@@ -1,0 +1,287 @@
+body {
+    margin: 0;
+}
+
+.my-footer {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    color: #343434;
+    text-align: center;
+    border-top: 0.2px solid #808080ee;
+}
+
+
+.my-footer p {
+    margin-top: 1em;
+}
+
+.my-footer p a {
+    color: blue;
+    text-decoration: none;
+    margin: 0 5px
+}
+
+.my-footer p a:hover {
+    text-decoration: underline
+}
+
+@media screen and (max-width: 600px) {
+    .my-footer {
+        display: none;
+    }
+}
+
+* {
+    box-sizing: border-box;
+}
+
+@media screen and (max-width: 600px) {
+    .col-md-4 {
+        width: 100%;
+    }
+}
+
+div.paulla {
+    max-width: 80%;
+    margin: auto;
+}
+
+.container {
+    background-color: white;
+}
+
+@media screen and (max-width: 300px) {
+    span.asheuh {
+        display: block;
+        float: none;
+    }
+    .cancelbtn {
+        width: 100%;
+    }
+    .footer p {
+        font-size: 12px;
+    }
+}
+
+span.asheuh {
+    float: right;
+    padding-top: 16px;
+}
+
+hr {
+    border: 1px solid #f1f1f1;
+}
+
+button.sella {
+    background-color: rgb(25, 54, 50);
+    color: white;
+    padding: 16px 20px;
+    border-radius: 5px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    opacity: 0.9;
+}
+
+.sella:hover {
+    opacity: 1;
+}
+
+a {
+    color: dodgerblue;
+}
+
+.signin {
+    background-color: #f1f1f17c;
+    text-align: center;
+}
+
+#signup {
+    width: 80%;
+    margin: auto;
+    padding: 20px;
+    text-align: center;
+}
+
+form {
+    display: inline-block;
+    width: 35%;
+}
+
+@media all and (max-width:1093px) {
+    form {
+        width: 100%;
+    }
+}
+
+p.foot {
+    font-size: 14px;
+}
+
+h1.head {
+    color: gold;
+    font-size: 41px;
+    font-weight: bold;
+    word-wrap: break-word;
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+    -o-hyphens: auto;
+    hyphens: auto;
+}
+
+span.smallerFont {
+    color: rgb(25, 54, 50);
+}
+
+.separator {
+    margin: 20px 0;
+    border-top: 1px solid #CCCCCC;
+    position: relative;
+}
+
+.separator-text {
+    display: block;
+    position: absolute;
+    top: -11px;
+    left: 50%;
+    margin-left: -22px;
+    padding: 0px 10px;
+    background: #FFFFFF;
+    color: #8a8a8a;
+}
+
+.socmed-login .socmed-btn {
+    padding: 10px 25px;
+    border-radius: 10px;
+    margin-top: 5px;
+    text-align: center;
+}
+
+#brand {
+    text-align: center;
+    margin-top: 3em;
+    margin-bottom: 2em;
+}
+
+#brandi {
+    margin-top: 2em;
+    margin-bottom: 0em;
+}
+
+
+#brand a {
+    text-decoration: none;
+    color: black;
+}
+
+h3 {
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-weight: 400;
+    font-size: 20px;
+}
+
+.social-icons a {
+    font-size: 22px;
+    padding: 5px;
+}
+
+.sidebar-footer {
+    margin-top: 2em;
+    text-align: center;
+}
+
+@media screen and (max-width: 1093px) {
+    .sidebar-footer {
+        display:none;
+    }
+    .hide {
+        display:none;
+    }
+}
+
+.asheuh-sidenav ul li h3 {
+    display: block;
+    color: black;
+    padding: 8px 16px;
+    text-decoration: none;
+}
+
+.search input[type=text] {
+    width: 200px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: white;
+    background-image: url('../images/search-icon-marine-th.png');
+    background-position: 10px 10px;
+    background-repeat: no-repeat;
+    background-size: 25px 25px;
+    padding: 12px 20px 12px 40px;
+    -webkit-transition: width 0.4s ease-in-out;
+    transition: width 0.4s ease-in-out;
+}
+
+@media screen and (max-width: 900px) {
+    .search input[type=text] {
+        width: 100%;
+        box-sizing: border-box;
+        border-radius: 5px;
+        font-size: 16px;
+        background-color: white;
+        background-image: url('../images/search-icon-marine-th.png');
+        background-position: 10px 10px;
+        background-repeat: no-repeat;
+        background-size: 25px 25px;
+        padding: 12px 20px 12px 40px;
+        -webkit-transition: width 0.4s ease-in-out;
+        transition: width 0.4s ease-in-out;
+    }
+}
+
+.search input[type=text]:focus {
+    width: 100%;
+}
+
+.content .quiz {
+    border-bottom: 0.1px solid #f1f1f1;
+}
+
+.content .quiz ul.qa li a {
+    display: block;
+    font-size: 16px;
+    text-decoration: none;
+}
+
+.content .quiz ul.qa {
+    list-style-type: none;
+}
+
+.content .quiz ul.qa p {
+    color: #99A3A4;
+}
+
+.content .quiz ul.stats {
+    background-color: #FCFBFB;
+}
+
+.summary p {
+    margin-top: -1em;
+}
+
+.summary h4 {
+    margin-top: -0.5em;
+}
+
+.summary h5 a {
+    margin-top: -0.5em;
+    text-decoration: none;
+    color: #99A3A4;
+}
+
+.summary h1 {
+    margin-top: -0.5em;
+}
