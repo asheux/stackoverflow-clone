@@ -59,7 +59,16 @@
                                     <div class="summary">
                                         <h4>Total answers</h4>
                                         <h5><a href="#">0</a></h5>
-                                        <a href="UI/templates/mains/addanswer.html" class="btn btn-success">post answer</a>
+                                        <a onclick="document.getElementById('id01').style.display='block'" class="btn btn-success" href="#">Post Answer</a>
+                                        <div id="id01" class="modal">
+                                            <form class="modal-content animate" action="/action_page.php">
+                                                <div class="scontainer">
+                                                    <label style="float:left" for="psw"><h2>Your Answer</h2></label>
+                                                    <textarea id="subject" name="subject" placeholder="Type your answer here..." style="height:200px"></textarea>
+                                                    <a href="#" class="btn btn-primary" type="submit">Submit</a>
+                                                </div>
+                                            </form>
+                                        </div>
                                     </div>
                                     <div class="summary">
                                         <h4>Total votes</h4>
