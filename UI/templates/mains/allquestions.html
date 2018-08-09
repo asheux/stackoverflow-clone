@@ -5,10 +5,10 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
-    <link rel="stylesheet" href="UI/static/css/asheuh-framework.css" type="text/css">
-    <link rel="shortcut icon" href="UI/static/images/H-logo.ico">
-    <link rel="stylesheet" href="UI/static/css/style.css" type="text/css">
-    <script src="UI/static/js/app.js"></script>
+    <link rel="stylesheet" href="../../static/css/asheuh-framework.css" type="text/css">
+    <link rel="shortcut icon" href="../../static/images/H-logo.ico">
+    <link rel="stylesheet" href="../../static/css/style.css" type="text/css">
+    <script src="../../static/js/app.js"></script>
     <title>Stackoverflow | Lite</title>
 </head>
 
@@ -19,18 +19,25 @@
                 <ul class="myNav">
                     <div class="my-container">
                         <li>
-                            <a style="font-size: 22px; color: gold;" href="index.html"><span class="smallerFont">Stackoverflow</span>LITE<sup><small>2018</small></sup></a>
+                            <a style="font-size: 22px; color: gold;" href="home.html"><span class="smallerFont">Stackoverflow</span>LITE<sup><small>2018</small></sup></a>
                         </li>
-                        <li class="right"><a href="UI/templates/mains/signin.html"> Login</a></li>
-                        <li class="right"><a href="UI/templates/mains/signup.html"> Signup</a></li>
+                        <li class="right">
+                            <a href="userprofile.html">
+                                <img class="image" style="border-radius: 50%; width: 30px; height: 30px;" src="../../static/images/asheuh.jpeg">
+                            </a>
+                        </li>
                     </div>
                 </ul>
             </div>
         </nav>
     </header>
-    <div class="my-container content grid-3">
+    <div include-html="menu.html"></div>
+    <script>
+        includeHTML();
+    </script>
+    <div class="content grid-3">
         <div class="span-col-2">
-            <h1>Popular questions</h1>
+            <h1>All Questions</h1>
             <div class="search">
                 <input class="animated" name="search" type="text" placeholder="Search....">
             </div>
@@ -55,7 +62,7 @@
                                     <div class="summary">
                                         <h4>Total answers</h4>
                                         <h5><a href="#">0</a></h5>
-                                        <a onclick="document.getElementById('id01').style.display='block'" class="btn btn-success" href="UI/templates/mains/signin.html">Post Answer</a>
+                                        <a onclick="document.getElementById('id01').style.display='block'" class="btn btn-success" href="#">Post Answer</a>
                                         <div id="id01" class="modal">
                                             <form class="modal-content animate" action="/action_page.php">
                                                 <div class="scontainer">
@@ -69,12 +76,12 @@
                                     <div class="summary">
                                         <h4>Total votes</h4>
                                         <h5><a href="#">10</a></h5>
-                                        <a href="UI/templates/mains/signin.html" class="btn btn-success">add vote</a>
+                                        <a href="#" class="btn btn-success">add vote</a>
                                     </div>
                                     <div class="summary">
                                         <h4>Total views</h4>
                                         <h5><a href="#">18</a></h5>
-                                        <a href="UI/templates/mains/details.html" class="btn btn-primary">view details</a>
+                                        <a href="details.html" class="btn btn-primary">view details</a>
                                     </div>
                                 </div>
                             </div>
@@ -275,7 +282,7 @@
         </div>
         <div class="side-grid">
             <div class="post">
-                <a href="UI/templates/mains/signin.html" class="btn btn-primary">Post Question</a>
+                <a href="../../templates/mains/post_question.html" class="btn btn-primary">Post Question</a>
             </div>
             <div class="cal">
             <div class="month">
@@ -333,9 +340,7 @@
             </div>
         </div>
     </div>
-    <script>
-        includeHTML();
-    </script>
 </body>
 
 </html>
+
