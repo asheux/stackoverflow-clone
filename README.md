@@ -2,6 +2,10 @@
 
 StackOverflow-lite is a platform where people can ask questions and provide answers.
 
+#### Overview Homepage
+
+![homepage-1](https://user-images.githubusercontent.com/22955146/43910415-7143a362-9c05-11e8-836e-39aaaac1ca76.png)
+
 #### Required Features
 
 - Users can create an account and log in.
