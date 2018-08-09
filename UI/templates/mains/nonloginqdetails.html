@@ -19,37 +19,23 @@
                 <ul class="myNav">
                     <div class="my-container">
                         <li>
-                            <a style="font-size: 22px; color: gold;" href="home.html"><span class="smallerFont">Stackoverflow</span>LITE<sup><small>2018</small></sup></a>
+                            <a style="font-size: 22px; color: gold;" href="../../../index.html"><span class="smallerFont">Stackoverflow</span>LITE<sup><small>2018</small></sup></a>
                         </li>
-                        <li class="right">
-                            <a href="signin.html">
-                                <img class="image" style="border-radius: 50%; width: 30px; height: 30px;" src="../../static/images/logout-rounded-filled.png">
-                            </a>
-                        </li>
-                        <li class="right">
-                            <a href="userprofile.html">
-                                <img class="image" style="border-radius: 50%; width: 30px; height: 30px;" src="../../static/images/asheuh.jpeg">
-                            </a>
-                        </li>
+                        <li class="right"><a href="signin.html"> Login</a></li>
+                        <li class="right"><a href="signup.html"> Signup</a></li>
                     </div>
                 </ul>
             </div>
         </nav>
     </header>
-    <div include-html="menu.html"></div>
-    <script>
-        includeHTML();
-    </script>
-    <div class="content grid-3">
+    <div class="my-container grid-3">
         <div class="span-col-2">
             <h1>Question Details</h1>
             <hr>
-            <div class="quiz">
+            <div class="quiz" style="background-color: #F7F7F7; padding: 5px;">
                 <ul class="qa">
                     <p class="asheuh">Asked 20mins ago by Brian Mboya</p>
-                    <li class="no_dropdown">
-                        <h3>Jquery search working on my desktop device and also on chrome mobile emulator but not working in real device</h3>
-                    </li>
+                    <h4 style="font-size:18px">Jquery search working on my desktop device and also on chrome mobile emulator but not working in real device</h4>
                     <div class="d-container">
                         <ul class="stats">
                             <div class="new-container">
@@ -80,19 +66,10 @@
                                 </div>
                                 <div class="grid-3">
                                     <div class="summary">
-                                        <a onclick="document.getElementById('id01').style.display='block'" class="btn btn-success" href="#">Post Answer</a>
-                                        <div id="id01" class="modal">
-                                            <form class="modal-content animate" action="/action_page.php">
-                                                <div class="scontainer">
-                                                    <label style="float:left" for="psw"><h2>Your Answer</h2></label>
-                                                    <textarea id="subject" name="subject" placeholder="Type your answer here..." style="height:200px"></textarea>
-                                                    <a href="#" class="btn btn-primary" type="submit">Submit</a>
-                                                </div>
-                                            </form>
-                                        </div>
+                                        <a class="btn btn-success" href="signin.html">Post Answer</a> 
                                     </div>
                                     <div class="summary">
-                                        <a href="#" class="btn btn-success">add vote</a>
+                                        <a href="signin.html" class="btn btn-success">add vote</a>
                                     </div>
                                 </div>
                             </div>
