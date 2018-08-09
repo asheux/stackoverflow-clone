@@ -36,50 +36,36 @@
             </div>
         </nav>
     </header>
-    <div include-html="menu.html"></div>
+    <div include-html="usermenu.html"></div>
     <script>
         includeHTML();
     </script>
-    <div class="content grid-3">
-        <div class="span-col-2">
-            <h1>Question Details</h1>
+    <div class="content">
+        <h1>Most Answered Questions</h1>
+        <div class="search">
+                <input class="animated" name="search" type="text" placeholder="Search....">
+            </div>
             <hr>
             <div class="quiz">
                 <ul class="qa">
                     <p class="asheuh">Asked 20mins ago by Brian Mboya</p>
-                    <li class="no_dropdown">
-                        <h3>Jquery search working on my desktop device and also on chrome mobile emulator but not working in real device</h3>
+                    <li class="dropdown-btn">
+                        <a href="#">Jquery search working on my desktop device and also on chrome mobile emulator but not working in real device</a>
                     </li>
-                    <div class="d-container">
+                    <div class="dropdown-container">
                         <ul class="stats">
                             <div class="new-container">
-                                <h4>Question</h4>
+                                <h2>Question summary</h2>
                                 <p>
-                                    I have a website which contains jquery search (search based on object properties) and 
-                                    the search result (HTML content) is appended from jquery. it is working perfectly fine 
-                                    on a web device and also on chrome mobile emulator (in dev console) but it is not 
+                                    I have a website which contains jquery search (search based on object properties) and
+                                    the search result (HTML content) is appended from jquery. it is working perfectly fine
+                                    on a web device and also on chrome mobile emulator (in dev console) but it is not
                                     working on the real device (Tested on both Android and IOS)
                                 </p>
-                                <h4>Answers</h4>
-                                <div class="first span-col-3">
-                                    <div class="">
-                                        <hr>
-                                        <div class="panel pale-green">
-                                            <p>By Brian Mboya 20mins ago</p>
-                                            <p>London is the most populous city in the United Kingdom, with a metropolitan area of over 9 million inhabitants.</p>
-                                            <a href="#"><img class="image" style="border-radius: 50%; width: 20px; height: 20px;" src="../../static/images/tick-icon-44.png"></a>
-                                            <a href="#"><img class="image" style="border-radius: 50%; width: 20px; height: 20px;" src="../../static/images/x.png"></a>
-                                        </div>
-                                        <div class="panel pale-green">
-                                            <p>By Stacy Mboya 20mins ago</p>
-                                            <p>London is the most populous city in the United Kingdom, with a metropolitan area of over 9 million inhabitants.</p>
-                                            <a href="#"><img class="image" style="border-radius: 50%; width: 20px; height: 20px;" src="../../static/images/tick-icon-44.png"></a>
-                                            <a href="#"><img class="image" style="border-radius: 50%; width: 20px; height: 20px;" src="../../static/images/x.png"></a>
-                                        </div>
-                                    </div>
-                                </div>
                                 <div class="grid-3">
                                     <div class="summary">
+                                        <h4>Total answers</h4>
+                                        <h5><a href="#">3</a></h5>
                                         <a onclick="document.getElementById('id01').style.display='block'" class="btn btn-success" href="#">Post Answer</a>
                                         <div id="id01" class="modal">
                                             <form class="modal-content animate" action="/action_page.php">
@@ -92,7 +78,17 @@
                                         </div>
                                     </div>
                                     <div class="summary">
+                                        <h4>Total votes</h4>
+                                        <h5><a href="#">10</a></h5>
                                         <a href="#" class="btn btn-success">add vote</a>
+                                    </div>
+                                    <div class="summary">
+                                        <h4>Total views</h4>
+                                        <h5><a href="#">18</a></h5>
+                                        <a href="details.html" class="btn btn-primary">view details</a>
+                                    </div>
+                                    <div class="summary">
+                                        <a href="#" class="btn btn-danger">Delete Question</a>
                                     </div>
                                 </div>
                             </div>
@@ -100,23 +96,6 @@
                     </div>
                 </ul>
             </div>
-        </div>
-        <div class="side-grid">
-            <div class="grid-3" style="margin-top: 6em">
-                <div class="summary" style="border: 1px solid green; text-align: center;">
-                    <h4 style="margin-top: 1em;">Total answers</h4>
-                    <h5><a href="#">3</a></h5>
-                </div>
-                <div class="summary" style="border: 1px solid green; text-align: center;">
-                    <h4 style="margin-top: 1em;">Total votes</h4>
-                    <h5><a href="#">10</a></h5>
-                </div>
-                <div class="summary" style="border: 1px solid green; text-align: center;">
-                    <h4 style="margin-top: 1em;">Total views</h4>
-                    <h5><a href="#">18</a></h5>
-                </div>
-            </div>
-        </div>
     </div>
 </body>
 </html>

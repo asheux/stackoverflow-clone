@@ -55,16 +55,7 @@
                                     <div class="summary">
                                         <h4>Total answers</h4>
                                         <h5><a href="#">0</a></h5>
-                                        <a onclick="document.getElementById('id01').style.display='block'" class="btn btn-success" href="UI/templates/mains/signin.html">Post Answer</a>
-                                        <div id="id01" class="modal">
-                                            <form class="modal-content animate" action="/action_page.php">
-                                                <div class="scontainer">
-                                                    <label style="float:left" for="psw"><h2>Your Answer</h2></label>
-                                                    <textarea id="subject" name="subject" placeholder="Type your answer here..." style="height:200px"></textarea>
-                                                    <a href="#" class="btn btn-primary" type="submit">Submit</a>
-                                                </div>
-                                            </form>
-                                        </div>
+                                        <a class="btn btn-success" href="UI/templates/mains/signin.html">Post Answer</a>
                                     </div>
                                     <div class="summary">
                                         <h4>Total votes</h4>
@@ -74,7 +65,7 @@
                                     <div class="summary">
                                         <h4>Total views</h4>
                                         <h5><a href="#">18</a></h5>
-                                        <a href="UI/templates/mains/details.html" class="btn btn-primary">view details</a>
+                                        <a href="UI/templates/mains/nonloginqdetails.html" class="btn btn-primary">view details</a>
                                     </div>
                                 </div>
                             </div>
@@ -277,7 +268,23 @@
             <div class="post">
                 <a href="UI/templates/mains/signin.html" class="btn btn-primary">Post Question</a>
             </div>
-            <div class="cal">
+            <div class="side-grid">
+                <div class="grid-3">
+                    <div class="summary" style="border: 1px solid green; text-align: center;">
+                        <h4 style="margin-top: 1em;">Total answers</h4>
+                        <h5><a href="#">355542</a></h5>
+                    </div>
+                    <div class="summary" style="border: 1px solid green; text-align: center;">
+                        <h4 style="margin-top: 1em;">Total votes</h4>
+                        <h5><a href="#">16550</a></h5>
+                    </div>
+                    <div class="summary" style="border: 1px solid green; text-align: center;">
+                        <h4 style="margin-top: 1em;">Total views</h4>
+                        <h5><a href="#">1528</a></h5>
+                    </div>
+                </div>
+            </div>
+            <div class="cal" style="margin-top: 1em;">
             <div class="month">
                 <ul>
                     <li class="prev">&#10094;</li>
@@ -330,6 +337,36 @@
                 <li>30</li>
                 <li>31</li>
             </ul>
+            </div>
+            <div class="hide">
+                <h3 id="brandi" class="side-link">Popular users</h3>
+                <hr>
+                <ul class="menu">
+                    <li>
+                        <a href="#" class="side-link">
+                            <img class="image" style="border-radius: 50%; width: 30px; height: 30px;" src="UI/static/images/asheuh.jpeg">
+                            <p style="margin-top: -1.8em; margin-left: 2.5em;">Bryan Mboya</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="side-link">
+                            <img class="image" style="border-radius: 50%; width: 30px; height: 30px;" src="UI/static/images/asheuh.jpeg">
+                            <p style="margin-top: -1.8em; margin-left: 2.5em;">Paullette Mboya</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="side-link">
+                            <img class="image" style="border-radius: 50%; width: 30px; height: 30px;" src="UI/static/images/asheuh.jpeg">
+                            <p style="margin-top: -1.8em; margin-left: 2.5em;">Stacy Mboya</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="side-link">
+                            <img class="image" style="border-radius: 50%; width: 30px; height: 30px;" src="UI/static/images/asheuh.jpeg">
+                            <p style="margin-top: -1.8em; margin-left: 2.5em;">Jack Bryan Ochuka</p>
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>

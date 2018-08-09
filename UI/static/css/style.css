@@ -260,6 +260,15 @@ h3 {
     list-style-type: none;
 }
 
+.side-grid .hide ul.menu {
+    list-style-type: none;
+}
+
+.side-grid .hide ul.menu  li a{
+    text-decoration: none;
+}
+
+
 .content .quiz ul.qa p {
     color: #99A3A4;
 }
@@ -463,3 +472,34 @@ h3 {
     margin-top: 1em;
 }
 
+.dropdown {
+    float: right;
+    overflow: hidden;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: red;
+    min-width: 260px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    margin-top: 1em;
+}
+
+.dropdown-content a {
+    float: none;
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+.dropdown-content a:hover {
+    background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
