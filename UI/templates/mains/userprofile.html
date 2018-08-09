@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+    <link rel="stylesheet" href="../../static/css/asheuh-framework.css" type="text/css">
+    <link rel="shortcut icon" href="../../static/images/H-logo.ico">
+    <link rel="stylesheet" href="../../static/css/style.css" type="text/css">
+    <script src="../../static/js/app.js"></script>
+    <title>Stackoverflow | Lite</title>
+</head>
+
+<body>
+    <header class="header">
+        <nav class="myNavbar">
+            <div>
+                <ul class="myNav">
+                    <div class="my-container">
+                        <li>
+                            <a style="font-size: 22px; color: gold;" href="home.html"><span class="smallerFont">Stackoverflow</span>LITE<sup><small>2018</small></sup></a>
+                        </li>
+                        <li class="right">
+                            <a href="signin.html">
+                                <img class="image" style="border-radius: 50%; width: 30px; height: 30px;" src="../../static/images/logout-rounded-filled.png">
+                            </a>
+                        </li>
+                        <li class="right">
+                            <a href="userprofile.html">
+                                <img class="image" style="border-radius: 50%; width: 30px; height: 30px;" src="../../static/images/asheuh.jpeg">
+                            </a>
+                        </li>
+                    </div>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <div include-html="../../templates/mains/usermenu.html"></div>
+    <script>
+        includeHTML();
+    </script>
+    <div class="content">
+        <div class="asheuh-container">
+            <div class="my-container-fluid">
+                <div>
+                    <div class="grid-6">
+                        <div>
+                            <img style="width: 200px; border-radius: 12em;" src="../../static/images/asheuh.jpeg">
+                        </div>
+                        <div class="span-col-5">
+                            <h1 style="margin-top: 1em">Bryan Mboya(Asheuh)</h1>
+                            <p><small><i>Nairobi, Kenya</i></small></p>
+                            <p>Phone: <i>+(254) 700 546 241</i></p> 
+                            <div class="social-icons">
+                                <a href="#"><i style="color:blue;" class="me fab fa-facebook-square"></i></a>
+                                <a href="#"><i style="color:#ffc838" class="me fab fa-instagram"></i></a>
+                                <a href="#"><i style="color:#3498DB;" class="me fab fa-twitter-square"></i></a>
+                                <a href="#"><i style="color:#21618C;" class="me fab fa-linkedin-in"></i></a>
+                                <a href="#"><i style="color:red;" class="me fab fa-google-plus-square"></i></a>
+                                <a href="#"><i style="color:black;" class="me fab fa-github-square"></i></a>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="my-details">
+                        <div class="grid-4">
+                            <div>
+                                <h4>Organization: <i>Bashtech</i> <a style="color: blue;" href="https://asheuh.github.io">Bashtech</a></h4>
+                                <h4>Email: <i>mboyabryan49@gmail.com</i></h4>
+                                <h4>Interesting thing about me: <i>I'm smart</i></h4>
+                                <h4>Gender: <i> Male</i></h4>
+                                <h4>Birthday: <i>Not sure, i'm a time traveller</i></h4>
+                            </div>
+                            <div class="card" style="padding: 10px; text-align:center;">
+                                <h3><i class="fas fa-chart-bar"></i> Statistics</h3>
+                                <hr>
+                                <div class="grid-4">
+                                    <div id="a">
+                                        <h4>All</h4>
+                                        <h3><a href="#">28</a></h3>
+                                    </div>
+                                    <div class="a">
+                                        <h4>Questions</h4>
+                                        <h3><a href="#">12</a></h3>
+                                    </div>
+                                    <div class="a">
+                                        <h4>Answers</h4>
+                                        <h3><a href="#">8</a></h3>
+                                    </div>
+                                    <div class="a">
+                                        <h4>Votes</h4>
+                                        <h3><a href="#">8</a></h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid-5">
+                        <div class="span-col-4 Bio">
+                            <div class="bio">
+                                <h3>My Recent Questions</h3>
+                                <div class="search">
+                                </div>
+                                <hr>
+                                <div class="quiz">
+                                    <ul class="qa">
+                                        <p class="asheuh">Asked 20mins ago by Brian Mboya</p>
+                                        <li class="dropdown-btn">
+                                            <a href="#">Jquery search working on my desktop device and also on chrome mobile emulator but not working in real device</a>
+                                        </li>
+                                        <div class="dropdown-container">
+                                            <ul class="stats">
+                                                <div class="new-container">
+                                                    <h2>Question summary</h2>
+                                                    <p>
+                                                    I have a website which contains jquery search (search based on object properties) and
+                                                    the search result (HTML content) is appended from jquery. it is working perfectly fine
+                                                    on a web device and also on chrome mobile emulator (in dev console) but it is not
+                                                    working on the real device (Tested on both Android and IOS)
+                                                    </p>
+                                                    <div class="grid-3">
+                                                        <div class="summary">
+                                                            <h4>Total answers</h4>
+                                                            <h5><a href="#">0</a></h5>
+                                                            <a onclick="document.getElementById('id01').style.display='block'" class="btn btn-success" href="#">Post Answer</a>
+                                                            <div id="id01" class="modal">            
+                                                                <form class="modal-content animate" action="/action_page.php">
+                                                                    <div class="scontainer">
+                                                                        <label style="float:left" for="psw"><h2>Your Answer</h2></label>
+                                                                        <textarea id="subject" name="subject" placeholder="Type your answer here..." style="height:200px"></textarea>
+                                                                        <a href="#" class="btn btn-primary" type="submit">Submit</a>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                        <div class="summary">
+                                                            <h4>Total votes</h4>
+                                                            <h5><a href="#">10</a></h5>
+                                                            <a href="#" class="btn btn-success">add vote</a>
+                                                        </div>
+                                                        <div class="summary">
+                                                            <h4>Total views</h4>
+                                                            <h5><a href="#">18</a></h5>
+                                                            <a href="details.html" class="btn btn-primary">view details</a>
+                                                        </div>
+                                                        <div class="summary">
+                                                            <a href="#" class="btn btn-danger">Delete Question</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </ul>
+                                        </div>
+                                    </ul>
+                                </div>
+                                <div class="quiz">
+                                    <ul class="qa">
+                                        <p class="asheuh">Asked 20mins ago by Brian Mboya</p>
+                                        <li class="dropdown-btn">
+                                            <a href="#">Django: Image is stored twice</a>
+                                        </li>
+                                        <div class="dropdown-container">
+                                            <ul class="stats">
+                                                <div class="new-container">
+                                                    <h2>Question summary</h2>
+                                                    <p>
+                                                    I have a website which contains jquery search (search based on object properties) and
+                                                    the search result (HTML content) is appended from jquery. it is working perfectly fine
+                                                    on a web device and also on chrome mobile emulator (in dev console) but it is not
+                                                    working on the real device (Tested on both Android and IOS)
+                                                    </p>
+                                                    <div class="grid-3">
+                                                        <div class="summary">
+                                                            <h4>Total answers</h4>
+                                                            <h5><a href="#">0</a></h5>
+                                                            <a href="UI/templates/mains/addanswer.html" class="btn btn-success">post answer</a>
+                                                        </div>
+                                                        <div class="summary">
+                                                            <h4>Total votes</h4>
+                                                            <h5><a href="#">10</a></h5>
+                                                            <a href="#" class="btn btn-success">add vote</a>
+                                                        </div>
+                                                        <div class="summary">
+                                                            <h4>Total views</h4>
+                                                            <h5><a href="#">18</a></h5>
+                                                            <a href="UI/templates/mains/details.html" class="btn btn-primary">view details</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </ul>
+                                        </div>
+                                    </ul>
+                                </div>
+                                <div class="quiz">
+                                    <ul class="qa">
+                                        <p class="asheuh">Asked 20mins ago by Brian Mboya</p>
+                                        <li class="dropdown-btn">
+                                            <a href="#">Restoring deleted files and folders in linux</a>
+                                        </li>
+                                        <div class="dropdown-container">
+                                            <ul class="stats">
+                                                <div class="new-container">
+                                                    <h2>Question summary</h2>
+                                                    <p>
+                                                    I have a website which contains jquery search (search based on object properties) and
+                                                    the search result (HTML content) is appended from jquery. it is working perfectly fine
+                                                    on a web device and also on chrome mobile emulator (in dev console) but it is not
+                                                    working on the real device (Tested on both Android and IOS)
+                                                    </p>
+                                                    <div class="grid-3">
+                                                        <div class="summary">
+                                                            <h4>Total answers</h4>
+                                                            <h5><a href="#">0</a></h5>
+                                                            <a href="UI/templates/mains/addanswer.html" class="btn btn-success">post answer</a>
+                                                        </div>
+                                                        <div class="summary">
+                                                            <h4>Total votes</h4>
+                                                            <h5><a href="#">10</a></h5>
+                                                            <a href="#" class="btn btn-success">add vote</a>
+                                                        </div>
+                                                        <div class="summary">
+                                                            <h4>Total views</h4>
+                                                            <h5><a href="#">18</a></h5>
+                                                            <a href="UI/templates/mains/details.html" class="btn btn-primary">view details</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </ul>
+                                        </div>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <p><i>Github rating</i></p>
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star"></span>
+                            <p><i>Darknet rating</i></p>
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

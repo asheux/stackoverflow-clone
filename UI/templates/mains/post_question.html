@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+    <link rel="stylesheet" href="../../static/css/asheuh-framework.css" type="text/css">
+    <link rel="shortcut icon" href="../../static/images/H-logo.ico">
+    <link rel="stylesheet" href="../../static/css/style.css" type="text/css">
+    <script src="../../static/js/app.js"></script>
+    <title>Stackoverflow | Lite</title>
+</head>
+
+<body>
+    <header class="header">
+        <nav class="myNavbar">
+            <div>
+                <ul class="myNav">
+                    <div class="my-container">
+                        <li>
+                            <a style="font-size: 22px; color: gold;" href="home.html"><span class="smallerFont">Stackoverflow</span>LITE<sup><small>2018</small></sup></a>
+                        </li>
+                        <li class="right">
+                            <a href="signin.html">
+                                <img class="image" style="border-radius: 50%; width: 30px; height: 30px;" src="../../static/images/logout-rounded-filled.png">
+                            </a>
+                        </li>
+                        <li class="right">
+                            <a href="userprofile.html">
+                                <img class="image" style="border-radius: 50%; width: 30px; height: 30px;" src="../../static/images/asheuh.jpeg">
+                            </a>
+                        </li>
+                    </div>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <div include-html="../../templates/mains/menu.html"></div>
+    <script>
+        includeHTML();
+    </script>
+    <div class="content">
+        <div class="my-container">
+            <h1>Ask a Question</h1>
+            <hr>
+            <form class="non" action="/action_page.php">
+                <div class="scontainer">
+                    <input type="text" placeholder="Title...." name="uname" required>
+                    <textarea id="subject" name="subject" placeholder="Description..." style="height:200px"></textarea>
+                    <a href="#" class="btn btn-primary" type="submit">Post</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>
+
