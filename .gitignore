@@ -1,0 +1,10 @@
+*.py[cod]
+__pycache__
+# Virtual environment
+venv
+
+# Environment files
+.env
+.env-mysql
+.vscode
+.pytest_cache/
