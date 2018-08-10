@@ -3,7 +3,7 @@ import os
 from flask import Flask
 from flask_jwt_extended import JWTManager
 from stackoverflow import settings
-from stackoverflow.api.restplus import blueprint
+from stackoverflow.api.restplus import blueprint, api
 from stackoverflow.api.v1.auth.routes.routes import ns as user_namespace
 
 logging_conf_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '../logging.conf'))
@@ -30,6 +30,7 @@ def initialize_app(flask_app):
         jti = decrypted_token['jti']
         return BlackListToken.check_blacklist(jti)
 
+    jwt._set_error_handler_callbacks(api)
     flask_app.register_blueprint(blueprint)
 
 def create_app(config_name):

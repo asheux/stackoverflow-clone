@@ -3,7 +3,7 @@ from flask_jwt_extended import (
     create_refresh_token
 )
 from ..models import User, BlackListToken
-from stackoverflow.database import usersdb, blacklistdb
+from stackoverflow.database import db, blacklistdb
 from .errors import user_is_valid, check_valid_email
 
 class UserStore:
@@ -37,65 +37,40 @@ class UserStore:
         else:
             user = User(name, username, email, password)
             you_id = username + '00%d' % self.counter
-            usersdb[you_id] = user.toJSON()
+            db[you_id] = user.toJSON()
             self.counter += 1
             access_token = create_access_token(username)
-            refresh_token = create_refresh_token(username)
             response = {
                 'status': 'success',
                 'message': 'Successfully registered',
-                'your ID': self.get_the_user_id(),
+                'your ID': self.get_the_id(),
                 'Authorization': {
-                    'access_token': access_token,
-                    'refresh_token': refresh_token
+                    'access_token': access_token
                 }
             }
             return response, 201
 
 
-    def get_user(self, user_id):
+    def get_item(self, id):
         """Gets a single user in the database by a given id"""
-        data = self.get_all_users()
-        return data[user_id]
+        data = self.get_all()
+        return data[id]
 
-    def get_the_user_id(self):
+    def get_the_id(self):
         """Gets the last added user's id from the database"""
-        return list(usersdb.keys())[-1]
+        return list(db.keys())[-1]
 
-    def get_all_users(self):
+    def get_all(self):
         """Gets all the available users from the database"""
-        return usersdb
+        return db
 
     def get_by_field(self, key, value):
         """Gets a user by a given field"""
-        if self.get_all_users() is None:
+        if self.get_all() is None:
             return {}
-        for item in self.get_all_users().values():
+        for item in self.get_all().values():
             if item[key] == value:
                 return item
-
-    def is_admin(self):
-        """
-        To check if the user is an administrator
-        :return:
-        """
-        return True
-
-    def update_user(self, user_id, data):
-        """Updates or modifies a given user by id"""
-        name = data['name']
-        username = data['username']
-        email = data['email']
-        password = data['password']
-        user = User(name, username, email, password)
-        usersdb[user_id] = user.toJSON()
-
-        response = {
-            'status': 'success',
-            'message': 'user updated successfully',
-            'data': user.toJSON()
-        }
-        return response, 200
 
     def save_token(self, token):
         """Saves the blacklisted token in the database"""
@@ -104,7 +79,6 @@ class UserStore:
             # insert the token in database
             blacklistdb[self.counter] = blacklist_token.toJSON()
             self.counter += 1
-            print(blacklistdb)
         except Exception as e:
             response = {
                 'status': 'fail',
