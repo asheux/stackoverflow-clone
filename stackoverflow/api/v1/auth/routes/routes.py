@@ -67,3 +67,14 @@ class UserLogoutResourceAccess(Resource):
             }
             return response
 
+@ns.route('/current')
+class UserItem(Resource):
+    """Show a single user item"""
+    @api.response(200, 'success')
+    @jwt_required
+    @api.doc('user gets their details')
+    def get(self):
+        """Returns a logged in user's details"""
+        current_user = get_jwt_identity()
+        return Auth.get_logged_in_user(current_user)
+
