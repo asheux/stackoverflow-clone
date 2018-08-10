@@ -78,3 +78,29 @@ class UserItem(Resource):
         current_user = get_jwt_identity()
         return Auth.get_logged_in_user(current_user)
 
+@ns.route('', endpoint='all_users')
+class AllUsersResource(Resource):
+    """Shows a list of all users"""
+    @api.doc('get list of users')
+    @api.expect(pagination_arguments)
+    def get(self):
+        """Return list of users"""
+        args = pagination_arguments.parse_args(strict=True)
+        page = args.get('page', 1)
+        per_page = args.get('per_page', 10)
+        users_query = store.get_all()
+        paginate = Pagination(page, per_page, len(users_query))
+        if users_query == {}:
+            response = {
+                "message": "There are no users in the database yet"
+            }
+            return response, 404
+        else:
+            response = {
+                'status': 'success',
+                "page": paginate.page,
+                "per_page": paginate.per_page,
+                "total": paginate.total_count,
+                "data": users_query
+            }
+            return response, 200
