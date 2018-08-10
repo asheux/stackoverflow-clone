@@ -30,13 +30,11 @@ class Auth:
                 return response, 401
             else:
                 access_token = create_access_token(user['username'])
-                refresh_token = create_refresh_token(user['username'])
                 response = {
                     'status': 'success',
                     'message': 'Successfully logged in as {}'.format(user['name']),
                     'Authorization': {
-                        'access_token': access_token,
-                        'refresh_token': refresh_token
+                        'access_token': access_token
                     }
                 }
                 return response, 201
@@ -66,7 +64,6 @@ class Auth:
                     'name': user['name'],
                     'username': user['username'],
                     'email': user['email'],
-                    'admin': user['admin'],
                     'password': user['password_hash'],
                     'registered_on': user['registered_on']
                 }

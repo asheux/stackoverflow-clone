@@ -10,14 +10,17 @@ from flask_jwt_extended import (
 )
 from ..parsers import pagination_arguments
 from ..serializers import (
-    user_register
+    user_register,
+    user_login,
+    Pagination
 )
 from stackoverflow.api.restplus import api
 from ..collections import store
+from ..authAPI import Auth
 
 log = logging.getLogger(__name__)
 ns_auth = api.namespace('auth', description='Authentication operations')
-ns = api.namespace('user', description='User operations')
+ns = api.namespace('users', description='User operations')
 
 @ns_auth.route('/register')
 class UsersCollection(Resource):
@@ -29,3 +32,15 @@ class UsersCollection(Resource):
         """Creates a new user"""
         data = request.json
         return store.create_user(data=data)
+
+@ns_auth.route('/login')
+class UserLoginResource(Resource):
+    """Login resource"""
+    @api.doc('login user')
+    @api.response(201, 'Login successful')
+    @api.expect(user_login, validate=True)
+    def post(self):
+        """Logs in a user"""
+        data = request.json
+        return Auth.login_user(data=data)
+

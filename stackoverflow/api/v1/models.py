@@ -17,8 +17,7 @@ class MainModel:
 class User(MainModel):
     """Creates the user model"""
     def __init__(self,
-        name, username, email,
-        password, admin=False,
+        name, username, email, password,
         registered_on=datetime.now().isoformat()):
         """Initializes the user model"""
 
@@ -27,7 +26,6 @@ class User(MainModel):
         self.email = email
         self.set_password(password)
         self.registered_on = registered_on
-        self.admin = admin
 
     def set_password(self, password):
         """Sets the hashed password"""
