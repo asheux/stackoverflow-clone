@@ -44,3 +44,26 @@ class UserLoginResource(Resource):
         data = request.json
         return Auth.login_user(data=data)
 
+@ns_auth.route('/logout_access')
+class UserLogoutResourceAccess(Resource):
+    """Logout resource"""
+    @api.doc('logout user')
+    @jwt_required
+    @api.response(201, 'Logout successful')
+    def post(self):
+        # get auth token
+        """Logout a user"""
+        jti = get_raw_jwt()['jti']
+        try:
+            Auth.logout_user(jti)
+            response = {
+                'status': 'success',
+                'message': 'Access token has been revoked, you are now logged out'
+            }
+            return response, 200
+        except Exception as e:
+            response = {
+                'message': 'could not generate access token: {}'.format(e)
+            }
+            return response
+
