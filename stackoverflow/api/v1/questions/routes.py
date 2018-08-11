@@ -32,12 +32,10 @@ class UserQuestionsResource(Resource):
         page = args.get('page', 1)
         per_page = args.get('per_page', 10)
         data = questionstore.get_all()
-        questions = [quiz for quiz in data.values() if quiz['created_by']['username'] == get_jwt_identity()]
         paginate = Pagination(page, per_page, len(questions))
         if questions == []:
             response = {
-                'status': 'fail',
-                'message': 'The current user has no questions in the db'
+                'message': 'There is no questions in the db'
             }
             return response, 404
         response = {
@@ -45,6 +43,24 @@ class UserQuestionsResource(Resource):
             "page": paginate.page,
             "per_page": paginate.per_page,
             "total": paginate.total_count,
-            'data': questions
+            'data': data
+        }
+        return response, 200
+
+@ns.route('/questions/<int:question_id>')
+@api.response(404, 'question with the given id not found')
+class UserRequestItem(Resource):
+    """Single user question resource"""
+    @jwt_required
+    @api.doc('Single question resource')
+    @api.response(200, 'Success')
+    def get(self, question_id):
+        """Get a question by a specific user"""
+        abort_if_request_doesnt_exists(question_id)
+        data = questionstore.get_one(question_id)
+
+        response = {
+            'status': 'success',
+            'data': data
         }
         return response, 200
