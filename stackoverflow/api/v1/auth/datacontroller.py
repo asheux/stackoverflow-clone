@@ -1,9 +1,8 @@
 from flask_jwt_extended import (
-    create_access_token,
-    create_refresh_token
+    create_access_token
 )
-from ..models import User, BlackListToken
-from stackoverflow.database import db, blacklistdb
+from ..models import User, BlackListToken, Question
+from stackoverflow.database import db, blacklistdb, questionsdb, get_current_user
 from .errors import user_is_valid, check_valid_email
 
 class UserStore:
@@ -85,3 +84,38 @@ class UserStore:
                 'message': 'Could not save'.format(e)
             }
             return response, 500
+
+class QuestionStore:
+    def __init__(self):
+        self.index = 1
+
+    def create_question(self, data):
+        title = data['title']
+        description = data['description']
+        questions = Question(title, description, created_by=get_current_user())
+        questionsdb[self.index] = questions.toJSON()
+        self.index += 1
+
+        response = {
+            'status': 'success',
+            'message': 'Question posted successfully',
+            'data': questions.toJSON()
+        }
+        return response, 201
+
+    def get_all(self):
+        """Gets all questions in the database"""
+        return questionsdb
+
+    def get_by_field(self, key, value):
+        """Gets a question by a given field"""
+        if self.get_all() is None:
+            return {}
+        for item in self.get_all().values():
+            if item[key] == value:
+                return item
+
+    def get_one(self, id):
+        """Gets a single question by a given request id"""
+        data = self.get_all()
+        return data[id]

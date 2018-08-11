@@ -1,5 +1,5 @@
 import re
-from stackoverflow.database import db
+from stackoverflow.database import db, questionsdb
 from stackoverflow.api.restplus import api
 
 def user_is_valid(data):
@@ -18,6 +18,11 @@ def abort_if_doesnt_exists(user_id):
     """Checks if given id exists in the database"""
     if user_id not in db:
         api.abort(404, "User with id {} doesn't exist or your provided an id that does not belong to you".format(user_id))
+
+def abort_if_request_doesnt_exists(id):
+    """Checks if given id exists in the database"""
+    if id not in questionsdb:
+        api.abort(404, "Question with id {} doesn't exist".format(id))
 
 def check_valid_email(email):
     """Checks if the email provided is valid"""
