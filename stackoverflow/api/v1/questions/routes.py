@@ -24,3 +24,27 @@ class UserQuestionsResource(Resource):
         data = request.json
         return questionstore.create_question(data=data)
 
+    @api.doc('Question resource')
+    @api.response(200, 'success')
+    def get(self):
+        """get all questions for this particular user"""
+        args = pagination_arguments.parse_args(strict=True)
+        page = args.get('page', 1)
+        per_page = args.get('per_page', 10)
+        data = questionstore.get_all()
+        questions = [quiz for quiz in data.values() if quiz['created_by']['username'] == get_jwt_identity()]
+        paginate = Pagination(page, per_page, len(questions))
+        if questions == []:
+            response = {
+                'status': 'fail',
+                'message': 'The current user has no questions in the db'
+            }
+            return response, 404
+        response = {
+            'status': 'success',
+            "page": paginate.page,
+            "per_page": paginate.per_page,
+            "total": paginate.total_count,
+            'data': questions
+        }
+        return response, 200
