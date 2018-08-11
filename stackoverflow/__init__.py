@@ -5,6 +5,7 @@ from flask_jwt_extended import JWTManager
 from stackoverflow import settings
 from stackoverflow.api.restplus import blueprint, api
 from stackoverflow.api.v1.auth.routes.routes import ns as user_namespace
+from stackoverflow.api.v1.questions.routes import ns as question_namespace
 
 logging_conf_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '../logging.conf'))
 logging.config.fileConfig(logging_conf_path)

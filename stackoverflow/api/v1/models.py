@@ -39,6 +39,22 @@ class User(MainModel):
         """Represents the user by the user's username"""
         return '<User %r>' % self.username
 
+class Question(MainModel):
+    def __init__(self,
+        title,
+        description,
+        created_by=None,
+        date_created=datetime.now(),
+        date_modified=datetime.now()):
+
+        self.title = title
+        self.description = description
+        self.created_by = created_by
+        self.date_created = date_created
+
+    def __repr__(self):
+        return '<Question %r>' % self.title
+
 class BlackListToken(MainModel):
     """Creates the blacklisting model"""
     def __init__(self, jti, blacklisted_on=datetime.now().isoformat()):

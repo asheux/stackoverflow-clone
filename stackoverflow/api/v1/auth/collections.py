@@ -1,3 +1,4 @@
-from .datacontroller import UserStore
+from .datacontroller import UserStore, QuestionStore
 
 store = UserStore()
+questionstore = QuestionStore()

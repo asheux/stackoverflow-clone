@@ -2,6 +2,7 @@ from flask_jwt_extended import get_jwt_identity, jwt_required
 
 db = {}
 blacklistdb = {}
+questionsdb = {}
 
 @jwt_required
 def get_current_user():
