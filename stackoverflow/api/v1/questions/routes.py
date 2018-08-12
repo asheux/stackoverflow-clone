@@ -20,7 +20,7 @@ class UserQuestionsResource(Resource):
     @api.response(201, 'Successfully created')
     @api.expect(questions)
     def post(self):
-        """Creates a new question"""
+        """Post a new question"""
         data = request.json
         return questionstore.create_question(data=data)
 
@@ -33,6 +33,7 @@ class UserQuestionsResource(Resource):
         page = args.get('page', 1)
         per_page = args.get('per_page', 10)
         data = questionstore.get_all()
+        questions = [quiz for quiz in data.values()]
         paginate = Pagination(page, per_page, len(questions))
         if questions == []:
             response = {
@@ -44,7 +45,7 @@ class UserQuestionsResource(Resource):
             "page": paginate.page,
             "per_page": paginate.per_page,
             "total": paginate.total_count,
-            'data': data
+            'data': questions
         }
         return response, 200
 
@@ -75,7 +76,36 @@ class UserAnswerResource(Resource):
     @api.response(200, 'Success')
     @api.expect(answers)
     def post(self, question_id):
-        """Get a question"""
+        """Post an answer to this particular question"""
         data = request.json
         abort_if_question_doesnt_exists(question_id)
         return answerstore.post_answer(question_id, data)
+
+    @jwt_required
+    @api.doc('Answer resource')
+    @api.response(200, 'success')
+    def get(self, question_id):
+        """get all answers for this particular question"""
+        abort_if_question_doesnt_exists(question_id)
+        args = pagination_arguments.parse_args(strict=True)
+        question = questionstore.get_one(question_id)
+        page = args.get('page', 1)
+        per_page = args.get('per_page', 10)
+        data = answerstore.get_all()
+        answers = [answer for answer in data.values()
+                   if answer['question'] == question]
+        paginate = Pagination(page, per_page, len(answers))
+        if answers == []:
+            response = {
+                'message': 'There is no questions in the db'
+            }
+            return response, 404
+        response = {
+            'status': 'success',
+            "page": paginate.page,
+            "per_page": paginate.per_page,
+            "total": paginate.total_count,
+            'data': answers
+        }
+        return response, 200
+
