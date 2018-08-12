@@ -55,6 +55,21 @@ class Question(MainModel):
     def __repr__(self):
         return '<Question %r>' % self.title
 
+class Answer(MainModel):
+    def __init__(self,
+                 answer,
+                 owner=None,
+                 question=None,
+                 created_by=None,
+                 date_created=datetime.now()
+            ):
+        self.answer = answer
+        self.owner = owner
+        self.question = question
+
+    def __repr__(self):
+        return '<Answer %r>' % self.answer
+
 class BlackListToken(MainModel):
     """Creates the blacklisting model"""
     def __init__(self, jti, blacklisted_on=datetime.now().isoformat()):
