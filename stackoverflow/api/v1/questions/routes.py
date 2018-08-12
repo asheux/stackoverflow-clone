@@ -4,10 +4,10 @@ from flask_jwt_extended import (
     jwt_required,
     get_jwt_identity
 )
-from ..auth.collections import questionstore
-from ..auth.errors import abort_if_request_doesnt_exists
+from ..auth.collections import questionstore, answerstore
+from ..auth.errors import abort_if_question_doesnt_exists
 from stackoverflow.api.restplus import api
-from ..auth.serializers import questions, Pagination
+from ..auth.serializers import questions, Pagination, answers
 from ..auth.parsers import pagination_arguments
 
 ns = api.namespace('user', description='User operations')
@@ -24,6 +24,7 @@ class UserQuestionsResource(Resource):
         data = request.json
         return questionstore.create_question(data=data)
 
+    @jwt_required
     @api.doc('Question resource')
     @api.response(200, 'success')
     def get(self):
@@ -50,13 +51,13 @@ class UserQuestionsResource(Resource):
 @ns.route('/questions/<int:question_id>')
 @api.response(404, 'question with the given id not found')
 class UserRequestItem(Resource):
-    """Single user question resource"""
+    """Single question resource"""
     @jwt_required
     @api.doc('Single question resource')
     @api.response(200, 'Success')
     def get(self, question_id):
-        """Get a question by a specific user"""
-        abort_if_request_doesnt_exists(question_id)
+        """Get a question"""
+        abort_if_question_doesnt_exists(question_id)
         data = questionstore.get_one(question_id)
 
         response = {
@@ -64,3 +65,17 @@ class UserRequestItem(Resource):
             'data': data
         }
         return response, 200
+
+@ns.route('/questions/<int:question_id>/answers')
+@api.response(404, 'question with the given id not found')
+class UserAnswerResource(Resource):
+    """Single question resource"""
+    @jwt_required
+    @api.doc('Single question resource')
+    @api.response(200, 'Success')
+    @api.expect(answers)
+    def post(self, question_id):
+        """Get a question"""
+        data = request.json
+        abort_if_question_doesnt_exists(question_id)
+        return answerstore.post_answer(question_id, data)

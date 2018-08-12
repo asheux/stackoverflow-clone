@@ -1,8 +1,14 @@
 from flask_jwt_extended import (
     create_access_token
 )
-from ..models import User, BlackListToken, Question
-from stackoverflow.database import db, blacklistdb, questionsdb, get_current_user
+from ..models import User, BlackListToken, Question, Answer
+from stackoverflow.database import (
+    db,
+    blacklistdb,
+    questionsdb,
+    get_current_user,
+    answersdb
+)
 from .errors import user_is_valid, check_valid_email
 
 class UserStore:
@@ -117,5 +123,36 @@ class QuestionStore:
 
     def get_one(self, id):
         """Gets a single question by a given request id"""
+        data = self.get_all()
+        return data[id]
+
+class AnswerStore:
+    def __init__(self):
+        self.index = 1
+
+    def post_answer(self, id,  data):
+        questionstore = QuestionStore()
+        answer = data['answer']
+        question = questionstore.get_one(id)
+        answer = Answer(answer,
+                        owner=get_current_user(),
+                        question=question
+                    )
+        answersdb[self.index] = answer.toJSON()
+        self.index += 1
+
+        response = {
+            'status': 'success',
+            'message': 'Answer posted successfully',
+            'answer': answer.toJSON()
+        }
+        return response, 201
+
+    def get_all(self):
+        """Get all the answer to a question"""
+        return answersdb
+
+    def get_one(self, id):
+        """Gets a single answer to a question"""
         data = self.get_all()
         return data[id]

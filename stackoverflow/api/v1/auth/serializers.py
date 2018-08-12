@@ -51,3 +51,7 @@ questions = api.model('Question Model', {
     'title': fields.String(required=True, default='Django restful api', description='Request name'),
     'description': fields.String(required=True, default='How to write serializers?', description='question description')
 })
+
+answers = api.model('Answer Model', {
+    'answer': fields.String(required=True, default='create a dictionary of data', description='answer description')
+})
