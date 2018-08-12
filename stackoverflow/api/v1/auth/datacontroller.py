@@ -126,6 +126,11 @@ class QuestionStore:
         data = self.get_all()
         return data[id]
 
+    def delete(self, id):
+        """Deletes a particular question for a user"""
+        data = self.get_all()
+        del data[id]
+
 class AnswerStore:
     def __init__(self):
         self.index = 1

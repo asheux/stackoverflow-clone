@@ -10,9 +10,9 @@ from stackoverflow.api.restplus import api
 from ..auth.serializers import questions, Pagination, answers
 from ..auth.parsers import pagination_arguments
 
-ns = api.namespace('user', description='User operations')
+ns = api.namespace('questions', description='Questions operations')
 
-@ns.route('/questions')
+@ns.route('')
 class UserQuestionsResource(Resource):
     """Question resource endpoint"""
     @jwt_required
@@ -49,7 +49,7 @@ class UserQuestionsResource(Resource):
         }
         return response, 200
 
-@ns.route('/questions/<int:question_id>')
+@ns.route('/<int:question_id>')
 @api.response(404, 'question with the given id not found')
 class UserRequestItem(Resource):
     """Single question resource"""
@@ -67,7 +67,29 @@ class UserRequestItem(Resource):
         }
         return response, 200
 
-@ns.route('/questions/<int:question_id>/answers')
+    @jwt_required
+    @api.doc('Delete question resource')
+    @api.response(200, 'Successfully deleted')
+    def delete(self, question_id):
+        """Deletes a question with the given id"""
+        abort_if_question_doesnt_exists(question_id)
+        my_question = questionstore.get_one(question_id)
+        if my_question['created_by']['username'] != get_jwt_identity():
+            response = {
+                'status': 'fail',
+                'message': 'You are not permitted to delete this question'
+            }
+
+            return response, 401
+        else:
+            questionstore.delete(question_id)
+            response = {
+                'status': 'success',
+                'message': 'question deleted successfully'
+            }
+            return response, 200
+
+@ns.route('/<int:question_id>/answers')
 @api.response(404, 'question with the given id not found')
 class UserAnswerResource(Resource):
     """Single question resource"""
