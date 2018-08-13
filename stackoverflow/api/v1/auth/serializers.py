@@ -43,8 +43,12 @@ user_register = api.model('Register Model', {
 })
 
 user_login = api.model('Login Model', {
-    'username': fields.String(required=True, default='asheuh', description='Your username'),
-    'password': fields.String(required=True, default='mermaid', description='Your password'),
+    'username': fields.String(
+        required=True, default='asheuh',
+        description='Your username'),
+    'password': fields.String(
+        required=True, default='mermaid',
+        description='Your password'),
 })
 
 questions = api.model('Question Model', {
