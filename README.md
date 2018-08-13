@@ -2,7 +2,7 @@
 
 ![Travis](https://travis-ci.com/asheuh/StackOverflow-lite.svg?branch=develop)
 [![Coverage Status](https://coveralls.io/repos/github/asheuh/StackOverflow-lite/badge.svg?branch=develop)](https://coveralls.io/github/asheuh/StackOverflow-lite?branch=develop)
-[![Maintainability](https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/maintainability)](https://codeclimate.com/github/codeclimate/codeclimate/maintainability)
+[![Maintainability](https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/maintainability)](https://codeclimate.com/github/asheuh/StackOverflow-lite/maintainability)
 
 StackOverflow-lite is a platform where people can ask questions and provide answers.
 
