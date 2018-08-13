@@ -41,6 +41,7 @@ class UserQuestionsResource(Resource):
         paginate = Pagination(page, per_page, len(questions))
         if questions == []:
             response = {
+                'status': 'fail',
                 'message': 'There is no questions in the db'
             }
             return response, 404
