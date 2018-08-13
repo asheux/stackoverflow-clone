@@ -43,17 +43,8 @@ user_register = api.model('Register Model', {
 })
 
 user_login = api.model('Login Model', {
-    'username': fields.String(
-        required=True, default='asheuh',
-        description='Your username'),
-    'password': fields.String(
-        required=True, default='mermaid',
-        description='Your password'),
-})
-
-questions = api.model('Question Model', {
-    'title': fields.String(required=True, default='Django restful api', description='Request name'),
-    'description': fields.String(required=True, default='How to write serializers?', description='question description')
+    'username': fields.String(required=True, default='asheuh', description='Your username'),
+    'password': fields.String(required=True, default='mermaid', description='Your password'),
 })
 
 answers = api.model('Answer Model', {
