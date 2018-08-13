@@ -6,8 +6,7 @@ from flask_jwt_extended import (
 )
 from ..auth.collections import questionstore, answerstore
 from ..auth.errors import (
-    question_doesnt_exists,
-    answer_doesnt_exists
+    question_doesnt_exists
 )
 from stackoverflow.api.restplus import api
 from ..auth.serializers import questions, Pagination, answers
@@ -15,6 +14,12 @@ from ..auth.parsers import pagination_arguments
 from stackoverflow import settings
 
 ns = api.namespace('questions', description='Questions operations')
+
+def answer_doesnt_exists(id):
+    from stackoverflow.database import answersdb
+    """return error if answer not in db"""
+    if id not in answersdb:
+        api.abort(404, "Answer with id {} doesn't exist".format(id))
 
 @ns.route('')
 class UserQuestionsResource(Resource):
