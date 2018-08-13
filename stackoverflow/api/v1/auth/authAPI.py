@@ -1,8 +1,7 @@
 from flask_bcrypt import Bcrypt
 from flask import request
 from flask_jwt_extended import (
-    create_access_token,
-    create_refresh_token
+    create_access_token
 )
 from .collections import store
 
@@ -25,7 +24,7 @@ class Auth:
             elif not flask_bcrypt.check_password_hash(user['password_hash'], data.get('password')):
                 response = {
                     'status': 'fail',
-                    'message': 'The password you provided ({}) did not match the database password'.format(data.get('password'))
+                    'message': 'The password you provided did not match the database password'
                 }
                 return response, 401
             else:
