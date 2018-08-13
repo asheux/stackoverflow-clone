@@ -15,11 +15,11 @@ api = Api(blueprint, authorizations=authorizations, version='1.0', title='Stacko
           description=(
             "This is an api for StackOverflow-lite platform where people can ask questions and provide answers.\n\n"
             "##Exploring the demo.\n"
-            "Create a new user at the 'POST /auth/user' endpoint. Get the user access token from the response."
+            "Create a new user at the 'POST /auth/register' endpoint. Get the user access token from the response."
             "Click the authorize button and add the token in the following format.\n\n"
             "`Bearer (jwt-token without the brackets)`\n\n"
 
-            "## Authorization token(with the help of)\n"
+            "## Authorization token (using)\n"
             "`Jwt-Extended`"
         ),
     )
