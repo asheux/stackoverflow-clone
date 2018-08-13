@@ -196,6 +196,29 @@ class UpvoteAnswerResourceItem(Resource):
                 answer['votes'] += 1
                 response = {
                     'status': 'success',
-                    'message': 'Your vote was recorded'
+                    'message': 'You upvoted this answer, thanks for the feedback'
+                }
+                return response, 200
+
+@ns.route('/<int:question_id>/answers/<int:answer_id>/downvote')
+@api.response(404, 'answer with the given id not found')
+class DownvoteAnswerResourceItem(Resource):
+    """Single answer resource"""
+    @jwt_required
+    @api.doc('Single answer resource')
+    @api.response(200, 'Success')
+    def patch(self, answer_id, question_id):
+        """This resource enables users upvote an answer to a question"""
+        abort_if_answer_doesnt_exists(answer_id)
+        abort_if_question_doesnt_exists(question_id)
+        allanswers = answerstore.get_all()
+        answers = [answer for answer in allanswers.values()]
+
+        for answer in answers:
+            if answer['id'] == answer_id:
+                answer['votes'] -= 1
+                response = {
+                    'status': 'success',
+                    'message': 'You down voted this answer, thanks for the feedback'
                 }
                 return response, 200
