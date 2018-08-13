@@ -1,5 +1,8 @@
 # StackOverflow-lite
 
+![Travis](https://img.shields.io/travis/asheuh/StackOverflow-lite.svg)
+[![Coverage Status](https://coveralls.io/repos/github/asheuh/StackOverflow-lite/badge.svg?branch=develop)](https://coveralls.io/github/asheuh/StackOverflow-lite?branch=develop)
+
 StackOverflow-lite is a platform where people can ask questions and provide answers.
 
 #### Overview Homepage
