@@ -114,14 +114,6 @@ class QuestionStore:
         """Gets all questions in the database"""
         return questionsdb
 
-    def get_by_field(self, key, value):
-        """Gets a question by a given field"""
-        if self.get_all() is None:
-            return {}
-        for item in self.get_all().values():
-            if item[key] == value:
-                return item
-
     def get_one(self, id):
         """Gets a single question by a given request id"""
         data = self.get_all()
