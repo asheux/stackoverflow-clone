@@ -1,5 +1,6 @@
 import re
-from stackoverflow.database import db, questionsdb
+from flask_jwt_extended import get_jwt_identity
+from stackoverflow.database import db, questionsdb, answersdb
 from stackoverflow.api.restplus import api
 
 def user_is_valid(data):

@@ -1,6 +1,6 @@
 from flask_bcrypt import Bcrypt
 from flask import json
-from stackoverflow import settings
+from stackoverflow.settings import VOTES, PENDING
 from datetime import datetime
 from stackoverflow.database import blacklistdb
 
@@ -55,15 +55,27 @@ class Question(MainModel):
     def __repr__(self):
         return '<Question %r>' % self.title
 
+    def to_json_object(self):
+        return {
+            "title": self.title,
+            "description": self.description,
+            "created_by": self.created_by,
+            "date_created": self.date_created
+        }
+
 class Answer(MainModel):
+    """The answer model"""
     def __init__(self,
                  answer,
+                 accepted=PENDING,
+                 votes=VOTES,
                  owner=None,
                  question=None,
-                 created_by=None,
                  date_created=datetime.now()
             ):
         self.answer = answer
+        self.accepted = accepted
+        self.votes = votes
         self.owner = owner
         self.question = question
 
