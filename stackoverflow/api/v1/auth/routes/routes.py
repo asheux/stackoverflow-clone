@@ -89,7 +89,8 @@ class AllUsersResource(Resource):
         page = args.get('page', 1)
         per_page = args.get('per_page', 10)
         users_query = store.get_all()
-        paginate = Pagination(page, per_page, len(users_query))
+        users = [user for user in users_query.values()]
+        paginate = Pagination(page, per_page, len(users))
         if users_query == {}:
             response = {
                 "message": "There are no users in the database yet"
@@ -101,6 +102,6 @@ class AllUsersResource(Resource):
                 "page": paginate.page,
                 "per_page": paginate.per_page,
                 "total": paginate.total_count,
-                "data": users_query
+                "data": users
             }
             return response, 200

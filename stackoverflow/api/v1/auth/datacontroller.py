@@ -41,14 +41,14 @@ class UserStore:
             return response, 401
         else:
             user = User(name, username, email, password)
-            you_id = username + '00%d' % self.counter
-            db[you_id] = user.toJSON()
+            user.id = self.counter
+            db[self.counter] = user.toJSON()
             self.counter += 1
             access_token = create_access_token(username)
             response = {
                 'status': 'success',
                 'message': 'Successfully registered',
-                'your ID': self.get_the_id(),
+                'data': user.toJSON(),
                 'Authorization': {
                     'access_token': access_token
                 }
@@ -60,10 +60,6 @@ class UserStore:
         """Gets a single user in the database by a given id"""
         data = self.get_all()
         return data[id]
-
-    def get_the_id(self):
-        """Gets the last added user's id from the database"""
-        return list(db.keys())[-1]
 
     def get_all(self):
         """Gets all the available users from the database"""
@@ -98,7 +94,12 @@ class QuestionStore:
     def create_question(self, data):
         title = data['title']
         description = data['description']
-        questions = Question(title, description, created_by=get_current_user())
+        questions = Question(
+            title,
+            description,
+            created_by=get_current_user()
+        )
+        questions.id = self.index
         questionsdb[self.index] = questions.toJSON()
         self.index += 1
 
@@ -143,6 +144,7 @@ class AnswerStore:
                         owner=get_current_user(),
                         question=question
                     )
+        answer.id = self.index
         answersdb[self.index] = answer.toJSON()
         self.index += 1
 
@@ -161,3 +163,7 @@ class AnswerStore:
         """Gets a single answer to a question"""
         data = self.get_all()
         return data[id]
+
+    def get_a_user_quiz(self, my_list):
+        for item in my_list:
+            return item
