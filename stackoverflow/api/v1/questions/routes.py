@@ -1,5 +1,5 @@
 from flask import request
-from flask_restplus import Resource, fields
+from flask_restplus import Resource
 from flask_jwt_extended import (
     jwt_required,
     get_jwt_identity
@@ -9,16 +9,11 @@ from ..auth.errors import (
     question_doesnt_exists
 )
 from stackoverflow.api.restplus import api
-from ..auth.serializers import Pagination, answers
+from ..auth.serializers import questions, Pagination, answers
 from ..auth.parsers import pagination_arguments
 from stackoverflow import settings
 
 ns = api.namespace('questions', description='Questions operations')
-questions = api.model('Question Model', {
-    'title': fields.String(required=True, default='Django restful api', description='Request name'),
-    'description': fields.String(required=True, default='How to write serializers?', description='question description')
-})
-
 
 def answer_doesnt_exists(id):
     from stackoverflow.database import answersdb
