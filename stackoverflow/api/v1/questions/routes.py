@@ -6,7 +6,8 @@ from flask_jwt_extended import (
 )
 from ..auth.collections import questionstore, answerstore
 from ..auth.errors import (
-    abort_if_question_doesnt_exists
+    abort_if_question_doesnt_exists,
+    abort_if_answer_doesnt_exists
 )
 from stackoverflow.api.restplus import api
 from ..auth.serializers import questions, Pagination, answers
@@ -31,7 +32,7 @@ class UserQuestionsResource(Resource):
     @api.doc('Question resource')
     @api.response(200, 'success')
     def get(self):
-        """get all questions for this particular user"""
+        """get all questions in the platform"""
         args = pagination_arguments.parse_args(strict=True)
         page = args.get('page', 1)
         per_page = args.get('per_page', 10)
@@ -54,7 +55,7 @@ class UserQuestionsResource(Resource):
 
 @ns.route('/<int:question_id>')
 @api.response(404, 'question with the given id not found')
-class UserRequestItem(Resource):
+class UserQuestionItem(Resource):
     """Single question resource"""
     @jwt_required
     @api.doc('Single question resource')
@@ -136,7 +137,7 @@ class UserAnswerResource(Resource):
 
 @ns.route('/<int:question_id>/answers/<int:answer_id>/accept')
 @api.response(404, 'answer with the given id not found')
-class UserAnswerResourceItem(Resource):
+class AcceptAnswerResourceItem(Resource):
     """Single answer resource"""
     @jwt_required
     @api.doc('Single answer resource')
@@ -175,3 +176,26 @@ class UserAnswerResourceItem(Resource):
                 'message': 'Answer accepted'
             }
             return response, 200
+
+@ns.route('/<int:question_id>/answers/<int:answer_id>/upvote')
+@api.response(404, 'answer with the given id not found')
+class UpvoteAnswerResourceItem(Resource):
+    """Single answer resource"""
+    @jwt_required
+    @api.doc('Single answer resource')
+    @api.response(200, 'Success')
+    def patch(self, answer_id, question_id):
+        """This resource enables users upvote an answer to a question"""
+        abort_if_answer_doesnt_exists(answer_id)
+        abort_if_question_doesnt_exists(question_id)
+        allanswers = answerstore.get_all()
+        answers = [answer for answer in allanswers.values()]
+
+        for answer in answers:
+            if answer['id'] == answer_id:
+                answer['votes'] += 1
+                response = {
+                    'status': 'success',
+                    'message': 'Your vote was recorded'
+                }
+                return response, 200

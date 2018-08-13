@@ -1,5 +1,4 @@
 import re
-from flask_jwt_extended import get_jwt_identity
 from stackoverflow.database import db, questionsdb, answersdb
 from stackoverflow.api.restplus import api
 
@@ -24,6 +23,11 @@ def abort_if_question_doesnt_exists(id):
     """Checks if given id exists in the database"""
     if id not in questionsdb:
         api.abort(404, "Question with id {} doesn't exist".format(id))
+
+def abort_if_answer_doesnt_exists(id):
+    """Checks if given id exists in the database"""
+    if id not in answersdb:
+        api.abort(404, "Answer with id {} doesn't exist".format(id))
 
 def check_valid_email(email):
     """Checks if the email provided is valid"""
