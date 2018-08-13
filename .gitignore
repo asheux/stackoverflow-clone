@@ -6,5 +6,6 @@ venv
 # Environment files
 .env
 .env-mysql
+.coverage
 .vscode
 .pytest_cache/
