@@ -6,8 +6,8 @@ from flask_jwt_extended import (
 )
 from ..auth.collections import questionstore, answerstore
 from ..auth.errors import (
-    abort_if_question_doesnt_exists,
-    abort_if_answer_doesnt_exists
+    question_doesnt_exists,
+    answer_doesnt_exists
 )
 from stackoverflow.api.restplus import api
 from ..auth.serializers import questions, Pagination, answers
@@ -63,7 +63,7 @@ class UserQuestionItem(Resource):
     @api.response(200, 'Success')
     def get(self, question_id):
         """Get a question"""
-        abort_if_question_doesnt_exists(question_id)
+        question_doesnt_exists(question_id)
         data = questionstore.get_one(question_id)
 
         response = {
@@ -77,7 +77,7 @@ class UserQuestionItem(Resource):
     @api.response(200, 'Successfully deleted')
     def delete(self, question_id):
         """Deletes a question with the given id"""
-        abort_if_question_doesnt_exists(question_id)
+        question_doesnt_exists(question_id)
         my_question = questionstore.get_one(question_id)
         if my_question['created_by']['username'] != get_jwt_identity():
             response = {
@@ -105,7 +105,7 @@ class UserAnswerResource(Resource):
     def post(self, question_id):
         """Post an answer to this particular question"""
         data = request.json
-        abort_if_question_doesnt_exists(question_id)
+        question_doesnt_exists(question_id)
         return answerstore.post_answer(question_id, data)
 
     @jwt_required
@@ -113,7 +113,7 @@ class UserAnswerResource(Resource):
     @api.response(200, 'success')
     def get(self, question_id):
         """get all answers for this particular question"""
-        abort_if_question_doesnt_exists(question_id)
+        question_doesnt_exists(question_id)
         args = pagination_arguments.parse_args(strict=True)
         question = questionstore.get_one(question_id)
         page = args.get('page', 1)
@@ -187,8 +187,8 @@ class UpvoteAnswerResourceItem(Resource):
     @api.response(200, 'Success')
     def patch(self, answer_id, question_id):
         """This resource enables users upvote an answer to a question"""
-        abort_if_answer_doesnt_exists(answer_id)
-        abort_if_question_doesnt_exists(question_id)
+        answer_doesnt_exists(answer_id)
+        question_doesnt_exists(question_id)
         allanswers = answerstore.get_all()
         answers = [answer for answer in allanswers.values()]
 
@@ -210,8 +210,8 @@ class DownvoteAnswerResourceItem(Resource):
     @api.response(200, 'Success')
     def patch(self, answer_id, question_id):
         """This resource enables users upvote an answer to a question"""
-        abort_if_answer_doesnt_exists(answer_id)
-        abort_if_question_doesnt_exists(question_id)
+        answer_doesnt_exists(answer_id)
+        question_doesnt_exists(question_id)
         allanswers = answerstore.get_all()
         answers = [answer for answer in allanswers.values()]
 
