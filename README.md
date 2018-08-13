@@ -45,7 +45,7 @@ StackOverflow-lite is a platform where people can ask questions and provide answ
 
 #### Template
 - You can view the UI template on [Github Pages](https://asheuh.github.io/StackOverflow-lite)
-- Deployed to [Heroku]{https://stackoverflow-lite-heroku.herokuapp.com/api/v1/}
+- Deployed to [Heroku](https://stackoverflow-lite-heroku.herokuapp.com/api/v1/)
 
 #### Authors
 
