@@ -22,4 +22,4 @@ DOWNVOTE = VOTES - 1
 # Jwt settings
 JWT_BLACKLIST_ENABLED = True
 JWT_BLACKLIST_TOKEN_CHECKS = ['access', 'refresh']
-JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
+JWT_SECRET_KEY = os.urandom(24)
