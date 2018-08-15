@@ -18,6 +18,7 @@ ACCEPT = True
 PENDING = False
 VOTES = 0
 DOWNVOTE = VOTES - 1
+DATABASE_URL = os.getenv('DATABASE_URL')
 
 # Jwt settings
 JWT_BLACKLIST_ENABLED = True

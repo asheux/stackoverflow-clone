@@ -1,20 +1,22 @@
 language: python
 python:
-  - "3.6"
+    - "3.6"
 
 services:
-  - postgresql
+    - postgresql
 
 install:
-  - pip install -r requirements.txt
-  - python setup.py develop
+    - pip install -r requirements.txt
+    - python setup.py develop
 
 before_script:
-  - source stackoverflow/.travis.sh
+    - source stackoverflow/.travis.sh
+    - psql -c "create database stackoverflow_test;" -U postgres
+    - psql -c "create user asheuh with password 'mermaid';" -U postgres
 
 script:
-  - cd stackoverflow/api/v1
-  - py.test --cov=stackoverflow tests/
+    - cd stackoverflow/api/v1
+    - py.test --cov=stackoverflow tests/
 
 after_success:
-  - coveralls
+    - coveralls
