@@ -48,4 +48,27 @@ class UserQuestionsResource(Resource):
             }
             return response, 500
 
-    
+    @jwt_required
+    @v2_api.doc('Question resource')
+    @v2_api.response(200, 'success')
+    def get(self):
+        """get all questions in the platform"""
+        args = pagination_arguments.parse_args(strict=True)
+        page = args.get('page', 1)
+        per_page = args.get('per_page', 10)
+        data = Question.get_all()
+        paginate = Pagination(page, per_page, len(data))
+        if questions == []:
+            response = {
+                'status': 'fail',
+                'message': 'There is no questions in the db'
+            }
+            return response, 404
+        response = {
+            'status': 'success',
+            "page": paginate.page,
+            "per_page": paginate.per_page,
+            "total": paginate.total_count,
+            'data': data
+        }
+        return response, 200
