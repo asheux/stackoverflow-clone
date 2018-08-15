@@ -35,10 +35,6 @@ class User(MainModel):
         """Verify that the hashed password matches the user input password"""
         return flask_bcrypt.check_password_hash(self.password_hash, password)
 
-    def __repr__(self):
-        """Represents the user by the user's username"""
-        return '<User %r>' % self.username
-
 class Question(MainModel):
     def __init__(self,
         title,
@@ -51,17 +47,6 @@ class Question(MainModel):
         self.description = description
         self.created_by = created_by
         self.date_created = date_created
-
-    def __repr__(self):
-        return '<Question %r>' % self.title
-
-    def to_json_object(self):
-        return {
-            "title": self.title,
-            "description": self.description,
-            "created_by": self.created_by,
-            "date_created": self.date_created
-        }
 
 class Answer(MainModel):
     """The answer model"""
@@ -80,9 +65,6 @@ class Answer(MainModel):
         self.question = question
         self.date_created = date_created
 
-    def __repr__(self):
-        return '<Answer %r>' % self.answer
-
 class BlackListToken(MainModel):
     """Creates the blacklisting model"""
     def __init__(self, jti, blacklisted_on=datetime.now().isoformat()):
@@ -90,8 +72,6 @@ class BlackListToken(MainModel):
         self.jti = jti
         self.blacklisted_on = blacklisted_on
 
-    def __repr__(self):
-        return '<BlackListToken: {}'.format(self.jti)
 
     @classmethod
     def check_blacklist(cls, auth_token):
