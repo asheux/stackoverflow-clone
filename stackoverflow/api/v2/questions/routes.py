@@ -97,3 +97,28 @@ class UserQuestionItem(Resource):
             }
             return response, 500
 
+@ns.route('/<int:question_id>/answers')
+@v2_api.response(404, 'question with the given id not found')
+class UserAnswerResource(Resource):
+    """Single question resource"""
+    @jwt_required
+    @v2_api.doc('Single question resource')
+    @v2_api.response(200, 'Success')
+    @v2_api.expect(answers)
+    def post(self, question_id):
+        """Post an answer to this particular question"""
+        question_doesnt_exists(question_id)
+        data = request.json
+        answer = data['answer']
+        question = Question.get_item_by_id(question_id)
+        answer = Answer(answer,
+                        owner=get_jwt_identity(),
+                        question=question['id']
+                    )
+        answer.insert()
+        response = {
+            'status': 'success',
+            'message': 'Answer posted successfully',
+            'answer': answer.toJSON()
+        }
+        return response, 201
