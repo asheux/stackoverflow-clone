@@ -49,6 +49,8 @@ v2_api = Api(v2_blueprint, authorizations=authorizations, version='1.1', title='
         )
 
 def configure_app(flask_app):
+    from stackoverflow.api.v2.auth.routes.routes import ns as v2_user_namespace
+    from stackoverflow.api.v2.questions.routes import ns as q_namespace
     flask_app.config['SWAGGER_UI_DOC_EXPANSION'] = settings.RESTPLUS_SWAGGER_UI_DOC_EXPANSION
     flask_app.config['RESTPLUS_VALIDATE'] = settings.RESTPLUS_VALIDATE
     flask_app.config['RESTPLUS_MASK_SWAGGER'] = settings.RESTPLUS_MASK_SWAGGER
@@ -68,6 +70,11 @@ def initialize_app(flask_app):
         from stackoverflow.api.v1.models import BlackListToken
         jti = decrypted_token['jti']
         return BlackListToken.check_blacklist(jti)
+
+    @jwt.token_in_blacklist_loader
+    def check_token(token):
+        from stackoverflow.api.v2.models import BlackList
+        return BlackList.get_one_by_field(field='jti', value=token['jti']) is not None
 
     jwt._set_error_handler_callbacks(api)
     jwt._set_error_handler_callbacks(v2_api)
