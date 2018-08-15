@@ -15,8 +15,7 @@ before_script:
     - psql -c "create user asheuh with password 'mermaid';" -U postgres
 
 script:
-    - cd stackoverflow/api/v1
-    - py.test --cov=stackoverflow tests/
+    - py.test --cov=stackoverflow
 
 after_success:
     - coveralls
