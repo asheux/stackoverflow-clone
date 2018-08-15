@@ -238,3 +238,32 @@ class AcceptAnswerResourceItem(Resource):
             }
             return response, 200
 
+@ns.route('/myquestions')
+class UserQuestions(Resource):
+    @jwt_required
+    @v2_api.doc('All questions for user')
+    @v2_api.response(200, 'Success')
+    def get(self):
+        """Get all questions for this user"""
+        args = pagination_arguments.parse_args(strict=True)
+        page = args.get('page', 1)
+        per_page = args.get('per_page', 10)
+        data = Question.get_all()
+        myquestions = [quezes for quezes in data
+                       if quezes['created_by'] == get_jwt_identity()]
+        paginate = Pagination(page, per_page, len(myquestions))
+        if myquestions == []:
+            response = {
+                'status': 'fail',
+                'message': 'There are no questions in the db for you'
+            }
+            return response, 404
+        response = {
+            'status': 'success',
+            "page": paginate.page,
+            "per_page": paginate.per_page,
+            "total": paginate.total_count,
+            'data': myquestions
+        }
+        return response, 200
+

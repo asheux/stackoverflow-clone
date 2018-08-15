@@ -340,3 +340,40 @@ class TestUserQuestions(BaseTestCase):
             self.assertTrue(response_data['message'] == 'Answer accepted')
             self.assertEqual(resp.status_code, 200)
 
+    def test_user_retrieves_all_their_questions(self):
+        with self.client:
+            resp_register = self.client.post(
+                '/api/v2/auth/register',
+                data=json.dumps(dict(
+                    name='Brian Mboya',
+                    email='asheuh@gmail.com',
+                    username='asheuh',
+                    password='mermaid'
+                )),
+                content_type='application/json'
+            )
+            response = self.client.post(
+                '/api/v2/questions',
+                headers=dict(
+                    Authorization='Bearer ' + json.loads(
+                        resp_register.data.decode()
+                    )['Authorization']['access_token']
+                ),
+                data=json.dumps(dict(
+                    title='Gjango cli',
+                    description='How to create cli project in django?'
+                )),
+                content_type='application/json'
+            )
+            resp = self.client.get(
+                '/api/v2/questions/myquestions',
+                headers=dict(
+                    Authorization='Bearer ' + json.loads(
+                        resp_register.data.decode()
+                    )['Authorization']['access_token']
+                )
+            )
+            response_data = json.loads(resp.data.decode())
+            self.assertTrue(response_data['status'] == 'success')
+            self.assertEqual(resp.status_code, 200)
+
