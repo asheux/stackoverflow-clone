@@ -58,7 +58,7 @@ class UserQuestionsResource(Resource):
         per_page = args.get('per_page', 10)
         data = Question.get_all()
         paginate = Pagination(page, per_page, len(data))
-        if questions == []:
+        if data == []:
             response = {
                 'status': 'fail',
                 'message': 'There is no questions in the db'
@@ -82,6 +82,7 @@ class UserQuestionItem(Resource):
     @v2_api.response(200, 'Success')
     def get(self, question_id):
         """Get a question"""
+        question_doesnt_exists(question_id)
         try:
             question = Question.get_item_by_id(question_id)
             question_doesnt_exists(question_id)
@@ -96,6 +97,27 @@ class UserQuestionItem(Resource):
                 'message': 'Could not fetch the question: {}'.format(e)
             }
             return response, 500
+
+    @jwt_required
+    @v2_api.doc('Delete question resource')
+    @v2_api.response(200, 'Successfully deleted')
+    def delete(self, question_id):
+        """Deletes a question with the given id"""
+        question_doesnt_exists(question_id)
+        my_question = Question.get_item_by_id(question_id)
+        if my_question['created_by'] != get_jwt_identity():
+            response = {
+                'status': 'fail',
+                'message': 'You are not permitted to delete this question'
+            }
+            return response, 401
+        else:
+            Question.delete(question_id)
+            response = {
+                'status': 'success',
+                'message': 'question deleted successfully'
+            }
+            return response, 200
 
 @ns.route('/<int:question_id>/answers')
 @v2_api.response(404, 'question with the given id not found')
