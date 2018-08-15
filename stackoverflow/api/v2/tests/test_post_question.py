@@ -182,7 +182,6 @@ class TestUserQuestions(BaseTestCase):
                 )
             )
             response_data = json.loads(resp.data.decode())
-            print(response_data)
             self.assertTrue(response_data['status'] == 'success')
             self.assertEqual(resp.status_code, 200)
 
@@ -232,7 +231,58 @@ class TestUserQuestions(BaseTestCase):
                 )
             )
             response_data = json.loads(resp.data.decode())
-            print(response_data)
             self.assertTrue(response_data['status'] == 'success')
             self.assertTrue(response_data['message'] == 'You upvoted this answer, thanks for the feedback')
             self.assertEqual(resp.status_code, 200)
+
+    def test_user_can_down_vote_an_answer_to_a_question(self):
+        with self.client:
+            resp_register = self.client.post(
+                '/api/v2/auth/register',
+                data=json.dumps(dict(
+                    name='Ivy Mboya',
+                    email='ivy@gmail.com',
+                    username='ivy',
+                    password='mermaid'
+                )),
+                content_type='application/json'
+            )
+            response = self.client.post(
+                '/api/v2/questions',
+                headers=dict(
+                    Authorization='Bearer ' + json.loads(
+                        resp_register.data.decode()
+                    )['Authorization']['access_token']
+                ),
+                data=json.dumps(dict(
+                    title='Flask Cli',
+                    description='How to create cli project in flask?'
+                )),
+                content_type='application/json'
+            )
+            response = self.client.post(
+                '/api/v2/questions/1/answers',
+                headers=dict(
+                    Authorization='Bearer ' + json.loads(
+                        resp_register.data.decode()
+                    )['Authorization']['access_token']
+                ),
+                data=json.dumps(dict(
+                    answer='Use click cli'
+                )),
+                content_type='application/json'
+            )
+            resp = self.client.patch(
+                '/api/v2/questions/1/answers/1/downvote',
+                headers=dict(
+                    Authorization='Bearer ' + json.loads(
+                        resp_register.data.decode()
+                    )['Authorization']['access_token']
+                )
+            )
+            response_data = json.loads(resp.data.decode())
+            print(response_data)
+            self.assertTrue(response_data['status'] == 'success')
+            self.assertTrue(response_data['message'] == 'You down voted this answer, thanks for the feedback')
+            self.assertEqual(resp.status_code, 200)
+
