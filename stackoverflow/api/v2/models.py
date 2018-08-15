@@ -55,6 +55,12 @@ class DatabaseCollector(MainModel):
         return cls.to_json(item)
 
     @classmethod
+    def delete(cls, _id):
+        """deletes an item from the database"""
+        v2_db.cursor.execute("DELETE FROM {} WHERE id = %s".format(cls.__table__), (_id,))
+        v2_db.connection.commit()
+
+    @classmethod
     def rollback(cls):
         """Deletes all the data from the tables"""
         v2_db.cursor.execute("DELETE FROM {}".format(cls.__table__))
@@ -71,12 +77,6 @@ class DatabaseCollector(MainModel):
         result = v2_db.cursor.fetchone()
         if result is not None:
             self.id = result['id']
-        v2_db.connection.commit()
-
-    @classmethod
-    def delete(cls):
-        """deletes an item from the database"""
-        v2_db.cursor.execute("SELECT * FROM {} WHERE id = %s".format(cls.__table__), (cls.id))
         v2_db.connection.commit()
 
 class User(User, DatabaseCollector):
