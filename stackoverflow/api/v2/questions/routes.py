@@ -6,7 +6,8 @@ from flask_jwt_extended import (
 )
 
 from ..auth.errors import (
-    question_doesnt_exists
+    question_doesnt_exists,
+    answer_doesnt_exists
 )
 from stackoverflow import v2_api
 from ..auth.serializers import questions, Pagination, answers
@@ -144,3 +145,26 @@ class UserAnswerResource(Resource):
             'answer': answer.toJSON()
         }
         return response, 201
+
+@ns.route('/<int:question_id>/answers/<int:answer_id>/upvote')
+@v2_api.response(404, 'answer with the given id not found')
+class UpvoteAnswerResourceItem(Resource):
+    """Single answer resource"""
+    @jwt_required
+    @v2_api.doc('Single answer resource')
+    @v2_api.response(200, 'Success')
+    def patch(self, answer_id, question_id):
+        """This resource enables users upvote an answer to a question"""
+        answer_doesnt_exists(answer_id)
+        question_doesnt_exists(question_id)
+        allanswers = Answer.get_all()
+
+        for answer in allanswers:
+            if answer['id'] == answer_id and \
+                    answer['question'] == question_id:
+                answer['votes'] += 1
+                response = {
+                    'status': 'success',
+                    'message': 'You upvoted this answer, thanks for the feedback'
+                }
+                return response, 200
