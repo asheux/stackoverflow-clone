@@ -72,3 +72,28 @@ class UserQuestionsResource(Resource):
             'data': data
         }
         return response, 200
+
+@ns.route('/<int:question_id>')
+@v2_api.response(404, 'question with the given id not found')
+class UserQuestionItem(Resource):
+    """Single question resource"""
+    @jwt_required
+    @v2_api.doc('Single question resource')
+    @v2_api.response(200, 'Success')
+    def get(self, question_id):
+        """Get a question"""
+        try:
+            question = Question.get_item_by_id(question_id)
+            question_doesnt_exists(question_id)
+            response = {
+                'status': 'success',
+                'data': question
+            }
+            return response, 200
+        except Exception as e:
+            response = {
+                'status': 'fail',
+                'message': 'Could not fetch the question: {}'.format(e)
+            }
+            return response, 500
+
