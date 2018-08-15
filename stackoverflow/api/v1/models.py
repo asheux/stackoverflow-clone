@@ -78,6 +78,7 @@ class Answer(MainModel):
         self.votes = votes
         self.owner = owner
         self.question = question
+        self.date_created = date_created
 
     def __repr__(self):
         return '<Answer %r>' % self.answer
