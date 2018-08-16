@@ -1,5 +1,5 @@
 import re
-from stackoverflow.database import db, questionsdb, answersdb
+from stackoverflow.database import questionsdb, answersdb
 from stackoverflow.api.restplus import api
 
 def user_is_valid(data):
@@ -13,6 +13,11 @@ def user_is_valid(data):
         errors['username'] = "The username you provided already exists"
 
     return errors
+
+def answer_doesnt_exists(id):
+    """return error if answer not in db"""
+    if id not in answersdb:
+        api.abort(404, "Answer with id {} doesn't exist".format(id))
 
 def question_doesnt_exists(id):
     """Checks if given id exists in the database"""

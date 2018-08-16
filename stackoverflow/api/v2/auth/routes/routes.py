@@ -8,7 +8,6 @@ from flask_jwt_extended import (
     get_raw_jwt,
     create_access_token
 )
-from stackoverflow.api.v1.auth.parsers import pagination_arguments
 from stackoverflow import v2_api
 from stackoverflow.api.v2.auth.serializers import (
     user_register,
@@ -27,7 +26,6 @@ ns = v2_api.namespace('user', description='User operations')
 @ns_auth.route('/register')
 class UsersCollection(Resource):
     """This class creates a new user in the database"""
-    @v2_api.doc(pagination_arguments)
     @v2_api.response(201, 'User created successfully')
     @v2_api.expect(user_register, validate=True)
     def post(self):

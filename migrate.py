@@ -6,10 +6,6 @@ from stackoverflow.api.v2.models import (
 )
 
 class Migration:
-    @staticmethod
-    def refresh_db():
-        Migration.tear_down()
-        Migration.create_all()
 
     @staticmethod
     def create_all():
@@ -19,13 +15,6 @@ class Migration:
         Answer.migrate()
         BlackList.migrate()
 
-    @staticmethod
-    def tear_down():
-        """Deletes data from the the tables"""
-        User.rollback()
-        Question.rollback()
-        Answer.migrate()
-        BlackList.rollback()
 
     @staticmethod
     def drop_tables():

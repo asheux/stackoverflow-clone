@@ -40,12 +40,14 @@ class Question(MainModel):
         title,
         description,
         created_by=None,
-        date_created=datetime.now(),
-        date_modified=datetime.now()):
+        answers=0,
+        date_created=datetime.now()
+    ):
 
         self.title = title
         self.description = description
         self.created_by = created_by
+        self.answers = answers
         self.date_created = date_created
 
 class Answer(MainModel):

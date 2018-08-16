@@ -155,11 +155,12 @@ class TestUserQuestions(BaseTestCase):
                     )['Authorization']['access_token']
                 ),
                 data=json.dumps(dict(
-                    answer='Use click cli'
+                    answer='Use click'
                 )),
                 content_type='application/json'
             )
             response_data = json.loads(resp.data.decode())
+            print(response_data)
             self.assertTrue(response_data['status'] == 'success')
             self.assertTrue(response_data['message'] == 'Answer posted successfully')
             self.assertEqual(resp.status_code, 201)
@@ -183,6 +184,7 @@ class TestUserQuestions(BaseTestCase):
                 )
             )
             response_data = json.loads(resp.data.decode())
+            print(response_data)
             self.assertTrue(response_data['status'] == 'success')
             self.assertEqual(resp.status_code, 200)
 

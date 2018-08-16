@@ -6,11 +6,9 @@ from flask_jwt_extended import (
     get_jwt_identity,
     get_raw_jwt
 )
-from ..parsers import pagination_arguments
 from ..serializers import (
     user_register,
-    user_login,
-    Pagination
+    user_login
 )
 from stackoverflow.api.restplus import api
 from ..collections import store
@@ -23,7 +21,6 @@ ns = api.namespace('users', description='User operations')
 @ns_auth.route('/register')
 class UsersCollection(Resource):
     """This class creates a new user in the database"""
-    @api.doc(pagination_arguments)
     @api.response(201, 'User created successfully')
     @api.expect(user_register, validate=True)
     def post(self):
@@ -80,15 +77,10 @@ class UserItem(Resource):
 class AllUsersResource(Resource):
     """Shows a list of all users"""
     @api.doc('get list of users')
-    @api.expect(pagination_arguments)
     def get(self):
         """Return list of users"""
-        args = pagination_arguments.parse_args(strict=True)
-        page = args.get('page', 1)
-        per_page = args.get('per_page', 10)
         users_query = store.get_all()
         users = [user for user in users_query.values()]
-        paginate = Pagination(page, per_page, len(users))
         if users_query == {}:
             response = {
                 "message": "There are no users in the database yet"
@@ -97,9 +89,7 @@ class AllUsersResource(Resource):
         else:
             response = {
                 'status': 'success',
-                "page": paginate.page,
-                "per_page": paginate.per_page,
-                "total": paginate.total_count,
+                'total': len(users),
                 "data": users
             }
             return response, 200

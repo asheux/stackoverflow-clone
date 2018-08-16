@@ -202,6 +202,8 @@ class AcceptAnswerResourceItem(Resource):
     @v2_api.response(200, 'Success')
     def patch(self, answer_id, question_id):
         """This resource enables users accept an answer to their question"""
+        question_doesnt_exists(question_id)
+        answer_doesnt_exists(answer_id)
         allquiz = Question.get_all()
         allanswers = Answer.get_all()
         questions = [quiz for quiz in allquiz
