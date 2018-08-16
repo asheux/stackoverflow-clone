@@ -4,19 +4,16 @@ from flask_bcrypt import Bcrypt
 from flask_restplus import Resource
 from flask_jwt_extended import (
     jwt_required,
-    get_jwt_identity,
     get_raw_jwt,
     create_access_token
 )
 from stackoverflow import v2_api
 from stackoverflow.api.v2.auth.serializers import (
     user_register,
-    user_login,
-    questions
+    user_login
 )
 from ..errors import check_valid_email, user_is_valid
 from stackoverflow.api.v2.models import User, BlackList
-from stackoverflow import settings
 
 flask_bcrypt = Bcrypt()
 log = logging.getLogger(__name__)
@@ -47,6 +44,8 @@ class UsersCollection(Resource):
         else:
             user = User(data['name'], data['username'], data['email'], data['password'])
             user.insert()
+
+             # add jwt token based authentication
             access_token = create_access_token(user.id)
             response = {
                 'status': 'success',
@@ -81,6 +80,7 @@ class UserLoginResource(Resource):
                 }
                 return response, 401
             else:
+                # add jwt token based authentication
                 access_token = create_access_token(user['id'])
                 response = {
                     'status': 'success',
@@ -101,7 +101,7 @@ class UserLoginResource(Resource):
 class UserLogoutResourceAccess(Resource):
     """Logout resource"""
     @v2_api.doc('logout user')
-    @jwt_required
+    @jwt_required # add jwt token based authentication
     @v2_api.response(201, 'Logout successful')
     def post(self):
         # get auth token
