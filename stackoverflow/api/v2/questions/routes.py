@@ -23,7 +23,7 @@ def get_quiz_dict(list_obj):
 @ns.route('')
 class UserQuestionsResource(Resource):
     """Question resource endpoint"""
-    @jwt_required
+    @jwt_required # add jwt token based authentication
     @v2_api.doc('Question resource')
     @v2_api.response(201, 'Successfully created')
     @v2_api.expect(questions)
@@ -52,7 +52,7 @@ class UserQuestionsResource(Resource):
             }
             return response, 500
 
-    @jwt_required
+    @jwt_required # add jwt token based authentication
     @v2_api.doc('Question resource')
     @v2_api.response(200, 'success')
     def get(self):
@@ -75,7 +75,7 @@ class UserQuestionsResource(Resource):
 @v2_api.response(404, 'question with the given id not found')
 class UserQuestionItem(Resource):
     """Single question resource"""
-    @jwt_required
+    @jwt_required # add jwt token based authentication
     @v2_api.doc('Single question resource')
     @v2_api.response(200, 'Success')
     def get(self, question_id):
@@ -96,7 +96,7 @@ class UserQuestionItem(Resource):
             }
             return response, 500
 
-    @jwt_required
+    @jwt_required # add jwt token based authentication
     @v2_api.doc('Delete question resource')
     @v2_api.response(200, 'Successfully deleted')
     def delete(self, question_id):
@@ -121,7 +121,7 @@ class UserQuestionItem(Resource):
 @v2_api.response(404, 'question with the given id not found')
 class UserAnswerResource(Resource):
     """Single question resource"""
-    @jwt_required
+    @jwt_required # add jwt token based authentication
     @v2_api.doc('Single question resource')
     @v2_api.response(200, 'Success')
     @v2_api.expect(answers)
@@ -145,11 +145,34 @@ class UserAnswerResource(Resource):
         }
         return response, 201
 
+    @jwt_required
+    @v2_api.doc('All answers for this question')
+    @v2_api.response(200, 'success')
+    def get(self, question_id):
+        """Gets all the answers for this particular question"""
+        question_doesnt_exists(question_id)
+        question = Question.get_item_by_id(question_id)
+        data = Answer.get_all()
+        answers = [answer for answer in data
+                   if answer['question'] == question_id]
+        if answers == []:
+            response = {
+                'status': 'fail',
+                'message': 'There are answers in the database for this question'
+            }
+            return response, 404
+        response = {
+            'status': 'success',
+            'total': len(answers),
+            'data': answers
+        }
+        return response, 200
+
 @ns.route('/<int:question_id>/answers/<int:answer_id>/upvote')
 @v2_api.response(404, 'answer with the given id not found')
 class UpvoteAnswerResourceItem(Resource):
     """Single answer resource"""
-    @jwt_required
+    @jwt_required # add jwt token based authentication
     @v2_api.doc('Single answer resource')
     @v2_api.response(200, 'Success')
     def patch(self, answer_id, question_id):
@@ -173,7 +196,7 @@ class UpvoteAnswerResourceItem(Resource):
 @v2_api.response(404, 'answer with the given id not found')
 class DownvoteAnswerResourceItem(Resource):
     """Single answer resource"""
-    @jwt_required
+    @jwt_required # add jwt token based authentication
     @v2_api.doc('Single answer resource')
     @v2_api.response(200, 'Success')
     def patch(self, answer_id, question_id):
@@ -197,7 +220,7 @@ class DownvoteAnswerResourceItem(Resource):
 @v2_api.response(404, 'answer with the given id not found')
 class AcceptAnswerResourceItem(Resource):
     """Single answer resource"""
-    @jwt_required
+    @jwt_required # add jwt token based authentication
     @v2_api.doc('Single answer resource')
     @v2_api.response(200, 'Success')
     def patch(self, answer_id, question_id):
@@ -243,7 +266,7 @@ class AcceptAnswerResourceItem(Resource):
             return response, 200
 @ns.route('/myquestions')
 class UserQuestions(Resource):
-    @jwt_required
+    @jwt_required # add jwt token based authentication
     @v2_api.doc('All questions for user')
     @v2_api.response(200, 'Success')
     def get(self):
