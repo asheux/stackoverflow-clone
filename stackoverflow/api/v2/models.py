@@ -61,12 +61,6 @@ class DatabaseCollector(MainModel):
         v2_db.connection.commit()
 
     @classmethod
-    def rollback(cls):
-        """Deletes all the data from the tables"""
-        v2_db.cursor.execute("DELETE FROM {}".format(cls.__table__))
-        v2_db.connection.commit()
-
-    @classmethod
     def drop_all(cls):
         """Drops all the tables"""
         v2_db.cursor.execute("DROP TABLE {}".format(cls.__table__))
@@ -124,6 +118,7 @@ class Question(Question, DatabaseCollector):
                 title VARCHAR,
                 description VARCHAR,
                 created_by INTEGER,
+                answers INTEGER,
                 date_created timestamp,
                 FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE
             )
@@ -135,14 +130,25 @@ class Question(Question, DatabaseCollector):
         """save to the database"""
         v2_db.cursor.execute(
             "INSERT INTO questions(title, description, created_by,"
-            "date_created) VALUES(%s, %s, %s, %s) RETURNING id", (
+            "answers, date_created) VALUES(%s, %s, %s, %s, %s) RETURNING id", (
                 self.title,
                 self.description,
                 self.created_by,
+                self.answers,
                 self.date_created
             )
         )
         super().insert()
+
+    @classmethod
+    def updatequestion(cls, answers, _id):
+        v2_db.cursor.execute(
+            "UPDATE questions SET answers = %s WHERE id = %s", (
+                answers,
+                _id
+            )
+        )
+        v2_db.connection.commit()
 
 class Answer(Answer, DatabaseCollector):
     __table__ = "answers"
@@ -179,6 +185,25 @@ class Answer(Answer, DatabaseCollector):
         )
         super().insert()
 
+    @classmethod
+    def accepteandupdate(cls, accepted, _id):
+        v2_db.cursor.execute(
+            "UPDATE answers SET accepted = %s WHERE id = %s", (
+                accepted,
+                _id
+            )
+        )
+        v2_db.connection.commit()
+
+    @classmethod
+    def voteandupdate(cls, votes, _id):
+        v2_db.cursor.execute(
+            "UPDATE answers SET votes = %s WHERE id = %s", (
+                votes,
+                _id
+            )
+        )
+        v2_db.connection.commit()
 
 class BlackList(DatabaseCollector):
     __table__ = "blacklist"

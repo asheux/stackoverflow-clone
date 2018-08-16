@@ -132,13 +132,15 @@ class AnswerStore:
         questionstore = QuestionStore()
         answer = data['answer']
         question = questionstore.get_one(id)
+        question['answers'] += 1
         answer = Answer(answer,
                         owner=get_current_user(),
-                        question=question
+                        question=question['id']
                     )
         answer.id = self.index
         answersdb[self.index] = answer.toJSON()
         self.index += 1
+        question['answers'] += 1
 
         response = {
             'status': 'success',
@@ -150,6 +152,14 @@ class AnswerStore:
     def get_all(self):
         """Get all the answer to a question"""
         return answersdb
+
+    def get_by_field(self, key, value):
+        """Gets a user by a given field"""
+        if self.get_all() is None:
+            return {}
+        list_item = [item for item in self.get_all().values()
+                     if item[key] == value]
+        return list_item
 
     def get_one(self, id):
         """Gets a single answer to a question"""
