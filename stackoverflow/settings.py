@@ -23,4 +23,4 @@ DATABASE_URL = os.getenv('DATABASE_URL')
 # Jwt settings
 JWT_BLACKLIST_ENABLED = True
 JWT_BLACKLIST_TOKEN_CHECKS = ['access', 'refresh']
-JWT_SECRET_KEY = os.urandom(24)
+JWT_SECRET_KEY = 'this aint your mama'
