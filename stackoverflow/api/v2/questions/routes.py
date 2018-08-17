@@ -312,3 +312,25 @@ class UserQuestionAnswer(Resource):
             'data': all_quiz
         }
         return response, 200
+
+@ns.route('/search/<string:search_item>')
+class UserSearchQuestion(Resource):
+    @jwt_required
+    @v2_api.doc('Searching a question in the platform')
+    @v2_api.response(200, 'success')
+    def get(self, search_item):
+        """Search question resource"""
+        Question.transform_for_search()
+        result = Question.fts_search_query(search_item)
+        if result == []:
+            response = {
+                'status': 'fail',
+                'message': 'No results for your search'
+            }
+            return response, 404
+        response = {
+            'status': 'success',
+            'total': len(result),
+            'data': result
+        }
+        return response, 200
