@@ -464,3 +464,77 @@ class TestUserQuestions(BaseTestCase):
             self.assertTrue(response_data['message'] == 'There are answers in the database for this question')
             self.assertEqual(resp.status_code, 404)
 
+    def test_user_retrieves_all_questions_with_most_answers(self):
+        with self.client:
+            resp_register = self.client.post(
+                '/api/v2/auth/register',
+                data=json.dumps(dict(
+                    name='Ivy Mboya',
+                    email='ivy@gmail.com',
+                    username='ivy',
+                    password='mermaid'
+                )),
+                content_type='application/json'
+            )
+            response = self.client.post(
+                '/api/v2/questions',
+                headers=dict(
+                    Authorization='Bearer ' + json.loads(
+                        resp_register.data.decode()
+                    )['Authorization']['access_token']
+                ),
+                data=json.dumps(dict(
+                    title='Flask Cli',
+                    description='How to create cli project in flask?'
+                )),
+                content_type='application/json'
+            )
+            response = self.client.post(
+                '/api/v2/questions/1/answers',
+                headers=dict(
+                    Authorization='Bearer ' + json.loads(
+                        resp_register.data.decode()
+                    )['Authorization']['access_token']
+                ),
+                data=json.dumps(dict(
+                    answer='Use click cli'
+                )),
+                content_type='application/json'
+            )
+            resp = self.client.get(
+                '/api/v2/questions/mostanswers',
+                headers=dict(
+                    Authorization='Bearer ' + json.loads(
+                        resp_register.data.decode()
+                    )['Authorization']['access_token']
+                )
+            )
+            response_data = json.loads(resp.data.decode())
+            self.assertTrue(response_data['status'] == 'success')
+            self.assertEqual(resp.status_code, 200)
+
+    def test_user_retrieves_all_questions_with_most_answers_if_none(self):
+        with self.client:
+            resp_register = self.client.post(
+                '/api/v2/auth/register',
+                data=json.dumps(dict(
+                    name='Ivy Mboya',
+                    email='ivy@gmail.com',
+                    username='ivy',
+                    password='mermaid'
+                )),
+                content_type='application/json'
+            )
+            resp = self.client.get(
+                '/api/v2/questions/mostanswers',
+                headers=dict(
+                    Authorization='Bearer ' + json.loads(
+                        resp_register.data.decode()
+                    )['Authorization']['access_token']
+                )
+            )
+            response_data = json.loads(resp.data.decode())
+            self.assertTrue(response_data['status'] == 'fail')
+            self.assertTrue(response_data['message'] == 'There are no questions')
+            self.assertEqual(resp.status_code, 404)
+

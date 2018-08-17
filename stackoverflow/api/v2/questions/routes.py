@@ -1,3 +1,4 @@
+import heapq
 from flask import request
 from flask_restplus import Resource
 from flask_jwt_extended import (
@@ -287,3 +288,27 @@ class UserQuestions(Resource):
         }
         return response, 200
 
+@ns.route('/mostanswers')
+class UserQuestionAnswer(Resource):
+    @jwt_required
+    @v2_api.doc('Question with most answers')
+    @v2_api.response(200, 'Success')
+    def get(self):
+        """Get the question with the most answers"""
+        questions = Question.get_all()
+        list_num = [question['answers'] for question in questions]
+        if questions == []:
+            response = {
+                'status': 'fail',
+                'message': 'There are no questions'
+            }
+            return response, 404
+        most_answer = heapq.nlargest(2, list_num)
+        all_quiz = [quiz for quiz in questions
+                    if quiz['answers'] in most_answer]
+        response = {
+            'status': 'success',
+            'total': len(all_quiz),
+            'data': all_quiz
+        }
+        return response, 200
