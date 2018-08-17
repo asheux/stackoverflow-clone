@@ -37,7 +37,7 @@ $ git clone https://github.com/asheuh/StackOverflow-lite
 ## Navigate to the API folder
 
 ```
-$ cd flaskie
+$ cd StackOverflow-lite
 ```
 
 ## Create a virtual environment and activate
