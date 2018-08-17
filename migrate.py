@@ -15,7 +15,6 @@ class Migration:
         Answer.migrate()
         BlackList.migrate()
 
-
     @staticmethod
     def drop_tables():
         """drops all the tables"""
@@ -31,5 +30,6 @@ def main():
     my_db.init_db(app)
     migrate = Migration()
     migrate.create_all()
+
 if __name__ == '__main__':
     main()
