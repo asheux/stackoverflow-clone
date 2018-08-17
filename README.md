@@ -1,10 +1,12 @@
 # StackOverflow-lite
 
-![Travis](https://travis-ci.com/asheuh/StackOverflow-lite.svg?branch=develop)
-[![Coverage Status](https://coveralls.io/repos/github/asheuh/StackOverflow-lite/badge.svg?branch=develop)](https://coveralls.io/github/asheuh/StackOverflow-lite?branch=develop)
+![Travis](https://travis-ci.com/asheuh/StackOverflow-lite.svg?branch=develop-v2)
+[![Coverage Status](https://coveralls.io/repos/github/asheuh/StackOverflow-lite/badge.svg?branch=develop-v2)](https://coveralls.io/github/asheuh/StackOverflow-lite?branch=develop-v2)
 [![Maintainability](https://api.codeclimate.com/v1/badges/465755288bc6481668ed/maintainability)](https://codeclimate.com/github/asheuh/StackOverflow-lite/maintainability)
 
 StackOverflow-lite is a platform where people can ask questions and provide answers.
+
+* [Heroku live demo](https://stackoverflow-lite-heroku.herokuapp.com))
 
 #### Overview Homepage
 
@@ -24,6 +26,85 @@ StackOverflow-lite is a platform where people can ask questions and provide answ
 - Users can search for questions on the platform
 - Users can view questions with the most answers.
 
+
+# Installation and Setup
+Clone the repository.
+
+```
+$ git clone https://github.com/asheuh/StackOverflow-lite
+```
+
+## Navigate to the API folder
+
+```
+$ cd flaskie
+```
+
+## Create a virtual environment and activate
+
+On linux
+
+```
+$ python -m venv venv
+$ source venv/bin/activate
+
+```
+
+On Windows
+
+```
+$ py -3 -m venv venv
+$ venv\Scripts\activate
+
+```
+
+## Install requirements( with pip)
+
+```
+$ pip install -r requirements.txt
+
+```
+
+## Running the application
+
+After the configuration, you will run the app
+
+Setup the application for development to make sure all the requirements are installed
+
+```
+$ python setup.py develop
+
+```
+## Create your local exports
+
+```
+$ export FLASK_APP="app.py"
+$ export FLASK_DEBUG=True
+$ export APP_SETTINGS="development"
+$ export DATABASE_URL="Your DATABASE_URL here"
+
+```
+
+Run the application
+
+```
+$ flask run
+
+```
+
+## Url for endpoints
+
+```
+http://127.0.0.1:5000/api/v1/
+http://127.0.0.1:5000/api/v2/
+
+```
+## The app is deploy to heroku with the following url
+
+* [here is the live demo for v2 on heroku](https://stackoverflow-lite-heroku.herokuapp.com/api/v2/))
+
+# Frontend Support
+
 #### Sign up
 - Fileds required to sign up
 
@@ -41,12 +122,14 @@ StackOverflow-lite is a platform where people can ask questions and provide answ
 ```
 - Email address
 - Password
+
 ```
 ![login](https://user-images.githubusercontent.com/22955146/43835943-5f443e68-9b1c-11e8-9cbf-1d4e154f722a.png)
 
 #### Template
+
 - You can view the UI template on [Github Pages](https://asheuh.github.io/StackOverflow-lite)
-- Deployed to [Heroku](https://stackoverflow-lite-heroku.herokuapp.com/api/v1/)
+- Deployed to [Heroku, V1 of the app](https://stackoverflow-lite-heroku.herokuapp.com/api/v1/)
 
 #### Authors
 

@@ -7,7 +7,7 @@ from flask_restplus import Api
 from flask import Flask, Blueprint
 from flask_jwt_extended import JWTManager
 from stackoverflow import settings
-
+from stackoverflow.base.routes import index_blueprint
 from stackoverflow.api.restplus import blueprint, api, authorizations
 from stackoverflow.api.v1.auth.routes.routes import ns as user_namespace
 from stackoverflow.api.v1.questions.routes import ns as question_namespace
@@ -78,6 +78,7 @@ def initialize_app(flask_app):
 
     jwt._set_error_handler_callbacks(api)
     jwt._set_error_handler_callbacks(v2_api)
+    flask_app.register_blueprint(index_blueprint)
     flask_app.register_blueprint(v2_blueprint)
     flask_app.register_blueprint(blueprint)
     v2_db.init_db(flask_app)
