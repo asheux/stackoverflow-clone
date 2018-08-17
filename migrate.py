@@ -24,6 +24,12 @@ class Migration:
         User.drop_all()
         BlackList.drop_all()
 
-create = Migration()
+def main():
+    from stackoverflow import Database, create_app, settings
+    app = create_app(settings.DEVELOPMENT)
+    my_db = Database()
+    my_db.init_db(app)
+    migrate = Migration()
+    migrate.create_all()
 if __name__ == '__main__':
-    create.create_all()
+    main()
