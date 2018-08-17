@@ -34,7 +34,7 @@ class DatabaseCollector(MainModel):
             if item[field] == value:
                 return item
         """
-        v2_db.cursor.execute("SELECT * FROM {0} WHERE {1} = %s".format(cls.__table__, field), (value,))
+        v2_db.cursor.execute("SELECT * FROM {} WHERE {} = %s".format(cls.__table__, field), (value,))
         items = v2_db.cursor.fetchall()
         return [cls.to_json(item) for item in items]
 
