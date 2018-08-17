@@ -101,7 +101,7 @@ http://127.0.0.1:5000/api/v2/
 ```
 ## The app is deploy to heroku with the following url
 
-* [here is the live demo for v2 on heroku](https://stackoverflow-lite-heroku.herokuapp.com/api/v2/))
+* [here is the live demo for v2 on heroku](https://stackoverflow-lite-heroku.herokuapp.com/api/v2/)
 
 # Frontend Support
 
