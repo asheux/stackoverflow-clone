@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/asheuh-framework.css') }}" type="text/css">
+    <link rel="shortcut icon" href="../static/images/H-logo.ico">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" type="text/css">
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <title>Stackoverflow | Lite</title>
+<style>
+.but {border-radius: 50%;}
+.but {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+}
+</style>
+</head>
+
+<body>
+    <header class="header">
+        <nav class="myNavbar">
+            <div>
+                <ul class="myNav">
+                    <div class="my-container">
+                        <li>
+                            <a style="font-size: 22px; color: gold;" href="/"><span class="smallerFont">Stackoverflow</span>LITE<sup><small>2018</small></sup></a>
+                        </li>
+                    </div>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <div class="my-container content grid-3">
+        <div class="span-col-2">
+            <h1>Stackoverflow API</h1>
+            <div class="search">
+                <input class="animated" name="search" type="text" placeholder="Search....">
+            </div>
+            <hr>
+            <div class="quiz">
+                <a href="api/v1" class="but">V1</a>
+                <a href="api/v2" class="but">V2</a>
+            </div>
+        </div>
+        <div class="side-grid">
+            <div class="post">
+                <a href="https://asheuh.github.io/StackOverflow-lite/" class="btn btn-primary">Go to UI</a>
+            </div>
+            <div class="side-grid">
+                <div class="grid-3">
+                    <div class="summary" style="border: 1px solid green; text-align: center;">
+                        <h4 style="margin-top: 1em;">Total questions</h4>
+                        <h5><a href="#">355542</a></h5>
+                    </div>
+                    <div class="summary" style="border: 1px solid green; text-align: center;">
+                        <h4 style="margin-top: 1em;">Total votes</h4>
+                        <h5><a href="#">16550</a></h5>
+                    </div>
+                    <div class="summary" style="border: 1px solid green; text-align: center;">
+                        <h4 style="margin-top: 1em;">Total views</h4>
+                        <h5><a href="#">1528</a></h5>
+                    </div>
+                </div>
+            </div>
+            <div class="cal" id="cal" style="margin-top: 1.5em;">
+                <div class="month">
+                    <span class="left button" id="prev"> &lang;</span>
+                    <span class="left hook"></span>
+                    <span class="month-year" id="label"> August 2018</span>
+                    <span class="right hook" id=""></span>
+                    <span class="right button" id="next"> &rang;</span>
+                </div>
+                <table id="days">
+                    <tr>
+                        <td>Sun</td>
+                        <td>Mon</td>
+                        <td>Tue</td>
+                        <td>Wed</td>
+                        <td>Thu</td>
+                        <td>Fri</td>
+                        <td>Sat</td>
+                    </tr>
+                </table>
+                <div class="cal-frame">
+                    <table class="curr">
+                        <tr>
+                            <td class="nil"></td><td class="nil"></td><td class="nil"></td><td>1</td><td>2</td><td>3</td><td>4</td>
+                        </tr>
+                        <tr>
+                            <td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td class="today">10</td><td>11</td>
+                        </tr>
+                        <tr>
+                            <td>12</td><td>13</td><td>14</td><td>15</td><td>16</td><td>17</td><td>18</td>
+                        </tr>
+                        <tr>
+                            <td>19</td><td>20</td><td>21</td><td>22</td><td>23</td><td>24</td><td>25</td>
+                        </tr>
+                        <tr>
+                            <td>26</td><td>27</td><td>28</td><td>29</td><td>30</td><td>31</td><td class="nil"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        includeHTML();
+    </script>
+</body>
+
+</html>
