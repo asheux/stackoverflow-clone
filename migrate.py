@@ -23,3 +23,7 @@ class Migration:
         Question.drop_all()
         User.drop_all()
         BlackList.drop_all()
+
+create = Migration()
+if __name__ == '__main__':
+    create.set_up()
