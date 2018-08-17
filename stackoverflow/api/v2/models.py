@@ -141,6 +141,25 @@ class Question(Question, DatabaseCollector):
         super().insert()
 
     @classmethod
+    def transform_for_search(cls):
+        v2_db.cursor.execute(
+            "SELECT title || '. ' || description as document, "
+            "to_tsvector(title || '. ' || description) as metadata "
+            "FROM questions"
+        )
+
+    @classmethod
+    def fts_search_query(cls, search_item):
+        v2_db.cursor.execute(
+            "SELECT * FROM questions "
+            "WHERE to_tsvector(title || '. ' || description) @@ "
+            "to_tsquery('{}')".format(search_item)
+        )
+        result = v2_db.cursor.fetchall()
+        items = [cls.to_json(item) for item in result]
+        return items
+
+    @classmethod
     def updatequestion(cls, answers, _id):
         v2_db.cursor.execute(
             "UPDATE questions SET answers = %s WHERE id = %s", (
