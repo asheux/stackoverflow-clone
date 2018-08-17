@@ -26,4 +26,4 @@ class Migration:
 
 create = Migration()
 if __name__ == '__main__':
-    create.set_up()
+    create.create_all()
