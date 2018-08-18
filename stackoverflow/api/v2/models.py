@@ -1,4 +1,5 @@
 from flask import json
+from psycopg2.extras import RealDictCursor
 from stackoverflow.api.v1.models import (
     MainModel,
     User,
@@ -40,6 +41,7 @@ class DatabaseCollector(MainModel):
             return item
         except Exception as e:
             print(e)
+            v2_db.connection.cursor(cursor_factory=RealDictCursor)
 
     @classmethod
     def get_by_field(cls, field, value):
@@ -52,6 +54,8 @@ class DatabaseCollector(MainModel):
             return item
         except Exception as e:
             print(e)
+            v2_db.connection.cursor(cursor_factory=RealDictCursor)
+
 
     @classmethod
     def get_one_by_field(cls, field, value):
@@ -70,6 +74,7 @@ class DatabaseCollector(MainModel):
             v2_db.connection.commit()
         except Exception as e:
             print(e)
+            v2_db.connection.cursor(cursor_factory=RealDictCursor)
 
     @classmethod
     def get_item_by_id(cls, _id):
@@ -82,6 +87,7 @@ class DatabaseCollector(MainModel):
             return cls.to_json(item)
         except Exception as e:
             print(e)
+            v2_db.connection.cursor(cursor_factory=RealDictCursor)
 
 class User(User, DatabaseCollector):
     __table__ = "users"
