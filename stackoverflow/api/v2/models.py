@@ -58,10 +58,12 @@ class User(User, DatabaseCollector):
 
     @classmethod
     def get_one_by_field(cls, field, value):
-        users = cls.get_by_field(field, value)
-        if len(users) == 0:
-            return None
-        return users[0]
+        """Get a user from the database by key or field"""
+        if cls.get_all() is None:
+            return []
+        for item in cls.get_all():
+            if item[key] == value:
+                return item
 
     @classmethod
     def migrate(cls):
@@ -121,10 +123,12 @@ class Question(Question, DatabaseCollector):
 
     @classmethod
     def get_one_by_field(cls, field, value):
-        questions = cls.get_by_field(field, value)
-        if len(questions) == 0:
-            return None
-        return questions[0]
+        """Get a user from the database by key or field"""
+        if cls.get_all() is None:
+            return []
+        for item in cls.get_all():
+            if item[key] == value:
+                return item
 
     @classmethod
     def delete(cls, _id):
@@ -243,10 +247,12 @@ class Answer(Answer, DatabaseCollector):
 
     @classmethod
     def get_one_by_field(cls, field, value):
-        answers = cls.get_by_field(field, value)
-        if len(answers) == 0:
-            return None
-        return answers[0]
+        """Get a user from the database by key or field"""
+        if cls.get_all() is None:
+            return []
+        for item in cls.get_all():
+            if item[key] == value:
+                return item
 
     @classmethod
     def migrate(cls):
