@@ -314,23 +314,24 @@ class BlackList(DatabaseCollector):
         self.blacklisted_on = blacklisted_on
 
     @classmethod
-    def get_by_field(cls, field, value):
-        """Get a user from the database by key or field"""
+    def get_all(cls):
+        """Get all questions from the database"""
         try:
-            query = "SELECT * FROM blacklist WHERE {} = %s".format(field)
-            v2_db.cursor.execute(query, (value,))
-            tokens = v2_db.cursor.fetchall()
-            token = [cls.to_json(item) for item in tokens]
-            return token
+            v2_db.cursor.execute("SELECT * FROM blacklist")
+            blacklists = v2_db.cursor.fetchall()
+            blacklist = [cls.to_json(token) for token in blacklists]
+            return blacklist
         except Exception as e:
             print(e)
 
     @classmethod
     def get_one_by_field(cls, field, value):
-        tokens = cls.get_by_field(field, value)
-        if len(tokens) == 0:
-            return None
-        return tokens[0]
+        """Get a user from the database by key or field"""
+        if cls.get_all() is None:
+            return []
+        for item in cls.get_all():
+            if item[key] == value:
+                return item
 
     @classmethod
     def migrate(cls):
