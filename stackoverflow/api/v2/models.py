@@ -30,17 +30,14 @@ class DatabaseCollector(MainModel):
             self.id = result['id']
         v2_db.connection.commit()
 
-class User(User, DatabaseCollector):
-    __table__ = "users"
-
     @classmethod
     def get_all(cls):
         """Get all the items in the database"""
         try:
-            v2_db.cursor.execute("SELECT * FROM users")
-            users = v2_db.cursor.fetchall()
-            user = [cls.to_json(item) for item in users]
-            return user
+            v2_db.cursor.execute("SELECT * FROM {}".format(cls.__table__))
+            items = v2_db.cursor.fetchall()
+            item = [cls.to_json(i) for i in items]
+            return item
         except Exception as e:
             print(e)
 
@@ -48,11 +45,11 @@ class User(User, DatabaseCollector):
     def get_by_field(cls, field, value):
         """Get a user from the database by key or field"""
         try:
-            query = "SELECT * FROM users WHERE {} = %s".format(field)
+            query = "SELECT * FROM users WHERE {} = %s".format(cls.__table__, field)
             v2_db.cursor.execute(query, (value,))
-            users = v2_db.cursor.fetchall()
-            user = [cls.to_json(item) for item in users]
-            return user
+            items = v2_db.cursor.fetchall()
+            item = [cls.to_json(i) for i in itemss]
+            return item
         except Exception as e:
             print(e)
 
@@ -64,6 +61,30 @@ class User(User, DatabaseCollector):
         for item in cls.get_all():
             if item[field] == value:
                 return item
+
+    @classmethod
+    def delete(cls, _id):
+        """deletes an item from the database"""
+        try:
+            v2_db.cursor.execute("DELETE FROM {} WHERE id = %s".format(cls.__table__), (_id,))
+            v2_db.connection.commit()
+        except Exception as e:
+            print(e)
+
+    @classmethod
+    def get_item_by_id(cls, _id):
+        """Retrieves an item by the id provided"""
+        try:
+            v2_db.cursor.execute("SELECT * FROM {} WHERE id = %s".format(cls.__table__), (_id,))
+            item = v2_db.cursor.fetchone()
+            if item is None:
+                return None
+            return cls.to_json(item)
+        except Exception as e:
+            print(e)
+
+class User(User, DatabaseCollector):
+    __table__ = "users"
 
     @classmethod
     def migrate(cls):
@@ -97,59 +118,6 @@ class User(User, DatabaseCollector):
 
 class Question(Question, DatabaseCollector):
     __table__ = "questions"
-
-    @classmethod
-    def get_all(cls):
-        """Get all questions from the database"""
-        try:
-            v2_db.cursor.execute("SELECT * FROM questions")
-            questions = v2_db.cursor.fetchall()
-            question = [cls.to_json(quiz) for quiz in questions]
-            return question
-        except Exception as e:
-            print(e)
-
-    @classmethod
-    def get_by_field(cls, field, value):
-        """Get a user from the database by key or field"""
-        try:
-            query = "SELECT * FROM questions WHERE {} = %s".format(field)
-            v2_db.cursor.execute(query, (value,))
-            questions = v2_db.cursor.fetchall()
-            question = [cls.to_json(item) for item in questions]
-            return question
-        except Exception as e:
-            print(e)
-
-    @classmethod
-    def get_one_by_field(cls, field, value):
-        """Get a user from the database by key or field"""
-        if cls.get_all() is None:
-            return []
-        for item in cls.get_all():
-            if item[field] == value:
-                return item
-
-    @classmethod
-    def delete(cls, _id):
-        """deletes an item from the database"""
-        try:
-            v2_db.cursor.execute("DELETE FROM questions WHERE id = %s", (_id,))
-            v2_db.connection.commit()
-        except Exception as e:
-            print(e)
-
-    @classmethod
-    def get_item_by_id(cls, _id):
-        """Retrieves an item by the id provided"""
-        try:
-            v2_db.cursor.execute("SELECT * FROM questions WHERE id = %s", (_id,))
-            question = v2_db.cursor.fetchone()
-            if question is None:
-                return None
-            return cls.to_json(question)
-        except Exception as e:
-            print(e)
 
     @classmethod
     def migrate(cls):
@@ -224,37 +192,6 @@ class Answer(Answer, DatabaseCollector):
     __table__ = "answers"
 
     @classmethod
-    def get_all(cls):
-        try:
-            v2_db.cursor.execute("SELECT * FROM answers")
-            answers = v2_db.cursor.fetchall()
-            answer = [cls.to_json(item) for item in answers]
-            return answer
-        except Exception as e:
-            print(e)
-
-    @classmethod
-    def get_by_field(cls, field, value):
-        """Get a user from the database by key or field"""
-        try:
-            query = "SELECT * FROM answers WHERE {} = %s".format(field)
-            v2_db.cursor.execute(query, (value,))
-            answers = v2_db.cursor.fetchall()
-            answer = [cls.to_json(item) for item in answers]
-            return answer
-        except Exception as e:
-            print(e)
-
-    @classmethod
-    def get_one_by_field(cls, field, value):
-        """Get a user from the database by key or field"""
-        if cls.get_all() is None:
-            return []
-        for item in cls.get_all():
-            if item[field] == value:
-                return item
-
-    @classmethod
     def migrate(cls):
         v2_db.cursor.execute(
             """
@@ -318,26 +255,6 @@ class BlackList(DatabaseCollector):
     def __init__(self, jti, blacklisted_on=datetime.now()):
         self.jti = jti
         self.blacklisted_on = blacklisted_on
-
-    @classmethod
-    def get_all(cls):
-        """Get all questions from the database"""
-        try:
-            v2_db.cursor.execute("SELECT * FROM blacklist")
-            blacklists = v2_db.cursor.fetchall()
-            blacklist = [cls.to_json(token) for token in blacklists]
-            return blacklist
-        except Exception as e:
-            print(e)
-
-    @classmethod
-    def get_one_by_field(cls, field, value):
-        """Get a user from the database by key or field"""
-        if cls.get_all() is None:
-            return []
-        for item in cls.get_all():
-            if item[field] == value:
-                return item
 
     @classmethod
     def migrate(cls):
