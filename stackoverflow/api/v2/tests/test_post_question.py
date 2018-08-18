@@ -145,6 +145,7 @@ class TestUserQuestions(BaseTestCase):
                 content_type='application/json'
             )
             response_data = json.loads(resp.data.decode())
+            print(response_data)
             self.assertTrue(response_data['status'] == 'success')
             self.assertTrue(response_data['message'] == 'Answer posted successfully')
             self.assertEqual(resp.status_code, 201)
