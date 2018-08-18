@@ -62,7 +62,7 @@ class User(User, DatabaseCollector):
         if cls.get_all() is None:
             return []
         for item in cls.get_all():
-            if item[key] == value:
+            if item[field] == value:
                 return item
 
     @classmethod
@@ -127,7 +127,7 @@ class Question(Question, DatabaseCollector):
         if cls.get_all() is None:
             return []
         for item in cls.get_all():
-            if item[key] == value:
+            if item[field] == value:
                 return item
 
     @classmethod
@@ -251,7 +251,7 @@ class Answer(Answer, DatabaseCollector):
         if cls.get_all() is None:
             return []
         for item in cls.get_all():
-            if item[key] == value:
+            if item[field] == value:
                 return item
 
     @classmethod
@@ -336,7 +336,7 @@ class BlackList(DatabaseCollector):
         if cls.get_all() is None:
             return []
         for item in cls.get_all():
-            if item[key] == value:
+            if item[field] == value:
                 return item
 
     @classmethod
