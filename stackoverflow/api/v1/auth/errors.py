@@ -6,12 +6,13 @@ def user_is_valid(data):
     """user error handling"""
     from .collections import store
 
+    resp = "The username you provided already exists"
+    body = store.get_by_field(key='username', value=data.get('username')) is not None
     errors = {}
     if store.get_by_field(key='email', value=data.get('email')) is not None:
         errors['email'] = "The email you provided is in use by another user"
-    if store.get_by_field(key='username', value=data.get('username')) is not None:
-        errors['username'] = "The username you provided already exists"
-
+    if body:
+        errors['username'] = resp
     return errors
 
 def answer_doesnt_exists(id):
