@@ -1,22 +1,24 @@
 from flask_restplus import fields
 from stackoverflow.api.restplus import api
 
-user_register = api.model('Register Model', {
-    'name': fields.String(required=True, default='Brian Mboya', description='User fullname'),
-    'username': fields.String(required=True, default='asheuh', description='Username'),
-    'email': fields.String(required=True, default='asheuh@gmail.com', description='The user\'s email address'),
-    'password': fields.String(required=True, default='mermaid', description='The users secret password'),
-})
+register_data = dict(
+    name=fields.String(required=True, default='Paulla Mboya', description='User fullname'),
+    username=fields.String(required=True, default='paulla', description='Username'),
+    email=fields.String(required=True, default='paulla@gmail.com', description='The user\'s email address'),
+    password=fields.String(required=True, default='barryazah', description='The users secret password'),
+)
+user_register = api.model('Register Model', register_data)
+login_data = dict(
+    username=fields.String(required=True, default='asheuh', description='Your username'),
+    password=fields.String(required=True, default='mermaid', description='Your password'),
+)
+user_login = api.model('Login Model', login_data)
 
-user_login = api.model('Login Model', {
-    'username': fields.String(required=True, default='asheuh', description='Your username'),
-    'password': fields.String(required=True, default='mermaid', description='Your password'),
-})
-
-questions = api.model('Question Model', {
-    'title': fields.String(required=True, default='Django restful api', description='Request name'),
-    'description': fields.String(required=True, default='How to write serializers?', description='question description')
-})
+questions_data = dict(
+    title=fields.String(required=True, default='Flask restful api', description='Question name'),
+    description=fields.String(required=True, default='How to build a restful api in flask?', description='the question description here')
+)
+questions = api.model('Question Model', questions_data)
 
 answers = api.model('Answer Model', {
     'answer': fields.String(required=True, default='create a dictionary of data', description='answer description')
