@@ -241,11 +241,10 @@ class AcceptAnswerResourceItem(Resource):
 
         for my_answer in answers:
             if my_answer['question'] != question_id:
-                response_obj = dict(
+                return dict(
                     status='fail',
                     message='The question with that id does not exist'
-                )
-                return response_obj, 404
+                ), 404
             elif my_answer['id'] != answer_id:
                 response = {
                     'status': 'error',
