@@ -117,8 +117,10 @@ class User(User, DatabaseCollector):
         v2_db.cursor.execute(
             "INSERT INTO users(name, username, email,"
             "password_hash, registered_on) VALUES(%s, %s, %s, %s, %s) RETURNING id", (
-                self.name, self.username,
-                self.email, self.password_hash,
+                self.name,
+                self.username,
+                self.email,
+                self.password_hash,
                 self.registered_on
             )
         )
