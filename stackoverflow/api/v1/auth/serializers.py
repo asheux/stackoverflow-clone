@@ -8,11 +8,6 @@ register_data = dict(
     password=fields.String(required=True, default='barryazah', description='The users secret password'),
 )
 user_register = api.model('Register Model', register_data)
-login_data = dict(
-    username=fields.String(required=True, default='asheuh', description='Your username'),
-    password=fields.String(required=True, default='mermaid', description='Your password'),
-)
-user_login = api.model('Login Model', login_data)
 
 questions_data = dict(
     title=fields.String(required=True, default='Flask restful api', description='Question name'),

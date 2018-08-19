@@ -1,14 +1,13 @@
 import logging
 from flask import request
-from flask_restplus import Resource
+from flask_restplus import Resource, fields
 from flask_jwt_extended import (
     jwt_required,
     get_jwt_identity,
     get_raw_jwt
 )
 from ..serializers import (
-    user_register,
-    user_login
+    user_register
 )
 from stackoverflow.api.restplus import api
 from ..collections import store
@@ -17,6 +16,12 @@ from ..authAPI import Auth
 log = logging.getLogger(__name__)
 ns_auth = api.namespace('auth', description='Authentication operations')
 ns = api.namespace('users', description='User operations')
+
+login_data = dict(
+    username=fields.String(required=True, default='asheuh', description='Your username'),
+    password=fields.String(required=True, default='mermaid', description='Your password'),
+)
+user_login = api.model('Login Model', login_data)
 
 @ns_auth.route('/register')
 class UsersCollection(Resource):
