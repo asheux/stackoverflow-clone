@@ -1,4 +1,5 @@
 from flask import json
+from psycopg2.extras import wait_select
 from stackoverflow.api.v1.models import (
     MainModel,
     User,
@@ -33,6 +34,7 @@ class DatabaseCollector(MainModel):
     @classmethod
     def get_all(cls):
         """Get all the items in the database"""
+        wait_select(v2_db.connection)
         try:
             v2_db.cursor.execute("SELECT * FROM {}".format(cls.__table__))
             items = v2_db.cursor.fetchall()
@@ -44,6 +46,7 @@ class DatabaseCollector(MainModel):
     @classmethod
     def get_by_field(cls, field, value):
         """Get a user from the database by key or field"""
+        wait_select(v2_db.connection)
         try:
             query = "SELECT * FROM users WHERE {} = %s".format(cls.__table__, field)
             v2_db.cursor.execute(query, (value,))
@@ -65,6 +68,7 @@ class DatabaseCollector(MainModel):
     @classmethod
     def delete(cls, _id):
         """deletes an item from the database"""
+        wait_select(v2_db.connection)
         try:
             v2_db.cursor.execute("DELETE FROM {} WHERE id = %s".format(cls.__table__), (_id,))
             v2_db.connection.commit()
@@ -74,6 +78,7 @@ class DatabaseCollector(MainModel):
     @classmethod
     def get_item_by_id(cls, _id):
         """Retrieves an item by the id provided"""
+        wait_select(v2_db.connection)
         try:
             v2_db.cursor.execute("SELECT * FROM {} WHERE id = %s".format(cls.__table__), (_id,))
             item = v2_db.cursor.fetchone()
@@ -152,6 +157,7 @@ class Question(Question, DatabaseCollector):
 
     @classmethod
     def transform_for_search(cls):
+        wait_select(v2_db.connection)
         try:
             v2_db.cursor.execute(
                 "SELECT title || '. ' || description as document, "
@@ -163,6 +169,7 @@ class Question(Question, DatabaseCollector):
 
     @classmethod
     def fts_search_query(cls, search_item):
+        wait_select(v2_db.connection)
         try:
             v2_db.cursor.execute(
                 "SELECT * FROM questions "
