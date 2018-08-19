@@ -1,9 +1,7 @@
 from flask import json
 from stackoverflow.api.v1.models import (
-    MainModel,
-    User,
-    Question,
-    Answer
+    MainModel, User,
+    Question, Answer
 )
 from datetime import datetime
 from stackoverflow import v2_db
@@ -26,17 +24,15 @@ class DatabaseCollector(MainModel):
     def insert(self):
         """Inserts a new item in the database"""
         result = v2_db.cursor.fetchone()
-        if result is not None:
-            self.id = result['id']
+        if result is not None:self.id = result['id']
         v2_db.connection.commit()
 
     @classmethod
     def get_all(cls):
         """Get all the items in the database"""
         try:
-            cur = v2_db.cursor
-            cur.execute("SELECT * FROM {}".format(cls.__table__))
-            items = cur.fetchall()
+            v2_db.cursor.execute("SELECT * FROM {}".format(cls.__table__))
+            items = v2_db.cursor.fetchall()
             item = [cls.to_json(i) for i in items]
             return item
             v2_db.connection.close()
@@ -47,10 +43,9 @@ class DatabaseCollector(MainModel):
     def get_by_field(cls, field, value):
         """Get a user from the database by key or field"""
         try:
-            cur1 = v2_db.cursor
             query = "SELECT * FROM users WHERE {} = %s".format(cls.__table__, field)
-            cur1.execute(query, (value,))
-            items = cur1.fetchall()
+            v2_db.cursor.execute(query, (value,))
+            items = v2_db.cursor.fetchall()
             item = [cls.to_json(i) for i in itemss]
             return item
             v2_db.connection.close()
@@ -60,8 +55,7 @@ class DatabaseCollector(MainModel):
     @classmethod
     def get_one_by_field(cls, field, value):
         """Get a user from the database by key or field"""
-        if cls.get_all() is None:
-            return []
+        if cls.get_all() is None:return []
         for item in cls.get_all():
             if item[field] == value:
                 return item
@@ -70,8 +64,7 @@ class DatabaseCollector(MainModel):
     def delete(cls, _id):
         """deletes an item from the database"""
         try:
-            cur2 = v2_db.cursor
-            cur2.execute("DELETE FROM {} WHERE id = %s".format(cls.__table__), (_id,))
+            v2_db.cursor.execute("DELETE FROM {} WHERE id = %s".format(cls.__table__), (_id,))
             v2_db.connection.commit()
         except Exception as e:
             print(e)
@@ -80,11 +73,9 @@ class DatabaseCollector(MainModel):
     def get_item_by_id(cls, _id):
         """Retrieves an item by the id provided"""
         try:
-            cur3 = v2_db.cursor
-            cur3.execute("SELECT * FROM {} WHERE id = %s".format(cls.__table__), (_id,))
-            item = cur3.fetchone()
-            if item is None:
-                return None
+            v2_db.cursor.execute("SELECT * FROM {} WHERE id = %s".format(cls.__table__), (_id,))
+            item = v2_db.cursor.fetchone()
+            if item is None:return None
             return cls.to_json(item)
             v2_db.connection.close()
         except Exception as e:
@@ -114,10 +105,8 @@ class User(User, DatabaseCollector):
         v2_db.cursor.execute(
             "INSERT INTO users(name, username, email,"
             "password_hash, registered_on) VALUES(%s, %s, %s, %s, %s) RETURNING id", (
-                self.name,
-                self.username,
-                self.email,
-                self.password_hash,
+                self.name, self.username,
+                self.email, self.password_hash,
                 self.registered_on
             )
         )
@@ -148,10 +137,8 @@ class Question(Question, DatabaseCollector):
         v2_db.cursor.execute(
             "INSERT INTO questions(title, description, created_by,"
             "answers, date_created) VALUES(%s, %s, %s, %s, %s) RETURNING id", (
-                self.title,
-                self.description,
-                self.created_by,
-                self.answers,
+                self.title, self.description,
+                self.created_by, self.answers,
                 self.date_created
             )
         )
@@ -187,8 +174,7 @@ class Question(Question, DatabaseCollector):
         try:
             v2_db.cursor.execute(
                 "UPDATE questions SET answers = %s WHERE id = %s", (
-                    answers,
-                    _id
+                    answers, _id
                 )
             )
             v2_db.connection.commit()
@@ -220,12 +206,9 @@ class Answer(Answer, DatabaseCollector):
         v2_db.cursor.execute(
             "INSERT INTO answers(answer, accepted, votes, owner,"
             "question, date_created) VALUES(%s, %s, %s, %s, %s, %s) RETURNING id", (
-                self.answer,
-                self.accepted,
-                self.votes,
-                self.owner,
-                self.question,
-                self.date_created
+                self.answer, self.accepted,
+                self.votes, self.owner,
+                self.question, self.date_created
             )
         )
         super().insert()
@@ -235,8 +218,7 @@ class Answer(Answer, DatabaseCollector):
         try:
             v2_db.cursor.execute(
                 "UPDATE answers SET accepted = %s WHERE id = %s", (
-                    accepted,
-                    _id
+                    accepted, _id
                 )
             )
             v2_db.connection.commit()
@@ -248,8 +230,7 @@ class Answer(Answer, DatabaseCollector):
         try:
             v2_db.cursor.execute(
                 "UPDATE answers SET votes = %s WHERE id = %s", (
-                    votes,
-                    _id
+                    votes, _id
                 )
             )
             v2_db.connection.commit()
@@ -280,8 +261,7 @@ class BlackList(DatabaseCollector):
         """save to the database"""
         v2_db.cursor.execute(
             "INSERT INTO blacklist(jti, blacklisted_on) VALUES(%s, %s) RETURNING id", (
-                self.jti,
-                self.blacklisted_on
+                self.jti, self.blacklisted_on
             )
         )
         v2_db.connection.commit()
