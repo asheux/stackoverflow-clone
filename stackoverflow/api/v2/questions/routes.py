@@ -239,27 +239,27 @@ class AcceptAnswerResourceItem(Resource):
             }
             return response, 404
 
-        for answer in answers:
-            if answer['question'] != question_id:
+        for my_answer in answers:
+            if my_answer['question'] != question_id:
                 response_obj = dict(
                     status='fail',
                     message='The question with that id does not exist'
                 )
                 return response_obj, 404
-            elif answer['id'] != answer_id:
+            elif my_answer['id'] != answer_id:
                 response = {
                     'status': 'error',
                     'message': 'Answer with the given id doesnt exists'
                 }
                 return response, 404
-            elif answer['accepted'] != False:
+            elif my_answer['accepted'] != False:
                 response = {
                     'status': 'fail',
                     'message': 'This answer has been accepted already'
                 }
                 return response, 403
-            answer['accepted'] = settings.ACCEPT
-            Answer.accepteandupdate(answer['accepted'], answer_id)
+            my_answer['accepted'] = settings.ACCEPT
+            Answer.accepteandupdate(my_answer['accepted'], answer_id)
             response = {
                 'status': 'success',
                 'message': 'Answer accepted'
