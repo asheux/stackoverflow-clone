@@ -21,6 +21,4 @@ DOWNVOTE = VOTES - 1
 DATABASE_URL = 'postgresql+psycopg2://pjvmdmcqfvaqgw:827f38aa834a1513d332505d119a804d06977472ba52797717628a98c05daf1c@ec2-54-235-242-63.compute-1.amazonaws.com:5432/dbdp9cg15rds46'
 
 # Jwt settings
-JWT_BLACKLIST_ENABLED = True
-JWT_BLACKLIST_TOKEN_CHECKS = ['access', 'refresh']
 JWT_SECRET_KEY = 'this aint your mama'
