@@ -240,30 +240,20 @@ class AcceptAnswerResourceItem(Resource):
             return response, 404
 
         for my_answer in answers:
-            if my_answer['question'] != question_id:
-                return dict(
-                    status='fail',
-                    message='The question with that id does not exist'
-                ), 404
-            elif my_answer['id'] != answer_id:
+            if my_answer['id'] == answer_id \
+                    and my_answer['question'] == question_id:
+                my_answer['accepted'] = settings.ACCEPT
+                Answer.accepteandupdate(my_answer['accepted'], answer_id)
                 response = {
-                    'status': 'error',
-                    'message': 'Answer with the given id doesnt exists'
+                    'status': 'success',
+                    'message': 'Answer accepted'
                 }
-                return response, 404
-            elif my_answer['accepted'] != False:
-                response = {
-                    'status': 'fail',
-                    'message': 'This answer has been accepted already'
-                }
-                return response, 403
-            my_answer['accepted'] = settings.ACCEPT
-            Answer.accepteandupdate(my_answer['accepted'], answer_id)
-            response = {
-                'status': 'success',
-                'message': 'Answer accepted'
+                return response, 200
+            response_obj = {
+                'status': 'fail',
+                'message': 'Could not perform action'
             }
-            return response, 200
+            return response_obj, 404
 @ns.route('/myquestions')
 class UserQuestions(Resource):
     @jwt_required # add jwt token based authentication
