@@ -241,11 +241,11 @@ class AcceptAnswerResourceItem(Resource):
 
         for answer in answers:
             if answer['question'] != question_id:
-                response = {
-                    'status': 'error',
-                    'message': 'Question with the provided id does not exist'
+                response_obj = {
+                    'status': 'fail',
+                    'message': 'The question with that id does not exist'
                 }
-                return response, 404
+                return response_obj, 404
             elif answer['id'] != answer_id:
                 response = {
                     'status': 'error',
