@@ -148,9 +148,11 @@ class Question(Question, DatabaseCollector):
 
     def insert(self):
         """save to the database"""
-        v2_db.cursor.execute(
-            "INSERT INTO questions(title, description, created_by,"
-            "answers, date_created) VALUES(%s, %s, %s, %s, %s) RETURNING id", (
+        query = """
+                INSERT INTO questions(title, description, created_by, answers, date_created)
+                VALUES(%s, %s, %s, %s, %s) RETURNING id
+                """
+        v2_db.cursor.execute(query, (
                 self.title, self.description,
                 self.created_by, self.answers,
                 self.date_created
