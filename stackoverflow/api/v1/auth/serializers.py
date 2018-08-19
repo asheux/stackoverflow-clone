@@ -9,9 +9,11 @@ register_data = dict(
 )
 user_register = api.model('Register Model', register_data)
 
+head = 'Flask restful app'
+desc = 'How to build a restful api in flask'
 questions_data = dict(
-    title=fields.String(required=True, default='Flask restful api', description='Question name'),
-    description=fields.String(required=True, default='How to build a restful api in flask?', description='the question description here')
+    title=fields.String(required=True, default=head, description='Question name'),
+    description=fields.String(required=True, default=desc, description='the question description here')
 )
 questions = api.model('Question Model', questions_data)
 
