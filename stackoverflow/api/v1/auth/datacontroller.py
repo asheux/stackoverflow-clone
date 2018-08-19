@@ -20,41 +20,29 @@ class UserStore:
 
     def create_user(self, data):
         """Creates a new user and adds the user in the database"""
-        name = data['name']
-        username = data['username']
-        email = data['email']
-        password = data['password']
         errors = user_is_valid(data)
-
-        if check_valid_email(email) is None:
+        if check_valid_email(data['email']) is None:
             response = {
                 'status': 'error',
-                'message': 'Not a valid email address, please try again'
-            }
+                'message': 'Not a valid email address, please try again'}
             return response, 403
-
         elif errors:
             response = {
                 'status': 'error',
-                'message': errors
-            }
+                'message': errors}
             return response, 401
         else:
-            user = User(name, username, email, password)
+            user = User(data['name'], data['username'], data['email'], data['password'])
             user.id = self.counter
             db[self.counter] = user.toJSON()
             self.counter += 1
-            access_token = create_access_token(username)
             response = {
                 'status': 'success',
                 'message': 'Successfully registered',
                 'data': user.toJSON(),
                 'Authorization': {
-                    'access_token': access_token
-                }
-            }
+                    'access_token': create_access_token(data['username'])}}
             return response, 201
-
 
     def get_item(self, id):
         """Gets a single user in the database by a given id"""
