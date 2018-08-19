@@ -56,8 +56,6 @@ def configure_app(flask_app):
     flask_app.config['RESTPLUS_MASK_SWAGGER'] = settings.RESTPLUS_MASK_SWAGGER
     flask_app.config['ERROR_404_HELP'] = settings.RESTPLUS_ERROR_404_HELP
     flask_app.config['JWT_SECRET_KEY'] = settings.JWT_SECRET_KEY
-    flask_app.config['JWT_BLACKLIST_ENABLED'] = settings.JWT_BLACKLIST_ENABLED
-    flask_app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = settings.JWT_BLACKLIST_TOKEN_CHECKS
     flask_app.config['TESTING'] = settings.TESTING
     flask_app.config['DATABASE_URL'] = settings.DATABASE_URL
 
