@@ -137,10 +137,8 @@ class AcceptAnswerResourceItem(Resource):
         if answers == []:
             response = {
                 'status': 'fail',
-                'message': 'There are no answers for this question'
-            }
+                'message': 'There are no answers for this question'}
             return response, 404
-
         for my_answer in answers:
             if my_answer['id'] == answer_id \
                     and my_answer['question'] == question_id:
@@ -148,13 +146,10 @@ class AcceptAnswerResourceItem(Resource):
                 Answer.update('accepted', my_answer['accepted'], answer_id)
                 response = {
                     'status': 'success',
-                    'message': 'Answer accepted'
-                }
+                    'message': 'Answer accepted'}
                 return response, 200
             response_obj = {
-                'status': 'fail',
-                'message': 'Could not perform action'
-            }
+                'message': 'Could not perform action'}
             return response_obj, 404
 @ns.route('/myquestions')
 class UserQuestions(Resource):
