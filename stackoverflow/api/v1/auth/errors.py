@@ -23,7 +23,8 @@ def answer_doesnt_exists(id):
 def question_doesnt_exists(id):
     """Checks if given id exists in the database"""
     if id not in questionsdb:
-        api.abort(404, "Question with id {} doesn't exist".format(id))
+        result = "Question with id {} doesn't exist".format(id)
+        api.abort(404, result)
 
 def check_valid_email(email):
     """Checks if the email provided is valid"""
