@@ -29,7 +29,7 @@ class UsersCollection(Resource):
     def post(self):
         """Creates a new user"""
         data = request.json
-        return store.create_user(data=data)
+        return store.create_user(result=data)
 
 @ns_auth.route('/login')
 class UserLoginResource(Resource):

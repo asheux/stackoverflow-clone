@@ -13,10 +13,11 @@ data =  {
     'password': fields.String(required=True, default='mermaid', description='Your password'),
 }
 user_login = v2_api.model('Login Model', data)
-
+default_head = 'Django restful api'
+desc_body = 'How to write serializers'
 questions = v2_api.model('Question Model', {
-    'title': fields.String(required=True, default='Django restful api', description='Request name'),
-    'description': fields.String(required=True, default='How to write serializers?', description='question description')
+    'title': fields.String(required=True, default=default_head, description='Request name'),
+    'description': fields.String(required=True, default=desc_body, description='question description')
 })
 
 answers = v2_api.model('Answer Model', {

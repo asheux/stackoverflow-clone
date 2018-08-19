@@ -18,10 +18,10 @@ class UserStore:
         """Initializes the counter id"""
         self.counter = 1
 
-    def create_user(self, data):
+    def create_user(self, result):
         """Creates a new user and adds the user in the database"""
-        errors = user_is_valid(data)
-        if check_valid_email(data['email']) is None:
+        errors = user_is_valid(result)
+        if check_valid_email(result['email']) is None:
             response = {
                 'status': 'error',
                 'message': 'Not a valid email address, please try again'}
@@ -32,7 +32,7 @@ class UserStore:
                 'message': errors}
             return response, 401
         else:
-            user = User(data['name'], data['username'], data['email'], data['password'])
+            user = User(result['name'], result['username'], result['email'], result['password'])
             user.id = self.counter
             db[self.counter] = user.toJSON()
             self.counter += 1
@@ -41,7 +41,7 @@ class UserStore:
                 'message': 'Successfully registered',
                 'data': user.toJSON(),
                 'Authorization': {
-                    'access_token': create_access_token(data['username'])}}
+                    'access_token': create_access_token(result['username'])}}
             return response, 201
 
     def get_item(self, id):
