@@ -37,8 +37,8 @@ class User(MainModel):
 
 class Question(MainModel):
     def __init__(self,
-        title,
-        description,
+        title=None,
+        description=None,
         created_by=None,
         answers=0,
         date_created=datetime.now()
@@ -53,7 +53,7 @@ class Question(MainModel):
 class Answer(MainModel):
     """The answer model"""
     def __init__(self,
-                 answer,
+                 answer=None,
                  accepted=PENDING,
                  votes=VOTES,
                  owner=None,

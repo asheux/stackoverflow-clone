@@ -18,10 +18,13 @@ class Migration:
     @staticmethod
     def drop_tables():
         """drops all the tables"""
-        Answer.drop_all()
-        Question.drop_all()
-        User.drop_all()
+        answer = Answer()
+        quiz = Question()
+        my_list = [answer, quiz]
+        for i in my_list:
+            i.drop_all()
         BlackList.drop_all()
+        User.drop_all()
 
 create = Migration()
 if __name__ == '__main__':
