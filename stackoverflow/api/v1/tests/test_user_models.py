@@ -6,8 +6,7 @@ class UserModelTestCase(unittest.TestCase):
     username = 'asheuh'
     email = 'asheuh@gmail.com'
     password = 'testing'
-    admin = False
-    obj = User(name, username, email, password, admin)
+    obj = User(name, username, email, password)
 
     def test_password_setter(self):
         self.assertTrue(self.obj.password_hash is not None)
@@ -17,5 +16,5 @@ class UserModelTestCase(unittest.TestCase):
         self.assertFalse(self.obj.verify_password('fuckoff'))
 
     def test_password_salts_are_random(self):
-        obj2 = User(self.name, self.username, self.email, self.password, self.admin)
+        obj2 = User(self.name, self.username, self.email, self.password)
         self.assertTrue(self.obj.password_hash != obj2.password_hash)

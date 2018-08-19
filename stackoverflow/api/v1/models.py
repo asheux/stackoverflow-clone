@@ -16,16 +16,14 @@ class MainModel:
 
 class User(MainModel):
     """Creates the user model"""
-    def __init__(self,
-        name, username, email, password,
-        registered_on=datetime.now().isoformat()):
+    def __init__(self, name, username, email, password):
         """Initializes the user model"""
 
         self.name = name
         self.username = username
         self.email = email
         self.set_password(password)
-        self.registered_on = registered_on
+        self.registered_on = datetime.now().isoformat()
 
     def set_password(self, password):
         """Sets the hashed password"""
@@ -36,36 +34,25 @@ class User(MainModel):
         return flask_bcrypt.check_password_hash(self.password_hash, password)
 
 class Question(MainModel):
-    def __init__(self,
-        title=None,
-        description=None,
-        created_by=None,
-        answers=0,
-        date_created=datetime.now()
-    ):
+    def __init__(self, title=None,
+        description=None, created_by=None, answers=0):
 
         self.title = title
         self.description = description
         self.created_by = created_by
         self.answers = answers
-        self.date_created = date_created
+        self.date_created = datetime.now()
 
 class Answer(MainModel):
     """The answer model"""
-    def __init__(self,
-                 answer=None,
-                 accepted=PENDING,
-                 votes=VOTES,
-                 owner=None,
-                 question=None,
-                 date_created=datetime.now()
-            ):
+    def __init__(self, answer=None, accepted=PENDING,
+                 votes=VOTES, owner=None, question=None):
         self.answer = answer
         self.accepted = accepted
         self.votes = votes
         self.owner = owner
         self.question = question
-        self.date_created = date_created
+        self.date_created = datetime.now()
 
 class BlackListToken(MainModel):
     """Creates the blacklisting model"""
