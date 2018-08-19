@@ -20,7 +20,10 @@ def question_doesnt_exists(id):
 def answer_doesnt_exists(id):
     """Checks if given id exists in the database"""
     if not Answer.get_one_by_field('id', value=id):
-        api.abort(404, "Answer with id {} doesn't exist or your provided an id that does not belong to you".format(id))
+        response_obj = {
+            'message': 'The answer with the given id does not exist'
+        }
+        return response_obj, 404
 
 def check_valid_email(email):
     """Checks if the email provided is valid"""
