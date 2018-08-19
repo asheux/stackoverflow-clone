@@ -1,5 +1,4 @@
 from flask import json
-from psycopg2.extras import wait_select
 from stackoverflow.api.v1.models import (
     MainModel,
     User,
@@ -34,25 +33,27 @@ class DatabaseCollector(MainModel):
     @classmethod
     def get_all(cls):
         """Get all the items in the database"""
-        wait_select(v2_db.connection)
         try:
-            v2_db.cursor.execute("SELECT * FROM {}".format(cls.__table__))
-            items = v2_db.cursor.fetchall()
+            cur = v2_db.cursor
+            cur.execute("SELECT * FROM {}".format(cls.__table__))
+            items = cur.fetchall()
             item = [cls.to_json(i) for i in items]
             return item
+            cur.close()
         except Exception as e:
             print(e)
 
     @classmethod
     def get_by_field(cls, field, value):
         """Get a user from the database by key or field"""
-        wait_select(v2_db.connection)
         try:
+            cur1 = v2_db.cursor
             query = "SELECT * FROM users WHERE {} = %s".format(cls.__table__, field)
-            v2_db.cursor.execute(query, (value,))
-            items = v2_db.cursor.fetchall()
+            cur1.execute(query, (value,))
+            items = cur1.fetchall()
             item = [cls.to_json(i) for i in itemss]
             return item
+            cur1.close()
         except Exception as e:
             print(e)
 
@@ -68,9 +69,9 @@ class DatabaseCollector(MainModel):
     @classmethod
     def delete(cls, _id):
         """deletes an item from the database"""
-        wait_select(v2_db.connection)
         try:
-            v2_db.cursor.execute("DELETE FROM {} WHERE id = %s".format(cls.__table__), (_id,))
+            cur2 = v2_db.cursor
+            cur2.execute("DELETE FROM {} WHERE id = %s".format(cls.__table__), (_id,))
             v2_db.connection.commit()
         except Exception as e:
             print(e)
@@ -78,13 +79,14 @@ class DatabaseCollector(MainModel):
     @classmethod
     def get_item_by_id(cls, _id):
         """Retrieves an item by the id provided"""
-        wait_select(v2_db.connection)
         try:
-            v2_db.cursor.execute("SELECT * FROM {} WHERE id = %s".format(cls.__table__), (_id,))
-            item = v2_db.cursor.fetchone()
+            cur3 = v2_db.cursor
+            cur3.execute("SELECT * FROM {} WHERE id = %s".format(cls.__table__), (_id,))
+            item = cur3.fetchone()
             if item is None:
                 return None
             return cls.to_json(item)
+            cur3.close()
         except Exception as e:
             print(e)
 
@@ -157,7 +159,6 @@ class Question(Question, DatabaseCollector):
 
     @classmethod
     def transform_for_search(cls):
-        wait_select(v2_db.connection)
         try:
             v2_db.cursor.execute(
                 "SELECT title || '. ' || description as document, "
@@ -169,7 +170,6 @@ class Question(Question, DatabaseCollector):
 
     @classmethod
     def fts_search_query(cls, search_item):
-        wait_select(v2_db.connection)
         try:
             v2_db.cursor.execute(
                 "SELECT * FROM questions "
