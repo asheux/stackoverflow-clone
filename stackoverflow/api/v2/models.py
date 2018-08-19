@@ -53,6 +53,18 @@ class DatabaseCollector(MainModel):
             print(e)
 
     @classmethod
+    def update(cls, field, item, _id):
+        try:
+            v2_db.cursor.execute(
+                "UPDATE {} SET {} = %s WHERE id = %s".format(cls.__table__, field), (
+                    item, _id
+                )
+            )
+            v2_db.connection.commit()
+        except Exception as e:
+            print(e)
+
+    @classmethod
     def get_one_by_field(cls, field, value):
         """Get a user from the database by key or field"""
         if cls.get_all() is None:return []
@@ -169,18 +181,6 @@ class Question(Question, DatabaseCollector):
         except Exception as e:
             print(e)
 
-    @classmethod
-    def updatequestion(cls, answers, _id):
-        try:
-            v2_db.cursor.execute(
-                "UPDATE questions SET answers = %s WHERE id = %s", (
-                    answers, _id
-                )
-            )
-            v2_db.connection.commit()
-        except Exception as e:
-            print(e)
-
 class Answer(Answer, DatabaseCollector):
     __table__ = "answers"
 
@@ -212,30 +212,6 @@ class Answer(Answer, DatabaseCollector):
             )
         )
         super().insert()
-
-    @classmethod
-    def accepteandupdate(cls, accepted, _id):
-        try:
-            v2_db.cursor.execute(
-                "UPDATE answers SET accepted = %s WHERE id = %s", (
-                    accepted, _id
-                )
-            )
-            v2_db.connection.commit()
-        except Exception as e:
-            print(e)
-
-    @classmethod
-    def voteandupdate(cls, votes, _id):
-        try:
-            v2_db.cursor.execute(
-                "UPDATE answers SET votes = %s WHERE id = %s", (
-                    votes, _id
-                )
-            )
-            v2_db.connection.commit()
-        except Exception as e:
-            print(e)
 
 class BlackList(DatabaseCollector):
     __table__ = "blacklist"

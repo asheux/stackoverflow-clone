@@ -40,7 +40,7 @@ class UserAnswerResource(Resource):
                     )
         answer.insert()
         question['answers'] += 1
-        Question.updatequestion(question['answers'], question_id)
+        Question.update('answers', question['answers'], question_id)
         response = {
             'status': 'success',
             'message': 'Answer posted successfully',
@@ -88,7 +88,7 @@ class UpvoteAnswerResourceItem(Resource):
             if answer['id'] == answer_id and \
                     answer['question'] == question_id:
                 answer['votes'] += 1
-                Answer.voteandupdate(answer['votes'], answer_id)
+                Answer.update('votes', answer['votes'], answer_id)
                 response = {
                     'status': 'success',
                     'message': 'You upvoted this answer, thanks for the feedback'
@@ -112,7 +112,7 @@ class DownvoteAnswerResourceItem(Resource):
             if answer['id'] == answer_id and \
                     answer['question'] == question_id:
                 answer['votes'] -= 1
-                Answer.voteandupdate(answer['votes'], answer_id)
+                Answer.update('votes', answer['votes'], answer_id)
                 response = {
                     'status': 'success',
                     'message': 'You down voted this answer, thanks for the feedback'
@@ -145,7 +145,7 @@ class AcceptAnswerResourceItem(Resource):
             if my_answer['id'] == answer_id \
                     and my_answer['question'] == question_id:
                 my_answer['accepted'] = settings.ACCEPT
-                Answer.accepteandupdate(my_answer['accepted'], answer_id)
+                Answer.update('accepted', my_answer['accepted'], answer_id)
                 response = {
                     'status': 'success',
                     'message': 'Answer accepted'
