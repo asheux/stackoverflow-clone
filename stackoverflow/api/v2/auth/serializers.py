@@ -8,10 +8,11 @@ user_register = v2_api.model('Register Model', {
     'password': fields.String(required=True, default='mermaid', description='The users secret password'),
 })
 
-user_login = v2_api.model('Login Model', {
+data =  {
     'username': fields.String(required=True, default='asheuh', description='Your username'),
     'password': fields.String(required=True, default='mermaid', description='Your password'),
-})
+}
+user_login = v2_api.model('Login Model', data)
 
 questions = v2_api.model('Question Model', {
     'title': fields.String(required=True, default='Django restful api', description='Request name'),
