@@ -6,6 +6,9 @@ setup(
     description='StackOverflow-lite platform API where people can ask questions and provide answers.',
     url='https://github.com/asheuh/StackOverflow-lite',
     author='Brian Mboya',
+    email='mboyabryan49@gmail.com',
+    license='MIT',
+    platform='Flask',
 
     classifiers=[
         'Development Status :: 5 - Production/Stable',

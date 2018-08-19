@@ -5,7 +5,7 @@ Summary: StackOverflow-lite platform API where people can ask questions and prov
 Home-page: https://github.com/asheuh/StackOverflow-lite
 Author: Brian Mboya
 Author-email: UNKNOWN
-License: UNKNOWN
+License: MIT
 Description: UNKNOWN
 Platform: UNKNOWN
 Classifier: Development Status :: 5 - Production/Stable
