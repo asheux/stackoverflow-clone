@@ -52,6 +52,7 @@ v2_api = Api(v2_blueprint, authorizations=authorizations, version='1.1', title='
 def configure_app(flask_app):
     from stackoverflow.api.v2.auth.routes.routes import ns as v2_user_namespace
     from stackoverflow.api.v2.questions.routes import ns as q_namespace
+    from stackoverflow.api.v2.questions.answer_routes import ns as q_namespace
     flask_app.config['SWAGGER_UI_DOC_EXPANSION'] = settings.RESTPLUS_SWAGGER_UI_DOC_EXPANSION
     flask_app.config['RESTPLUS_VALIDATE'] = settings.RESTPLUS_VALIDATE
     flask_app.config['RESTPLUS_MASK_SWAGGER'] = settings.RESTPLUS_MASK_SWAGGER
