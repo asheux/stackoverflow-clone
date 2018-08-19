@@ -74,15 +74,15 @@ def initialize_app(flask_app):
     v2_db.init_db(flask_app)
 
     @jwt.token_in_blacklist_loader
+    def check_token(token):
+        from stackoverflow.api.v2.models import BlackList
+        return BlackList.get_one_by_field(field='jti', value=token['jti']) is not None
+
+    @jwt.token_in_blacklist_loader
     def check_if_token_in_blacklist(decrypted_token):
         from stackoverflow.api.v1.models import BlackListToken
         jti = decrypted_token['jti']
         return BlackListToken.check_blacklist(jti)
-
-    @jwt.token_in_blacklist_loader
-    def check_token(token):
-        from stackoverflow.api.v2.models import BlackList
-        return BlackList.get_one_by_field(field='jti', value=token['jti']) is not None
 
 def create_app(config_name):
     app = Flask(__name__)
