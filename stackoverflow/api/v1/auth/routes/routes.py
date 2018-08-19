@@ -17,11 +17,9 @@ log = logging.getLogger(__name__)
 ns_auth = api.namespace('auth', description='Authentication operations')
 ns = api.namespace('users', description='User operations')
 
-login_data = dict(
-    username=fields.String(required=True, default='asheuh', description='Your username'),
-    password=fields.String(required=True, default='mermaid', description='Your password'),
-)
-user_login = api.model('Login Model', login_data)
+user_login = api.model('Login Model',
+    dict(username=fields.String(required=True, default='asheuh', description='Your username'),
+    password=fields.String(required=True, default='mermaid', description='Your password'),))
 
 @ns_auth.route('/register')
 class UsersCollection(Resource):
