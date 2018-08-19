@@ -32,7 +32,8 @@ class UserStore:
                 'message': errors}
             return response, 401
         else:
-            user = User(result['name'], result['username'], result['email'], result['password'])
+            username = result['username']
+            user = User(result['name'], username, result['email'], result['password'])
             user.id = self.counter
             db[self.counter] = user.toJSON()
             self.counter += 1

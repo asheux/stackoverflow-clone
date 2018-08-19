@@ -6,7 +6,7 @@
 
 StackOverflow-lite is a platform where people can ask questions and provide answers.
 
-* [Heroku live demo](https://stackoverflow-lite-heroku.herokuapp.com))
+* [Heroku live demo](https://stackoverflow-lite-heroku.herokuapp.com)
 
 #### Overview Homepage
 
