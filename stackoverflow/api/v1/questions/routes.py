@@ -146,31 +146,23 @@ class AcceptAnswerResourceItem(Resource):
                      if quiz['created_by']['username'] == get_jwt_identity()]
         answers = [answer for answer in allanswers.values()
                    if answer['question'] == answerstore.get_a_user_quiz(questions)['id']]
-
         for answer in answers:
             if answer['question'] != question_id:
                 response = {
-                    'status': 'error',
-                    'message': 'Question with the provided id does not exist'
-                }
+                    'message': 'Question with the provided id does not exist'}
                 return response, 404
             elif answer['id'] != answer_id:
                 response = {
-                    'status': 'error',
-                    'message': 'Answer with the given id doesnt exists'
-                }
+                    'message': 'Answer with the given id doesnt exists'}
                 return response, 404
             elif answer['accepted'] != False:
                 response = {
-                    'status': 'fail',
-                    'message': 'This answer has been accepted already'
-                }
+                    'message': 'This answer has been accepted already'}
                 return response, 403
             answer['accepted'] = settings.ACCEPT
             response = {
                 'status': 'success',
-                'message': 'Answer accepted'
-            }
+                'message': 'Answer accepted'}
             return response, 200
 
 @ns.route('/<int:question_id>/answers/<int:answer_id>/upvote')

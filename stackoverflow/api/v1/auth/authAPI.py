@@ -18,31 +18,23 @@ class Auth:
             if not user:
                 response = {
                     'status': 'fail',
-                    'message': 'The username you provided does not exist'
-                }
+                    'message': 'The username you provided does not exist'}
                 return response, 404
             elif not flask_bcrypt.check_password_hash(user['password_hash'], data.get('password')):
                 response = {
                     'status': 'fail',
-                    'message': 'The password you provided did not match the database password'
-                }
+                    'message': 'The password you provided did not match the database password'}
                 return response, 401
             else:
-                access_token = create_access_token(user['username'])
                 response = {
                     'status': 'success',
                     'message': 'Successfully logged in as {}'.format(user['name']),
                     'Authorization': {
-                        'access_token': access_token
-                    }
-                }
+                        'access_token': create_access_token(user['username'])}}
                 return response, 201
-
         except Exception as e:
             response = {
-                'status': 'fail',
-                'message': 'Could not login: {}, try again.'.format(e)
-            }
+                'message': 'Could not login: {}, try again.'.format(e)}
             return response, 500
 
     @staticmethod
