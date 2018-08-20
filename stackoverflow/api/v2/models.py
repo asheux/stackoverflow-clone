@@ -41,7 +41,6 @@ class DatabaseCollector(MainModel):
             items = v2_db.cursor.fetchall()
             item = [cls.to_json(i) for i in items]
             return item
-            v2_db.connection.close()
         except Exception as e:
             print(e)
 
@@ -54,7 +53,6 @@ class DatabaseCollector(MainModel):
             items = v2_db.cursor.fetchall()
             item = [cls.to_json(i) for i in items]
             return item
-            v2_db.connection.close()
         except Exception as e:
             print(e)
 
@@ -94,7 +92,6 @@ class DatabaseCollector(MainModel):
             item = v2_db.cursor.fetchone()
             if item is None:return None
             return cls.to_json(item)
-            v2_db.connection.close()
         except Exception as e:
             print(e)
 
