@@ -36,14 +36,11 @@ class DatabaseCollector(MainModel):
     @classmethod
     def get_all(cls):
         """Get all the items in the database"""
-        try:
-            v2_db.cursor.execute("SELECT * FROM {}".format(cls.__table__))
-            items = v2_db.cursor.fetchall()
-            item = [cls.to_json(i) for i in items]
-            print(item)
-            return item
-        except Exception as e:
-            v2_db.connection.rollback()
+        v2_db.cursor.execute("SELECT * FROM {}".format(cls.__table__))
+        items = v2_db.cursor.fetchall()
+        item = [cls.to_json(i) for i in items]
+        print(item)
+        return item
 
     @classmethod
     def get_by_field(cls, field, value):
