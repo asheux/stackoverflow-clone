@@ -18,14 +18,20 @@ class DatabaseCollector(MainModel):
     @classmethod
     def drop_all(cls):
         """Drops all the tables"""
-        v2_db.cursor.execute("DROP TABLE {}".format(cls.__table__))
-        v2_db.connection.commit()
+        try:
+            v2_db.cursor.execute("DROP TABLE {}".format(cls.__table__))
+            v2_db.connection.commit()
+        except Exception as e:
+            print(e)
 
     def insert(self):
         """Inserts a new item in the database"""
-        result = v2_db.cursor.fetchone()
-        if result is not None:self.id = result['id']
-        v2_db.connection.commit()
+        try:
+            result = v2_db.cursor.fetchone()
+            if result is not None:self.id = result['id']
+            v2_db.connection.commit()
+        except Exception as e:
+            print(e)
 
     @classmethod
     def get_all(cls):
@@ -46,7 +52,7 @@ class DatabaseCollector(MainModel):
             query = "SELECT * FROM users WHERE {} = %s".format(cls.__table__, field)
             v2_db.cursor.execute(query, (value,))
             items = v2_db.cursor.fetchall()
-            item = [cls.to_json(i) for i in itemss]
+            item = [cls.to_json(i) for i in items]
             return item
             v2_db.connection.close()
         except Exception as e:
@@ -71,7 +77,6 @@ class DatabaseCollector(MainModel):
         for item in cls.get_all():
             if item[field] == value:
                 return item
-
     @classmethod
     def delete(cls, _id):
         """deletes an item from the database"""
@@ -97,7 +102,7 @@ class User(User, DatabaseCollector):
     __table__ = "users"
 
     @classmethod
-    def migrate(cls):
+    def create_table(cls):
         v2_db.cursor.execute(
             """
             CREATE TABLE IF NOT EXISTS users(
@@ -129,8 +134,7 @@ class User(User, DatabaseCollector):
 class Question(Question, DatabaseCollector):
     __table__ = "questions"
 
-    @classmethod
-    def migrate(cls):
+    def create_table(self):
         v2_db.cursor.execute(
             """
             CREATE TABLE IF NOT EXISTS questions(
@@ -188,8 +192,7 @@ class Question(Question, DatabaseCollector):
 class Answer(Answer, DatabaseCollector):
     __table__ = "answers"
 
-    @classmethod
-    def migrate(cls):
+    def create_table(self):
         v2_db.cursor.execute(
             """
             CREATE TABLE IF NOT EXISTS answers(
@@ -225,7 +228,7 @@ class BlackList(DatabaseCollector):
         self.blacklisted_on = blacklisted_on
 
     @classmethod
-    def migrate(cls):
+    def create_table(cls):
         v2_db.cursor.execute(
             """
             CREATE TABLE IF NOT EXISTS blacklist(

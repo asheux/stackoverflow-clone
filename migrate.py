@@ -4,16 +4,18 @@ from stackoverflow.api.v2.models import (
     Question,
     Answer
 )
+question = Question()
+answer = Answer()
 
-class Migration:
+class DBMigration(object):
 
     @staticmethod
     def create_all():
         """Creates the tables"""
-        User.migrate()
-        Question.migrate()
-        Answer.migrate()
-        BlackList.migrate()
+        User.create_table()
+        question.create_table()
+        answer.create_table()
+        BlackList.create_table()
 
     @staticmethod
     def drop_tables():
@@ -26,6 +28,6 @@ class Migration:
         BlackList.drop_all()
         User.drop_all()
 
-create = Migration()
+create = DBMigration()
 if __name__ == '__main__':
     create.create_all()

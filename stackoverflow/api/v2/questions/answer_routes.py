@@ -34,6 +34,13 @@ class UserAnswerResource(Resource):
         data = request.json
         answer = data['answer']
         question = Question.get_item_by_id(question_id)
+        result = Answer.get_one_by_field('answer', data['answer'])
+
+        if result is not None:
+            response_obj = {
+                'message': 'Same answer exist already, please vote on it'
+            }
+            return response_obj, 503
         answer = Answer(answer,
                         owner=get_jwt_identity(),
                         question=question['id']
@@ -140,7 +147,12 @@ class AcceptAnswerResourceItem(Resource):
                 'message': 'There are no answers for this question'}
             return response, 404
         for my_answer in answers:
-            if my_answer['id'] == answer_id \
+            if my_answer['accepted'] != False:
+                response_obj = {
+                    'message': 'This answers has already been accepted'
+                }
+                return response_obj, 500
+            elif my_answer['id'] == answer_id \
                     and my_answer['question'] == question_id:
                 my_answer['accepted'] = settings.ACCEPT
                 Answer.update('accepted', my_answer['accepted'], answer_id)

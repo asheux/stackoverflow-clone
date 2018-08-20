@@ -1,8 +1,8 @@
 from stackoverflow import create_app
 from stackoverflow import settings
-from migrate import Migration
+from migrate import DBMigration
 
-migrate = Migration()
+migrate = DBMigration()
 app = create_app(settings.DEVELOPMENT)
 
 if __name__ == "__main__":

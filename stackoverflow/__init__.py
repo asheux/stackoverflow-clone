@@ -23,7 +23,7 @@ class Database:
 
     def init_db(self, app):
         self.app = app
-        self.url = urlparse(os.environ["DATABASE_URL"])
+        self.url = urlparse(settings.DATABASE_URL)
         self.connection = psycopg2.connect(
             dbname=self.url.path[1:],
             user=self.url.username,
