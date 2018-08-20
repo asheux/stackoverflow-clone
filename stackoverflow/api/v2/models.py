@@ -22,7 +22,7 @@ class DatabaseCollector(MainModel):
             v2_db.cursor.execute("DROP TABLE {}".format(cls.__table__))
             v2_db.connection.commit()
         except Exception as e:
-            print(e)
+            v2_db.connection.rollback()
 
     def insert(self):
         """Inserts a new item in the database"""
@@ -31,7 +31,7 @@ class DatabaseCollector(MainModel):
             if result is not None:self.id = result['id']
             v2_db.connection.commit()
         except Exception as e:
-            print(e)
+            v2_db.connection.rollback()
 
     @classmethod
     def get_all(cls):
@@ -42,7 +42,7 @@ class DatabaseCollector(MainModel):
             item = [cls.to_json(i) for i in items]
             return item
         except Exception as e:
-            print(e)
+            v2_db.connection.rollback()
 
     @classmethod
     def get_by_field(cls, field, value):
@@ -54,7 +54,7 @@ class DatabaseCollector(MainModel):
             item = [cls.to_json(i) for i in items]
             return item
         except Exception as e:
-            print(e)
+            v2_db.connection.rollback()
 
     @classmethod
     def update(cls, field, item, _id):
@@ -66,7 +66,7 @@ class DatabaseCollector(MainModel):
             )
             v2_db.connection.commit()
         except Exception as e:
-            print(e)
+            v2_db.connection.rollback()
 
     @classmethod
     def get_one_by_field(cls, field, value):
@@ -82,7 +82,7 @@ class DatabaseCollector(MainModel):
             v2_db.cursor.execute("DELETE FROM {} WHERE id = %s".format(cls.__table__), (_id,))
             v2_db.connection.commit()
         except Exception as e:
-            print(e)
+            v2_db.connection.rollback()
 
     @classmethod
     def get_item_by_id(cls, _id):
@@ -93,7 +93,7 @@ class DatabaseCollector(MainModel):
             if item is None:return None
             return cls.to_json(item)
         except Exception as e:
-            print(e)
+            v2_db.connection.rollback()
 
 class User(User, DatabaseCollector):
     __table__ = "users"
