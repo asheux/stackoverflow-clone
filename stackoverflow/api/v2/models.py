@@ -22,7 +22,7 @@ class DatabaseCollector(MainModel):
             v2_db.cursor.execute("DROP TABLE {}".format(cls.__table__))
             v2_db.connection.commit()
         except Exception as e:
-            v2_db.connection.rollback()
+            print(e)
 
     def insert(self):
         """Inserts a new item in the database"""
@@ -31,7 +31,7 @@ class DatabaseCollector(MainModel):
             if result is not None:self.id = result['id']
             v2_db.connection.commit()
         except Exception as e:
-            v2_db.connection.rollback()
+            print(e)
 
     @classmethod
     def get_all(cls):
@@ -66,7 +66,7 @@ class DatabaseCollector(MainModel):
             )
             v2_db.connection.commit()
         except Exception as e:
-            v2_db.connection.rollback()
+            print(e)
 
     @classmethod
     def get_one_by_field(cls, field, value):
@@ -82,7 +82,7 @@ class DatabaseCollector(MainModel):
             v2_db.cursor.execute("DELETE FROM {} WHERE id = %s".format(cls.__table__), (_id,))
             v2_db.connection.commit()
         except Exception as e:
-            v2_db.connection.rollback()
+            print(e)
 
     @classmethod
     def get_item_by_id(cls, _id):
