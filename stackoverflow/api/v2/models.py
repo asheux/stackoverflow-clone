@@ -40,6 +40,7 @@ class DatabaseCollector(MainModel):
             v2_db.cursor.execute("SELECT * FROM {}".format(cls.__table__))
             items = v2_db.cursor.fetchall()
             item = [cls.to_json(i) for i in items]
+            print(item)
             return item
         except Exception as e:
             v2_db.connection.rollback()
