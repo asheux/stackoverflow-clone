@@ -18,43 +18,32 @@ class UserStore:
         """Initializes the counter id"""
         self.counter = 1
 
-    def create_user(self, data):
+    def create_user(self, result):
         """Creates a new user and adds the user in the database"""
-        name = data['name']
-        username = data['username']
-        email = data['email']
-        password = data['password']
-        errors = user_is_valid(data)
-
-        if check_valid_email(email) is None:
+        errors = user_is_valid(result)
+        if check_valid_email(result['email']) is None:
             response = {
                 'status': 'error',
-                'message': 'Not a valid email address, please try again'
-            }
+                'message': 'Not a valid email address, please try again'}
             return response, 403
-
         elif errors:
             response = {
                 'status': 'error',
-                'message': errors
-            }
+                'message': errors}
             return response, 401
         else:
-            user = User(name, username, email, password)
+            username = result['username']
+            user = User(result['name'], username, result['email'], result['password'])
             user.id = self.counter
             db[self.counter] = user.toJSON()
             self.counter += 1
-            access_token = create_access_token(username)
             response = {
                 'status': 'success',
                 'message': 'Successfully registered',
                 'data': user.toJSON(),
                 'Authorization': {
-                    'access_token': access_token
-                }
-            }
+                    'access_token': create_access_token(result['username'])}}
             return response, 201
-
 
     def get_item(self, id):
         """Gets a single user in the database by a given id"""
@@ -132,13 +121,15 @@ class AnswerStore:
         questionstore = QuestionStore()
         answer = data['answer']
         question = questionstore.get_one(id)
+        question['answers'] += 1
         answer = Answer(answer,
                         owner=get_current_user(),
-                        question=question
+                        question=question['id']
                     )
         answer.id = self.index
         answersdb[self.index] = answer.toJSON()
         self.index += 1
+        question['answers'] += 1
 
         response = {
             'status': 'success',
@@ -150,6 +141,14 @@ class AnswerStore:
     def get_all(self):
         """Get all the answer to a question"""
         return answersdb
+
+    def get_by_field(self, key, value):
+        """Gets a user by a given field"""
+        if self.get_all() is None:
+            return {}
+        list_item = [item for item in self.get_all().values()
+                     if item[key] == value]
+        return list_item
 
     def get_one(self, id):
         """Gets a single answer to a question"""

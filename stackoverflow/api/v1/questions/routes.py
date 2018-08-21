@@ -6,20 +6,14 @@ from flask_jwt_extended import (
 )
 from ..auth.collections import questionstore, answerstore
 from ..auth.errors import (
-    question_doesnt_exists
+    question_doesnt_exists,
+    answer_doesnt_exists
 )
 from stackoverflow.api.restplus import api
-from ..auth.serializers import questions, Pagination, answers
-from ..auth.parsers import pagination_arguments
+from ..auth.serializers import questions, answers
 from stackoverflow import settings
 
 ns = api.namespace('questions', description='Questions operations')
-
-def answer_doesnt_exists(id):
-    from stackoverflow.database import answersdb
-    """return error if answer not in db"""
-    if id not in answersdb:
-        api.abort(404, "Answer with id {} doesn't exist".format(id))
 
 @ns.route('')
 class UserQuestionsResource(Resource):
@@ -38,12 +32,8 @@ class UserQuestionsResource(Resource):
     @api.response(200, 'success')
     def get(self):
         """get all questions in the platform"""
-        args = pagination_arguments.parse_args(strict=True)
-        page = args.get('page', 1)
-        per_page = args.get('per_page', 10)
         data = questionstore.get_all()
         questions = [quiz for quiz in data.values()]
-        paginate = Pagination(page, per_page, len(questions))
         if questions == []:
             response = {
                 'status': 'fail',
@@ -52,9 +42,7 @@ class UserQuestionsResource(Resource):
             return response, 404
         response = {
             'status': 'success',
-            "page": paginate.page,
-            "per_page": paginate.per_page,
-            "total": paginate.total_count,
+            "total": len(questions),
             'data': questions
         }
         return response, 200
@@ -109,8 +97,16 @@ class UserAnswerResource(Resource):
     @api.expect(answers)
     def post(self, question_id):
         """Post an answer to this particular question"""
-        data = request.json
         question_doesnt_exists(question_id)
+        data = request.json
+        result = answerstore.get_by_field(key='answer', value=data['answer'])
+        for i in result:
+            if i is not None and i['accepted'] == False:
+                response = {
+                    'status': 'fail',
+                    'message': 'This answer was provided and is not accepted yet, please react on it'
+                }
+                return response, 500
         return answerstore.post_answer(question_id, data)
 
     @jwt_required
@@ -119,14 +115,10 @@ class UserAnswerResource(Resource):
     def get(self, question_id):
         """get all answers for this particular question"""
         question_doesnt_exists(question_id)
-        args = pagination_arguments.parse_args(strict=True)
         question = questionstore.get_one(question_id)
-        page = args.get('page', 1)
-        per_page = args.get('per_page', 10)
         data = answerstore.get_all()
         answers = [answer for answer in data.values()
-                   if answer['question'] == question]
-        paginate = Pagination(page, per_page, len(answers))
+                   if answer['question'] == question_id]
         if answers == []:
             response = {
                 'message': 'There are no answers in the db for this question'
@@ -134,9 +126,7 @@ class UserAnswerResource(Resource):
             return response, 404
         response = {
             'status': 'success',
-            "page": paginate.page,
-            "per_page": paginate.per_page,
-            "total": paginate.total_count,
+            "total": len(answers),
             'data': answers
         }
         return response, 200
@@ -155,32 +145,24 @@ class AcceptAnswerResourceItem(Resource):
         questions = [quiz for quiz in allquiz.values()
                      if quiz['created_by']['username'] == get_jwt_identity()]
         answers = [answer for answer in allanswers.values()
-                   if answer['question'] == answerstore.get_a_user_quiz(questions)]
-
+                   if answer['question'] == answerstore.get_a_user_quiz(questions)['id']]
         for answer in answers:
-            if answer['question']['id'] != question_id:
+            if answer['question'] != question_id:
                 response = {
-                    'status': 'error',
-                    'message': 'Question with the provided id does not exist'
-                }
+                    'message': 'Question with the provided id does not exist'}
                 return response, 404
             elif answer['id'] != answer_id:
                 response = {
-                    'status': 'error',
-                    'message': 'Answer with the given id doesnt exists'
-                }
+                    'message': 'Answer with the given id doesnt exists'}
                 return response, 404
             elif answer['accepted'] != False:
                 response = {
-                    'status': 'fail',
-                    'message': 'This answer has been accepted already'
-                }
+                    'message': 'This answer has been accepted already'}
                 return response, 403
             answer['accepted'] = settings.ACCEPT
             response = {
                 'status': 'success',
-                'message': 'Answer accepted'
-            }
+                'message': 'Answer accepted'}
             return response, 200
 
 @ns.route('/<int:question_id>/answers/<int:answer_id>/upvote')
