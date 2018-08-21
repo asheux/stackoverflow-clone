@@ -32,7 +32,7 @@ class Database:
             port=self.url.port
         )
         self.cursor = self.connection.cursor(cursor_factory=RealDictCursor)
-        return self.cursor
+        self.connection.close()
 
 v2_db = Database()
 v2_blueprint = Blueprint('api_v2', __name__, url_prefix='/api/v2')
