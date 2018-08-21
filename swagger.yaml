@@ -1,0 +1,338 @@
+swagger: '2.0'
+basePath: /api/v2
+host: stackoverflow-lite-heroku.herokuapp.com
+schemes:
+  - https
+paths:
+  /auth/login:
+    post:
+      responses:
+        '201':
+          description: Login successful
+      summary: Logs in a user
+      operationId: login user
+      parameters:
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/Login Model'
+      tags:
+        - auth
+  /auth/logout_access:
+    post:
+      responses:
+        '201':
+          description: Logout successful
+      summary: Logout a user
+      operationId: logout user
+      tags:
+        - auth
+  /auth/register:
+    post:
+      responses:
+        '201':
+          description: User created successfully
+      summary: Creates a new user
+      operationId: post_users_collection
+      parameters:
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/Register Model'
+      tags:
+        - auth
+  /questions:
+    get:
+      responses:
+        '200':
+          description: success
+      summary: get all questions in the platform
+      operationId: Question resource
+      tags:
+        - questions
+    post:
+      responses:
+        '201':
+          description: Successfully created
+      summary: Post a new question
+      operationId: Question resource
+      parameters:
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/Question Model'
+      tags:
+        - questions
+  /questions/mostanswers:
+    get:
+      responses:
+        '200':
+          description: Success
+      summary: Get the question with the most answers
+      operationId: Question with most answers
+      tags:
+        - questions
+  /questions/myquestions:
+    get:
+      responses:
+        '200':
+          description: Success
+      summary: Get all questions for this user
+      operationId: All questions for user
+      tags:
+        - questions
+  '/questions/search/{search_item}':
+    parameters:
+      - name: search_item
+        in: path
+        required: true
+        type: string
+    get:
+      responses:
+        '200':
+          description: success
+      summary: Search question resource
+      operationId: Searching a question in the platform
+      tags:
+        - questions
+  '/questions/{question_id}':
+    parameters:
+      - name: question_id
+        in: path
+        required: true
+        type: integer
+    delete:
+      responses:
+        '200':
+          description: Successfully deleted
+        '404':
+          description: question with the given id not found
+      summary: Deletes a question with the given id
+      operationId: Delete question resource
+      tags:
+        - questions
+    get:
+      responses:
+        '200':
+          description: Success
+        '404':
+          description: question with the given id not found
+      summary: Get a question
+      operationId: Single question resource
+      tags:
+        - questions
+  '/questions/{question_id}/answers':
+    parameters:
+      - name: question_id
+        in: path
+        required: true
+        type: integer
+    get:
+      responses:
+        '200':
+          description: success
+        '404':
+          description: question with the given id not found
+      summary: Gets all the answers for this particular question
+      operationId: All answers for this question
+      tags:
+        - questions
+    post:
+      responses:
+        '200':
+          description: Success
+        '404':
+          description: question with the given id not found
+      summary: Post an answer to this particular question
+      operationId: Single question resource
+      parameters:
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/Answer Model'
+      tags:
+        - questions
+  '/questions/{question_id}/answers/{answer_id}/accept':
+    parameters:
+      - name: question_id
+        in: path
+        required: true
+        type: integer
+      - name: answer_id
+        in: path
+        required: true
+        type: integer
+    patch:
+      responses:
+        '200':
+          description: Success
+        '404':
+          description: answer with the given id not found
+      summary: This resource enables users accept an answer to their question
+      operationId: Single answer resource
+      tags:
+        - questions
+  '/questions/{question_id}/answers/{answer_id}/downvote':
+    parameters:
+      - name: question_id
+        in: path
+        required: true
+        type: integer
+      - name: answer_id
+        in: path
+        required: true
+        type: integer
+    patch:
+      responses:
+        '200':
+          description: Success
+        '404':
+          description: answer with the given id not found
+      summary: This resource enables users down vote an answer to a question
+      operationId: Single answer resource
+      tags:
+        - questions
+  '/questions/{question_id}/answers/{answer_id}/upvote':
+    parameters:
+      - name: question_id
+        in: path
+        required: true
+        type: integer
+      - name: answer_id
+        in: path
+        required: true
+        type: integer
+    patch:
+      responses:
+        '200':
+          description: Success
+        '404':
+          description: answer with the given id not found
+      summary: This resource enables users upvote an answer to a question
+      operationId: Single answer resource
+      tags:
+        - questions
+info:
+  title: V2 of stackoverflow-lite questions API
+  version: '1.1'
+  description: >-
+    This is an api for StackOverflow-lite platform where people can ask
+    questions and provide answers.
+
+
+    ##Exploring the demo.
+
+    Create a new user at the 'POST /auth/register' endpoint. Get the user access
+    token from the response.Click the authorize button and add the token in the
+    following format.
+
+
+    `Bearer (jwt-token without the brackets)`
+
+
+    ## Authorization token (using)
+
+    `Jwt-Extended`
+produces:
+  - application/json
+consumes:
+  - application/json
+securityDefinitions:
+  apikey:
+    type: apiKey
+    in: header
+    name: Authorization
+
+definitions:
+  Register Model:
+    required:
+      - email
+      - name
+      - password
+      - username
+    properties:
+      name:
+        type: string
+        description: User fullname
+        default: Brian Mboya
+      username:
+        type: string
+        description: Username
+        default: asheuh
+      email:
+        type: string
+        description: The user's email address
+        default: asheuh@gmail.com
+      password:
+        type: string
+        description: The users secret password
+        default: mermaid
+    type: object
+  Login Model:
+    required:
+      - password
+      - username
+    properties:
+      username:
+        type: string
+        description: Your username
+        default: asheuh
+      password:
+        type: string
+        description: Your password
+        default: mermaid
+    type: object
+  Question Model:
+    required:
+      - description
+      - title
+    properties:
+      title:
+        type: string
+        description: Request name
+        default: Django restful api
+      description:
+        type: string
+        description: question description
+        default: How to write serializers
+    type: object
+  Answer Model:
+    required:
+      - answer
+    properties:
+      answer:
+        type: string
+        description: answer description
+        default: create a dictionary of data
+    type: object
+responses:
+  ParseError:
+    description: When a mask can't be parsed
+  MaskError:
+    description: When any error occurs on mask
+  NoAuthorizationError:
+    description: When any error occurs on mask"
+  CSRFError:
+    description: When any error occurs on mask
+  ExpiredSignatureError:
+    description: When any error occurs on mask
+  InvalidHeaderError:
+    description: When any error occurs on mask
+  InvalidTokenError:
+    description: When any error occurs on mask
+  JWTDecodeError:
+    description: When any error occurs on mask
+  WrongTokenError:
+    description: When any error occurs on mask
+  RevokedTokenError:
+    description: When any error occurs on mask
+  FreshTokenRequired:
+    description: When any error occurs on mask
+  UserLoadError:
+    description: When any error occurs on mask
+  UserClaimsVerificationError:
+    description: When any error occurs on mask
