@@ -1,14 +1,17 @@
 from flask import json
+import psycopg2
+from psycopg2.extras import RealDictCursor
 from stackoverflow.api.v1.models import (
     MainModel, User,
     Question, Answer
 )
 from datetime import datetime
-from stackoverflow import v2_db
+from stackoverflow import database_config, settings
 
 class DatabaseCollector(MainModel):
     """This is the base model"""
     __table__ = ""
+    config = database_config(settings.DATABASE_URL)
 
     @classmethod
     def to_json(cls, item):
@@ -18,56 +21,58 @@ class DatabaseCollector(MainModel):
     @classmethod
     def drop_all(cls):
         """Drops all the tables"""
+        conn = psycopg2.connect(**cls.config)
+        cur = conn.cursor(cursor_factory=RealDictCursor)
         try:
-            v2_db.cursor.execute("DROP TABLE {}".format(cls.__table__))
-            v2_db.connection.commit()
+            cur.execute("DROP TABLE {}".format(cls.__table__))
+            conn.commit()
         except Exception as e:
             print(e)
-
-    def insert(self):
-        """Inserts a new item in the database"""
-        try:
-            result = v2_db.cursor.fetchone()
-            if result is not None:self.id = result['id']
-            v2_db.connection.commit()
-        except Exception as e:
-            print(e)
+        conn.close()
 
     @classmethod
     def get_all(cls):
         """Get all the items in the database"""
+        conn = psycopg2.connect(**cls.config)
+        cur = conn.cursor(cursor_factory=RealDictCursor)
         try:
-            v2_db.cursor.execute("SELECT * FROM {}".format(cls.__table__))
-            items = v2_db.cursor.fetchall()
+            cur.execute("SELECT * FROM {}".format(cls.__table__))
+            items = cur.fetchall()
             item = [cls.to_json(i) for i in items]
-            print(item)
-            return item
         except Exception as e:
-            v2_db.connection.rollback()
+            print(e)
+        conn.close()
+        return item
 
     @classmethod
     def get_by_field(cls, field, value):
         """Get a user from the database by key or field"""
+        conn = psycopg2.connect(**cls.config)
+        cur = conn.cursor(cursor_factory=RealDictCursor)
         try:
             query = "SELECT * FROM users WHERE {} = %s".format(cls.__table__, field)
-            v2_db.cursor.execute(query, (value,))
-            items = v2_db.cursor.fetchall()
+            cur.execute(query, (value,))
+            items = cur.fetchall()
             item = [cls.to_json(i) for i in items]
-            return item
         except Exception as e:
-            v2_db.connection.rollback()
+            print(e)
+        conn.close()
+        return item
 
     @classmethod
     def update(cls, field, item, _id):
+        conn = psycopg2.connect(**cls.config)
+        cur = conn.cursor(cursor_factory=RealDictCursor)
         try:
-            v2_db.cursor.execute(
+            cur.execute(
                 "UPDATE {} SET {} = %s WHERE id = %s".format(cls.__table__, field), (
                     item, _id
                 )
             )
-            v2_db.connection.commit()
+            conn.commit()
         except Exception as e:
             print(e)
+        conn.close()
 
     @classmethod
     def get_one_by_field(cls, field, value):
@@ -79,29 +84,38 @@ class DatabaseCollector(MainModel):
     @classmethod
     def delete(cls, _id):
         """deletes an item from the database"""
+        conn = psycopg2.connect(**cls.config)
+        cur = conn.cursor(cursor_factory=RealDictCursor)
         try:
-            v2_db.cursor.execute("DELETE FROM {} WHERE id = %s".format(cls.__table__), (_id,))
-            v2_db.connection.commit()
+            cur.execute("DELETE FROM {} WHERE id = %s".format(cls.__table__), (_id,))
+            conn.commit()
         except Exception as e:
             print(e)
+        conn.close()
 
     @classmethod
     def get_item_by_id(cls, _id):
         """Retrieves an item by the id provided"""
+        conn = psycopg2.connect(**cls.config)
+        cur = conn.cursor(cursor_factory=RealDictCursor)
         try:
-            v2_db.cursor.execute("SELECT * FROM {} WHERE id = %s".format(cls.__table__), (_id,))
-            item = v2_db.cursor.fetchone()
+            cur.execute("SELECT * FROM {} WHERE id = %s".format(cls.__table__), (_id,))
+            item = cur.fetchone()
             if item is None:return None
-            return cls.to_json(item)
         except Exception as e:
-            v2_db.connection.rollback()
+            print(e)
+        conn.close()
+        return cls.to_json(item)
 
 class User(User, DatabaseCollector):
     __table__ = "users"
+    config = database_config(settings.DATABASE_URL)
 
     @classmethod
     def create_table(cls):
-        v2_db.cursor.execute(
+        conn = psycopg2.connect(**cls.config)
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+        cur.execute(
             """
             CREATE TABLE IF NOT EXISTS users(
                 id serial PRIMARY KEY,
@@ -113,27 +127,40 @@ class User(User, DatabaseCollector):
             )
             """
         )
-        v2_db.connection.commit()
+        conn.commit()
 
     def insert(self):
         """save to the database"""
-        v2_db.cursor.execute(
-            "INSERT INTO users(name, username, email,"
-            "password_hash, registered_on) VALUES(%s, %s, %s, %s, %s) RETURNING id", (
-                self.name,
-                self.username,
-                self.email,
-                self.password_hash,
-                self.registered_on
+        conn = psycopg2.connect(**self.config)
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+        try:
+            cur.execute(
+                "INSERT INTO users(name, username, email,"
+                "password_hash, registered_on) VALUES(%s, %s, %s, %s, %s) RETURNING id", (
+                    self.name,
+                    self.username,
+                    self.email,
+                    self.password_hash,
+                    self.registered_on
+                )
             )
-        )
-        super().insert()
+            conn.commit()
+            result = cur.fetchone()
+            if result is not None:self.id = result['id']
+        except Exception as e:
+            print(e)
+        conn.close()
+        return result
 
 class Question(Question, DatabaseCollector):
     __table__ = "questions"
+    config = database_config(settings.DATABASE_URL)
 
-    def create_table(self):
-        v2_db.cursor.execute(
+    @classmethod
+    def create_table(cls):
+        conn = psycopg2.connect(**cls.config)
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+        cur.execute(
             """
             CREATE TABLE IF NOT EXISTS questions(
                 id serial PRIMARY KEY,
@@ -146,52 +173,71 @@ class Question(Question, DatabaseCollector):
             )
             """
         )
-        v2_db.connection.commit()
+        conn.commit()
 
     def insert(self):
         """save to the database"""
-        query = """
-                INSERT INTO questions(title, description, created_by, answers, date_created)
-                VALUES(%s, %s, %s, %s, %s) RETURNING id
-                """
-        v2_db.cursor.execute(query, (
-                self.title, self.description,
-                self.created_by, self.answers,
-                self.date_created
+        conn = psycopg2.connect(**self.config)
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+        try:
+            query = """
+                    INSERT INTO questions(title, description, created_by, answers, date_created)
+                    VALUES(%s, %s, %s, %s, %s) RETURNING id
+                    """
+            cur.execute(query, (
+                    self.title, self.description,
+                    self.created_by, self.answers,
+                    self.date_created
+                )
             )
-        )
-        super().insert()
+            conn.commit()
+            result = cur.fetchone()
+            if result is not None:self.id = result['id']
+        except Exception as e:
+            print(e)
+        conn.close()
+        return result
 
     @classmethod
     def transform_for_search(cls):
+        conn = psycopg2.connect(**cls.config)
+        cur = conn.cursor(cursor_factory=RealDictCursor)
         try:
-            v2_db.cursor.execute(
+            cur.execute(
                 "SELECT title || '. ' || description as document, "
                 "to_tsvector(title || '. ' || description) as metadata "
                 "FROM questions"
             )
         except Exception as e:
             print(e)
+        conn.close()
 
     @classmethod
     def fts_search_query(cls, search_item):
+        conn = psycopg2.connect(**cls.config)
+        cur = conn.cursor(cursor_factory=RealDictCursor)
         try:
-            v2_db.cursor.execute(
+            cur.execute(
                 "SELECT * FROM questions "
                 "WHERE to_tsvector(title || '. ' || description) @@ "
                 "to_tsquery('{}')".format(search_item)
             )
-            result = v2_db.cursor.fetchall()
+            result = cur.fetchall()
             items = [cls.to_json(item) for item in result]
-            return items
         except Exception as e:
             print(e)
+        conn.close()
+        return items
 
 class Answer(Answer, DatabaseCollector):
     __table__ = "answers"
+    config = database_config(settings.DATABASE_URL)
 
-    def create_table(self):
-        v2_db.cursor.execute(
+    @classmethod
+    def create_table(cls):
+        conn = psycopg2.connect(**cls.config)
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+        cur.execute(
             """
             CREATE TABLE IF NOT EXISTS answers(
                 id serial PRIMARY KEY,
@@ -204,19 +250,29 @@ class Answer(Answer, DatabaseCollector):
             )
             """
         )
-        v2_db.connection.commit()
+        conn.commit()
+        conn.close()
 
     def insert(self):
         """save to the database"""
-        v2_db.cursor.execute(
-            "INSERT INTO answers(answer, accepted, votes, owner,"
-            "question, date_created) VALUES(%s, %s, %s, %s, %s, %s) RETURNING id", (
-                self.answer, self.accepted,
-                self.votes, self.owner,
-                self.question, self.date_created
+        conn = psycopg2.connect(**self.config)
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+        try:
+            cur.execute(
+                "INSERT INTO answers(answer, accepted, votes, owner,"
+                "question, date_created) VALUES(%s, %s, %s, %s, %s, %s) RETURNING id", (
+                    self.answer, self.accepted,
+                    self.votes, self.owner,
+                    self.question, self.date_created
+                )
             )
-        )
-        super().insert()
+            conn.commit()
+            result = cur.fetchone()
+            if result is not None:self.id = result['id']
+        except Exception as e:
+            print(e)
+        conn.close()
+        return result
 
 class BlackList(DatabaseCollector):
     __table__ = "blacklist"
@@ -224,10 +280,13 @@ class BlackList(DatabaseCollector):
     def __init__(self, jti, blacklisted_on=datetime.now()):
         self.jti = jti
         self.blacklisted_on = blacklisted_on
+        self.config = database_config(settings.DATABASE_URL)
 
     @classmethod
     def create_table(cls):
-        v2_db.cursor.execute(
+        conn = psycopg2.connect(**cls.config)
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+        cur.execute(
             """
             CREATE TABLE IF NOT EXISTS blacklist(
                 id serial PRIMARY KEY,
@@ -236,13 +295,19 @@ class BlackList(DatabaseCollector):
             )
             """
         )
-        v2_db.connection.commit()
+        conn.commit()
 
     def insert(self):
         """save to the database"""
-        v2_db.cursor.execute(
-            "INSERT INTO blacklist(jti, blacklisted_on) VALUES(%s, %s) RETURNING id", (
-                self.jti, self.blacklisted_on
+        conn = psycopg2.connect(**self.config)
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+        try:
+            cur.execute(
+                "INSERT INTO blacklist(jti, blacklisted_on) VALUES(%s, %s) RETURNING id", (
+                    self.jti, self.blacklisted_on
+                )
             )
-        )
-        v2_db.connection.commit()
+            conn.commit()
+        except Exception as e:
+            print(e)
+        conn.close()

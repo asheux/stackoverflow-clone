@@ -11,7 +11,7 @@ class TestUserQuestions(BaseTestCase):
                     name='Brian Mboya',
                     email='asheuh@gmail.com',
                     username='asheuh',
-                    password='mermaid'
+                    password='Mermaid12'
                 )),
                 content_type='application/json'
             )
@@ -41,7 +41,7 @@ class TestUserQuestions(BaseTestCase):
                     name='Brian Mboya',
                     email='asheuh@gmail.com',
                     username='asheuh',
-                    password='mermaid'
+                    password='Mermaid12'
                 )),
                 content_type='application/json'
             )
@@ -78,7 +78,7 @@ class TestUserQuestions(BaseTestCase):
                     name='Brian Mboya',
                     email='asheuh@gmail.com',
                     username='asheuh',
-                    password='mermaid'
+                    password='Mermaid12'
                 )),
                 content_type='application/json'
             )
@@ -115,7 +115,7 @@ class TestUserQuestions(BaseTestCase):
                     name='Brian Mboya',
                     email='asheuh@gmail.com',
                     username='asheuh',
-                    password='mermaid'
+                    password='Mermaid12'
                 )),
                 content_type='application/json'
             )
@@ -158,7 +158,7 @@ class TestUserQuestions(BaseTestCase):
                     name='Ivy Mboya',
                     email='ivy@gmail.com',
                     username='ivy',
-                    password='mermaid'
+                    password='Mermaid12'
                 )),
                 content_type='application/json'
             )
@@ -195,7 +195,7 @@ class TestUserQuestions(BaseTestCase):
                     name='Ivy Mboya',
                     email='ivy@gmail.com',
                     username='ivy',
-                    password='mermaid'
+                    password='Mermaid12'
                 )),
                 content_type='application/json'
             )
@@ -245,7 +245,7 @@ class TestUserQuestions(BaseTestCase):
                     name='Ivy Mboya',
                     email='ivy@gmail.com',
                     username='ivy',
-                    password='mermaid'
+                    password='Mermaid12'
                 )),
                 content_type='application/json'
             )
@@ -295,7 +295,7 @@ class TestUserQuestions(BaseTestCase):
                     name='Ivy Mboya',
                     email='ivy@gmail.com',
                     username='ivy',
-                    password='mermaid'
+                    password='Mermaid12'
                 )),
                 content_type='application/json'
             )
@@ -349,7 +349,7 @@ class TestUserQuestions(BaseTestCase):
                     name='Brian Mboya',
                     email='asheuh@gmail.com',
                     username='asheuh',
-                    password='mermaid'
+                    password='Mermaid12'
                 )),
                 content_type='application/json'
             )
@@ -386,7 +386,7 @@ class TestUserQuestions(BaseTestCase):
                     name='Ivy Mboya',
                     email='ivy@gmail.com',
                     username='ivy',
-                    password='mermaid'
+                    password='Mermaid12'
                 )),
                 content_type='application/json'
             )
@@ -435,7 +435,7 @@ class TestUserQuestions(BaseTestCase):
                     name='Ivy Mboya',
                     email='ivy@gmail.com',
                     username='ivy',
-                    password='mermaid'
+                    password='Mermaid12'
                 )),
                 content_type='application/json'
             )
@@ -473,7 +473,7 @@ class TestUserQuestions(BaseTestCase):
                     name='Ivy Mboya',
                     email='ivy@gmail.com',
                     username='ivy',
-                    password='mermaid'
+                    password='Mermaid12'
                 )),
                 content_type='application/json'
             )
@@ -522,7 +522,7 @@ class TestUserQuestions(BaseTestCase):
                     name='Ivy Mboya',
                     email='ivy@gmail.com',
                     username='ivy',
-                    password='mermaid'
+                    password='Mermaid12'
                 )),
                 content_type='application/json'
             )
@@ -547,7 +547,7 @@ class TestUserQuestions(BaseTestCase):
                     name='Ivy Mboya',
                     email='ivy@gmail.com',
                     username='ivy',
-                    password='mermaid'
+                    password='Mermaid12'
                 )),
                 content_type='application/json'
             )
@@ -585,7 +585,7 @@ class TestUserQuestions(BaseTestCase):
                     name='Ivy Mboya',
                     email='ivy@gmail.com',
                     username='ivy',
-                    password='mermaid'
+                    password='Mermaid12'
                 )),
                 content_type='application/json'
             )

@@ -11,7 +11,7 @@ class TestUserRegister(BaseTestCase):
                     name='Paulla Mboya',
                     email='paulla@gmail.com',
                     username='paulla',
-                    password='mermaid'
+                    password='Mermaid12'
                 )),
                 content_type='application/json'
             )
@@ -30,7 +30,7 @@ class TestUserRegister(BaseTestCase):
                     name='Paulla Mboya',
                     email='paullagmail.com',
                     username='paulla',
-                    password='mermaid'
+                    password='Mermaid12'
                 )),
                 content_type='application/json'
             )
@@ -47,7 +47,7 @@ class TestUserRegister(BaseTestCase):
                     name='Paulla Mboya',
                     email='paulla@gmail.com',
                     username='paulla',
-                    password='mermaid'
+                    password='Mermaid12'
                 )),
                 content_type='application/json'
             )
@@ -57,7 +57,7 @@ class TestUserRegister(BaseTestCase):
                     name='Paulla Mboya',
                     email='paulla@gmail.com',
                     username='paulla',
-                    password='mermaid'
+                    password='Mermaid12'
                 )),
                 content_type='application/json'
             )

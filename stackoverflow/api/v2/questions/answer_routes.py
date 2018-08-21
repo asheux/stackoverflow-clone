@@ -135,12 +135,15 @@ class AcceptAnswerResourceItem(Resource):
     @v2_api.response(200, 'Success')
     def patch(self, answer_id, question_id):
         """This resource enables users accept an answer to their question"""
+        answer_doesnt_exists(answer_id)
+        question_doesnt_exists(question_id)
         allquiz = Question.get_all()
         allanswers = Answer.get_all()
         questions = [quiz for quiz in allquiz
                      if quiz['created_by'] == get_jwt_identity()]
         answers = [answer for answer in allanswers
                    if answer['question'] == answer_dict(questions)['id']]
+        print(answers)
         if answers == []:
             response = {
                 'status': 'fail',

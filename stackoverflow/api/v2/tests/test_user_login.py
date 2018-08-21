@@ -10,7 +10,7 @@ class TestUserLogin(BaseTestCase):
                     name='Stacy Mboya',
                     email='stacy@gmail.com',
                     username='stacy',
-                    password='mermaid'
+                    password='Mermaid12'
                 )),
                 content_type='application/json'
             )
@@ -18,7 +18,7 @@ class TestUserLogin(BaseTestCase):
                 '/api/v2/auth/login',
                 data=json.dumps(dict(
                     username='stacy',
-                    password='mermaid'
+                    password='Mermaid12'
                 )),
                 content_type='application/json'
             )
@@ -35,7 +35,7 @@ class TestUserLogin(BaseTestCase):
                 '/api/v2/auth/login',
                 data=json.dumps(dict(
                     username='chessi',
-                    password='mermaid'
+                    password='Mermaid12'
                 )),
                 content_type='application/json'
             )
@@ -53,7 +53,7 @@ class TestUserLogin(BaseTestCase):
                     name='Stacy Mboya',
                     email='stacy@gmail.com',
                     username='stacy',
-                    password='mermaid'
+                    password='Mermaid12'
                 )),
                 content_type='application/json'
             )

@@ -16,6 +16,20 @@ def user_is_valid(data):
 
     return errors
 
+def validate_str_field(string):
+    if not re.match("^[ A-Za-z0-9_-]*$", string):
+        return {"message": "Invalid data for username"}, 400
+    return None
+
+def validate_password(string):
+    if not re.match(r'(?=.*?[0-9])(?=.*?[A-Z])(?=.*?[a-z]).{6}', string):
+        return {"message": " Password rule: 1 digit, 1 caps, 1 number and minimum of 6 chars"}, 400
+
+def validate_username(string):
+    if not re.match("^[A-Za-z0-9_-]*$", string):
+        return {"message": "Name should only contain letters, numbers, underscores and dashes"}, 400
+    return None
+
 def question_doesnt_exists(id):
     """Checks if given id exists in the database"""
     if not Question.get_one_by_field('id', value=id):

@@ -12,7 +12,13 @@ from stackoverflow.api.v2.auth.serializers import (
     user_register,
     user_login
 )
-from ..errors import check_valid_email, user_is_valid
+from ..errors import (
+    check_valid_email,
+    user_is_valid,
+    validate_username,
+    validate_str_field,
+    validate_password
+)
 from stackoverflow.api.v2.models import User, BlackList
 
 flask_bcrypt = Bcrypt()
@@ -34,6 +40,12 @@ class UsersCollection(Resource):
                 'status': 'error',
                 'message': 'Not a valid email address, please try again'}
             return response, 403
+        if validate_username(data['username']):
+            return validate_username(data['username'])
+        if validate_str_field(data['name']):
+            return validate_str_field(data['name'])
+        if validate_password(data['password']):
+            return validate_password(data['password'])
         elif errors:
             response = {
                 'status': 'error',

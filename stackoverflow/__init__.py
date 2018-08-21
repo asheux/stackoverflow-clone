@@ -16,25 +16,33 @@ logging_conf_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..
 logging.config.fileConfig(logging_conf_path)
 log = logging.getLogger(__name__)
 
-class Database:
-    connection = None
-    cursor = None
-    app = None
+def database_config(db_url):
+    """This creates the database configuration"""
+    url = urlparse(db_url)
 
-    def init_db(self, app):
-        self.app = app
-        self.url = urlparse(settings.DATABASE_URL)
-        self.connection = psycopg2.connect(
-            dbname=self.url.path[1:],
-            user=self.url.username,
-            password=self.url.password,
-            host=self.url.hostname,
-            port=self.url.port
-        )
+    if os.environ.get('DATABASE_URL'):
+        database_uri = os.environ.get('DATABASE_URL')
+
+    config = dict(
+        dbname=url.path[1:],
+        user=url.username,
+        password=url.password,
+        host=url.hostname,
+        port=url.port
+    )
+    return config
+
+
+class Database:
+    def __init__(self, conf):
+        self.config = database_config(conf)
+
+    def init_db(self):
+        self.connection = psycopg2.connect(**self.config)
         self.cursor = self.connection.cursor(cursor_factory=RealDictCursor)
         self.connection.close()
 
-v2_db = Database()
+v2_db = Database(settings.DATABASE_URL)
 v2_blueprint = Blueprint('api_v2', __name__, url_prefix='/api/v2')
 v2_api = Api(v2_blueprint, authorizations=authorizations, version='1.1', title='V2 of stackoverflow-lite questions API',
              description=(
@@ -72,7 +80,7 @@ def initialize_app(flask_app):
     flask_app.register_blueprint(index_blueprint)
     flask_app.register_blueprint(v2_blueprint)
     flask_app.register_blueprint(blueprint)
-    v2_db.init_db(flask_app)
+    v2_db.init_db()
 
     @jwt.token_in_blacklist_loader
     def check_token(token):

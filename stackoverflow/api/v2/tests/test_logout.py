@@ -10,7 +10,7 @@ class TestLogout(BaseTestCase):
                     name='Avril Mboya',
                     email='avril@gmail.com',
                     username='avril',
-                    password='mermaid'
+                    password='Mermaid12'
                 )),
                 content_type='application/json'
             )
