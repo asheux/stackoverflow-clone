@@ -1,5 +1,8 @@
 swagger: '2.0'
 basePath: /api/v2
+host: stackoverflow-lite-heroku.herokuapp.com
+schemes:
+  - https
 paths:
   /auth/login:
     post:
