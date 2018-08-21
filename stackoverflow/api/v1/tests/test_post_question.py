@@ -3,6 +3,7 @@ from .base_test import BaseTestCase
 from stackoverflow import settings
 
 class TestUserQuestions(BaseTestCase):
+
     def test_post_question(self):
         with self.client:
             resp_register = self.client.post(
@@ -33,6 +34,42 @@ class TestUserQuestions(BaseTestCase):
             self.assertTrue(response_data['message'] == 'Question posted successfully')
             self.assertEqual(response.status_code, 201)
 
+    def test_user_retrieves_one_question(self):
+        with self.client:
+            resp_login = self.client.post(
+                '/api/v1/auth/login',
+                data=json.dumps(dict(
+                    username='asheuh',
+                    password='mermaid'
+                )),
+                content_type='application/json'
+            )
+            response = self.client.post(
+                '/api/v1/questions',
+                headers=dict(
+                    Authorization='Bearer ' + json.loads(
+                        resp_login.data.decode()
+                    )['Authorization']['access_token']
+                ),
+                data=json.dumps(dict(
+                    title='Gjango cli',
+                    description='How to create cli project in django?'
+                )),
+                content_type='application/json'
+            )
+            resp = self.client.get(
+                '/api/v1/questions/3',
+                headers=dict(
+                    Authorization='Bearer ' + json.loads(
+                        resp_login.data.decode()
+                    )['Authorization']['access_token']
+                )
+            )
+            response_data = json.loads(resp.data.decode())
+            self.assertTrue(response_data['status'] == 'success')
+            self.assertEqual(resp.status_code, 200)
+
+
     def test_user_retrieves_all_questions(self):
         with self.client:
             resp_login = self.client.post(
@@ -55,7 +92,7 @@ class TestUserQuestions(BaseTestCase):
             self.assertTrue(response_data['status'] == 'success')
             self.assertEqual(resp.status_code, 200)
 
-    def test_user_retrieves_one_question(self):
+    def test_user_retrieves_one_question_if_none_with_that_id_in_the_db(self):
         with self.client:
             resp_login = self.client.post(
                 '/api/v1/auth/login',
@@ -74,8 +111,8 @@ class TestUserQuestions(BaseTestCase):
                 )
             )
             response_data = json.loads(resp.data.decode())
-            self.assertTrue(response_data['status'] == 'success')
-            self.assertEqual(resp.status_code, 200)
+            self.assertTrue(response_data['message'] == 'Question with id 1 doesn\'t exist')
+            self.assertEqual(resp.status_code, 404)
 
     def test_user_can_delete_their_question(self):
         with self.client:
@@ -160,7 +197,6 @@ class TestUserQuestions(BaseTestCase):
                 content_type='application/json'
             )
             response_data = json.loads(resp.data.decode())
-            print(response_data)
             self.assertTrue(response_data['status'] == 'success')
             self.assertTrue(response_data['message'] == 'Answer posted successfully')
             self.assertEqual(resp.status_code, 201)
@@ -184,7 +220,6 @@ class TestUserQuestions(BaseTestCase):
                 )
             )
             response_data = json.loads(resp.data.decode())
-            print(response_data)
             self.assertTrue(response_data['status'] == 'success')
             self.assertEqual(resp.status_code, 200)
 
@@ -223,7 +258,6 @@ class TestUserQuestions(BaseTestCase):
                 content_type='application/json'
             )
             response_data = json.loads(resp.data.decode())
-            print(response_data)
             self.assertTrue(response_data['status'] == 'success')
             self.assertTrue(response_data['message'] == 'Answer accepted')
             self.assertEqual(resp.status_code, 200)
@@ -259,7 +293,6 @@ class TestUserQuestions(BaseTestCase):
                 )
             )
             response_data = json.loads(resp.data.decode())
-            print(response_data)
             self.assertTrue(response_data['status'] == 'success')
             self.assertTrue(response_data['message'] == 'You upvoted this answer, thanks for the feedback')
             self.assertEqual(resp.status_code, 200)
@@ -295,8 +328,38 @@ class TestUserQuestions(BaseTestCase):
                 )
             )
             response_data = json.loads(resp.data.decode())
-            print(response_data)
             self.assertTrue(response_data['status'] == 'success')
             self.assertTrue(response_data['message'] == 'You down voted this answer, thanks for the feedback')
             self.assertEqual(resp.status_code, 200)
+
+    def test_user_retrieves_all_questions_if_none(self):
+        with self.client:
+            resp_login = self.client.post(
+                '/api/v1/auth/login',
+                data=json.dumps(dict(
+                    username='asheuh',
+                    password='mermaid'
+                )),
+                content_type='application/json'
+            )
+            resp = self.client.delete(
+                '/api/v1/questions/1',
+                headers=dict(
+                    Authorization='Bearer ' + json.loads(
+                        resp_login.data.decode()
+                    )['Authorization']['access_token']
+                )
+            )
+            resp = self.client.get(
+                '/api/v1/questions',
+                headers=dict(
+                    Authorization='Bearer ' + json.loads(
+                        resp_login.data.decode()
+                    )['Authorization']['access_token']
+                )
+            )
+            response_data = json.loads(resp.data.decode())
+            self.assertTrue(response_data['status'] == 'fail')
+            self.assertEqual(resp.status_code, 404)
+
 
