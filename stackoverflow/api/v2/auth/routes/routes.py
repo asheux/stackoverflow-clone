@@ -69,18 +69,20 @@ class UserLoginResource(Resource):
     @V2_API.expect(LOGIN, validate=True)
     def post(self):
         """Logs in a user"""
+        usernameerr = 'The username you provided does not exist in the database'
+        passerr = 'The password you provided did not match the database password'
         try:
             data = request.json
             user = User.get_one_by_field(field='username', value=data.get('username'))
             if not user:
                 response = {
                     'status': 'fail',
-                    'message': 'The username you provided does not exist in the database'}
+                    'message': usernameerr}
                 return response, 404
             elif not FLASK_BCRYPT.check_password_hash(user['password_hash'], data.get('password')):
                 response = {
                     'status': 'fail',
-                    'message': 'The password you provided did not match the database password'}
+                    'message': passerr}
                 return response, 401
             response = {
                 'status': 'success',
