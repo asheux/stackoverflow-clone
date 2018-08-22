@@ -250,9 +250,9 @@ class Answer(Answer, DatabaseCollector):
     @classmethod
     def create_table(cls):
         """Creates answer table"""
-        conn = psycopg2.connect(**cls.config)
-        cur = conn.cursor(cursor_factory=RealDictCursor)
-        cur.execute(
+        connection = psycopg2.connect(**cls.config)
+        cursor = connection.cursor(cursor_factory=RealDictCursor)
+        cursor.execute(
             """
             CREATE TABLE IF NOT EXISTS answers(
                 id serial PRIMARY KEY,
@@ -263,8 +263,8 @@ class Answer(Answer, DatabaseCollector):
             )
             """
         )
-        conn.commit()
-        conn.close()
+        connection.commit()
+        connection.close()
 
     def insert(self):
         """save to the database"""
@@ -299,9 +299,9 @@ class BlackList(DatabaseCollector):
     @classmethod
     def create_table(cls):
         """creates the blacklist table"""
-        conn = psycopg2.connect(**cls.config)
-        cur = conn.cursor(cursor_factory=RealDictCursor)
-        cur.execute(
+        con = psycopg2.connect(**cls.config)
+        curs = con.cursor(cursor_factory=RealDictCursor)
+        curs.execute(
             """
             CREATE TABLE IF NOT EXISTS blacklist(
                 id serial PRIMARY KEY,
@@ -310,7 +310,7 @@ class BlackList(DatabaseCollector):
             )
             """
         )
-        conn.commit()
+        con.commit()
 
     def insert(self):
         """save to the database"""
