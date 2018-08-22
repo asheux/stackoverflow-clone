@@ -1,7 +1,10 @@
+"""
+Imports
+
+"""
 from flask_jwt_extended import (
     create_access_token
 )
-from ..models import User, BlackListToken, Question, Answer
 from stackoverflow.database import (
     db,
     blacklistdb,
@@ -9,6 +12,7 @@ from stackoverflow.database import (
     get_current_user,
     answersdb
 )
+from ..models import User, BlackListToken, Question, Answer
 from .errors import user_is_valid, check_valid_email
 
 class UserStore:
@@ -26,29 +30,28 @@ class UserStore:
                 'status': 'error',
                 'message': 'Not a valid email address, please try again'}
             return response, 403
-        elif errors:
+        if errors:
             response = {
                 'status': 'error',
                 'message': errors}
             return response, 401
-        else:
-            username = result['username']
-            user = User(result['name'], username, result['email'], result['password'])
-            user.id = self.counter
-            db[self.counter] = user.toJSON()
-            self.counter += 1
-            response = {
-                'status': 'success',
-                'message': 'Successfully registered',
-                'data': user.toJSON(),
-                'Authorization': {
-                    'access_token': create_access_token(result['username'])}}
-            return response, 201
+        username = result['username']
+        user = User(result['name'], username, result['email'], result['password'])
+        user.id = self.counter
+        db[self.counter] = user.toJSON()
+        self.counter += 1
+        response = {
+            'status': 'success',
+            'message': 'Successfully registered',
+            'data': user.toJSON(),
+            'Authorization': {
+                'access_token': create_access_token(result['username'])}}
+        return response, 201
 
-    def get_item(self, id):
+    def get_item(self, user_id):
         """Gets a single user in the database by a given id"""
         data = self.get_all()
-        return data[id]
+        return data[user_id]
 
     def get_all(self):
         """Gets all the available users from the database"""
@@ -61,6 +64,7 @@ class UserStore:
         for item in self.get_all().values():
             if item[key] == value:
                 return item
+        return None
 
     def save_token(self, token):
         """Saves the blacklisted token in the database"""
@@ -75,12 +79,15 @@ class UserStore:
                 'message': 'Could not save'.format(e)
             }
             return response, 500
+        return None
 
 class QuestionStore:
+    """Questiion storage"""
     def __init__(self):
         self.index = 1
 
     def create_question(self, data):
+        """Creating a new question"""
         title = data['title']
         description = data['description']
         questions = Question(
@@ -103,29 +110,31 @@ class QuestionStore:
         """Gets all questions in the database"""
         return questionsdb
 
-    def get_one(self, id):
+    def get_one(self, question_id):
         """Gets a single question by a given request id"""
         data = self.get_all()
-        return data[id]
+        return data[question_id]
 
-    def delete(self, id):
+    def delete(self, question_id):
         """Deletes a particular question for a user"""
         data = self.get_all()
-        del data[id]
+        del data[question_id]
 
 class AnswerStore:
+    """Answer storage"""
     def __init__(self):
         self.index = 1
 
-    def post_answer(self, id,  data):
+    def post_answer(self, question_id, data):
+        """Posting a new answer"""
         questionstore = QuestionStore()
         answer = data['answer']
-        question = questionstore.get_one(id)
+        question = questionstore.get_one(question_id)
         question['answers'] += 1
         answer = Answer(answer,
                         owner=get_current_user(),
                         question=question['id']
-                    )
+                        )
         answer.id = self.index
         answersdb[self.index] = answer.toJSON()
         self.index += 1
@@ -150,11 +159,12 @@ class AnswerStore:
                      if item[key] == value]
         return list_item
 
-    def get_one(self, id):
+    def get_one(self, question_id):
         """Gets a single answer to a question"""
         data = self.get_all()
-        return data[id]
+        return data[question_id]
 
     def get_a_user_quiz(self, my_list):
+        """Get one item in a list"""
         for item in my_list:
             return item

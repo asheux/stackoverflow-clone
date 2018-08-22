@@ -1,3 +1,7 @@
+"""
+Imports
+
+"""
 import logging
 from flask import request
 from flask_restplus import Resource, fields
@@ -6,48 +10,50 @@ from flask_jwt_extended import (
     get_jwt_identity,
     get_raw_jwt
 )
+from stackoverflow.api.restplus import API
 from ..serializers import (
-    user_register
+    USER_REGISTER
 )
-from stackoverflow.api.restplus import api
 from ..collections import store
 from ..authAPI import Auth
 
-log = logging.getLogger(__name__)
-ns_auth = api.namespace('auth', description='Authentication operations')
-ns = api.namespace('users', description='User operations')
+LOG = logging.getLogger(__name__)
+NS_AUTH = API.namespace('auth', description='Authentication operations')
+NS = API.namespace('users', description='User operations')
 
-user_login = api.model('Login Model',
-    dict(username=fields.String(required=True, default='asheuh', description='Your username'),
-    password=fields.String(required=True, default='mermaid', description='Your password'),))
+USER_LOGIN = API.model('Login Model',
+                       dict(username=fields.String(required=True, default='asheuh',
+                                                   description='Your username'),
+                            password=fields.String(required=True, default='mermaid',
+                                                   description='Your password'),))
 
-@ns_auth.route('/register')
+@NS_AUTH.route('/register')
 class UsersCollection(Resource):
     """This class creates a new user in the database"""
-    @api.response(201, 'User created successfully')
-    @api.expect(user_register, validate=True)
+    @API.response(201, 'User created successfully')
+    @API.expect(USER_REGISTER, validate=True)
     def post(self):
         """Creates a new user"""
         data = request.json
         return store.create_user(result=data)
 
-@ns_auth.route('/login')
+@NS_AUTH.route('/login')
 class UserLoginResource(Resource):
     """Login resource"""
-    @api.doc('login user')
-    @api.response(201, 'Login successful')
-    @api.expect(user_login, validate=True)
+    @API.doc('login user')
+    @API.response(201, 'Login successful')
+    @API.expect(USER_LOGIN, validate=True)
     def post(self):
         """Logs in a user"""
         data = request.json
         return Auth.login_user(data=data)
 
-@ns_auth.route('/logout_access')
+@NS_AUTH.route('/logout_access')
 class UserLogoutResourceAccess(Resource):
     """Logout resource"""
-    @api.doc('logout user')
+    @API.doc('logout user')
     @jwt_required
-    @api.response(201, 'Logout successful')
+    @API.response(201, 'Logout successful')
     def post(self):
         # get auth token
         """Logout a user"""
@@ -63,23 +69,23 @@ class UserLogoutResourceAccess(Resource):
             response = {
                 'message': 'could not generate access token: {}'.format(e)
             }
-            return response
+            return response, 500
 
-@ns.route('/current')
+@NS.route('/current')
 class UserItem(Resource):
     """Show a single user item"""
-    @api.response(200, 'success')
+    @API.response(200, 'success')
     @jwt_required
-    @api.doc('user gets their details')
+    @API.doc('user gets their details')
     def get(self):
         """Returns a logged in user's details"""
         current_user = get_jwt_identity()
         return Auth.get_logged_in_user(current_user)
 
-@ns.route('', endpoint='all_users')
+@NS.route('', endpoint='all_users')
 class AllUsersResource(Resource):
     """Shows a list of all users"""
-    @api.doc('get list of users')
+    @API.doc('get list of users')
     def get(self):
         """Return list of users"""
         users_query = store.get_all()
@@ -89,10 +95,9 @@ class AllUsersResource(Resource):
                 "message": "There are no users in the database yet"
             }
             return response, 404
-        else:
-            response = {
-                'status': 'success',
-                'total': len(users),
-                "data": users
-            }
-            return response, 200
+        response = {
+            'status': 'success',
+            'total': len(users),
+            "data": users
+        }
+        return response, 200
