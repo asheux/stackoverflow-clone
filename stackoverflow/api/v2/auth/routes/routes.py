@@ -38,31 +38,27 @@ class UsersCollection(Resource):
     def post(self):
         """Creates a new user"""
         data = request.json
+        valid_email = 'Not a valid email address, please try again'
         errors = user_is_valid(data)
         if check_valid_email(data['email']) is None:
-            response = {
-                'status': 'error',
-                'message': 'Not a valid email address, please try again'}
+            response = {'status': 'error',
+                'message': valid_email}
             return response, 403
         if validate_username(data['username']):
-            return validate_username(data['username'])
+            validate_username(data['username'])
         if validate_str_field(data['name']):
-            return validate_str_field(data['name'])
+            validate_str_field(data['name'])
         if validate_password(data['password']):
-            return validate_password(data['password'])
+            validate_password(data['password'])
         if errors:
-            response = {
-                'status': 'error',
-                'message': errors}
+            response = {'status': 'error', 'message': errors}
             return response, 401
         user = User(data['name'], data['username'], data['email'], data['password'])
         user.insert()
         access_token = create_access_token(user.id)
-        response = {
-            'status': 'success',
+        response = {'status': 'success',
             'message': 'user created successfully',
-            'Authorization': {
-                'access_token': access_token}}
+            'Authorization': {'access_token': access_token}}
         return response, 201
 
 @NS_AUTH.route('/login')
@@ -81,7 +77,7 @@ class UserLoginResource(Resource):
                     'status': 'fail',
                     'message': 'The username you provided does not exist in the database'}
                 return response, 404
-            if not FLASK_BCRYPT.check_password_hash(user['password_hash'], data.get('password')):
+            elif not FLASK_BCRYPT.check_password_hash(user['password_hash'], data.get('password')):
                 response = {
                     'status': 'fail',
                     'message': 'The password you provided did not match the database password'}

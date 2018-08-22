@@ -146,29 +146,22 @@ class AcceptAnswerResourceItem(Resource):
                      if quiz['created_by'] == get_jwt_identity()]
         answers = [answer for answer in allanswers
                    if answer['question'] == answer_dict(questions)['id']]
-        print(answers)
         if answers == []:
-            response = {
-                'status': 'fail',
-                'message': 'There are no answers for this question'}
+            response = {'status': 'fail', 'message': 'There are no answers for this question'}
             return response, 404
         for my_answer in answers:
             if my_answer['accepted'] != False:
-                response_obj = {
-                    'message': 'This answers has already been accepted'
-                }
+                response_obj = {'message': 'This answers has already been accepted'}
                 return response_obj, 406
             if my_answer['id'] == answer_id \
                     and my_answer['question'] == question_id:
                 my_answer['accepted'] = settings.ACCEPT
                 Answer.update('accepted', my_answer['accepted'], answer_id)
-                response = {
-                    'status': 'success',
-                    'message': 'Answer accepted'}
+                response = {'status': 'success', 'message': 'Answer accepted'}
                 return response, 200
-            response_obj = {
-                'message': 'Could not perform action, check the id you provided'}
+            response_obj = {'message': 'Could not perform action, check the id you provided'}
             return response_obj, 405
+
 @NS.route('/myquestions')
 class UserQuestions(Resource):
     """My questions resource"""

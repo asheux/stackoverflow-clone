@@ -20,15 +20,17 @@ def user_is_valid(data):
 
 def validate_str_field(string):
     """Validate the user has input as string"""
-    if not re.match("^[ A-Za-z0-9_-]*$", string):
+    regex = re.match("^[ A-Za-z0-9_-]*$", string)
+    if not regex:
         return {"message": "Invalid data for username"}, 400
     return None
 
 def validate_password(string):
     """validates user has followed Password rules"""
+    passerror = "The password should have at least 1 digit, 1 caps, 1 number and minimum of 6 chars"
     if not re.match(r'(?=.*?[0-9])(?=.*?[A-Z])(?=.*?[a-z]).{6}', string):
         return {
-            "message": "The password should have at least 1 digit, 1 caps, 1 number and minimum of 6 chars"
+            "message": passerror
         }, 400
     return None
 
