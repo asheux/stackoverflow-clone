@@ -3,6 +3,7 @@ from stackoverflow import settings
 from migrate import DBMigration
 
 migrate = DBMigration()
+
 app = create_app(settings.DEVELOPMENT)
 
 if __name__ == "__main__":
