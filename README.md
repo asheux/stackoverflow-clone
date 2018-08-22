@@ -3,6 +3,8 @@
 ![Travis](https://travis-ci.com/asheuh/StackOverflow-lite.svg?branch=develop-v2)
 [![Coverage Status](https://coveralls.io/repos/github/asheuh/StackOverflow-lite/badge.svg?branch=develop-v2)](https://coveralls.io/github/asheuh/StackOverflow-lite?branch=develop-v2)
 [![Maintainability](https://api.codeclimate.com/v1/badges/465755288bc6481668ed/maintainability)](https://codeclimate.com/github/asheuh/StackOverflow-lite/maintainability)
+![GitHub last commit](https://img.shields.io/github/last-commit/asheuh/StackOverflow-lite/develop-v2.svg)
+[![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
 
 StackOverflow-lite is a platform where people can ask questions and provide answers.
 
@@ -25,6 +27,25 @@ StackOverflow-lite is a platform where people can ask questions and provide answ
 - Users can fetch all questions he/she has ever asked on the platform
 - Users can search for questions on the platform
 - Users can view questions with the most answers.
+
+## endpoints
+|  Endpoint  | Task  |
+|  ---  | --- |
+| `POST api/v1/auth/register` | signing up a user |
+| `POST api/v1/auth/login`  | log in user|
+| `DELETE api/v1/auth/logout` | logout user |
+| `POST api/v1/questions` | User create a question | 
+| `GET api/v1/questions` | User can view all questions|
+| `PUT api/v1/questions/<question_id>` | User gets a single question |
+| `GET api/v2/questions/myquestions` | User gets all their questions (all)|
+| `GET api/v1/users/<int:id>` | Get user details |
+| `GET api/v2/questions/mostanswers` | User gets questions with most answers(all)|
+| `GET api/v2/questions/search/{search_item}` | User searches for a question or answer(all)|
+| `GET api/v2/questions/{question_id}/answers/{answer_id}/accept` | User can accept an answer to their question|
+| `GET api/v2/questions/{question_id}` | User can delete the questions they post|
+| `GET api/v1/myquestions` | User gets all their questions (all)|
+| `GET api/v2/questions/{question_id}/answers/{answer_id}/upvote` | User can upvote an answer to their question|
+| `GET api/v2/questions/{question_id}/answers/{answer_id}/downvote` | User can downvote an answer to their question|
 
 
 # Installation and Setup
