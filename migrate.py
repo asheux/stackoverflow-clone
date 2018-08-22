@@ -1,8 +1,6 @@
 from stackoverflow.api.v2.models import (
-    User,
-    BlackList,
-    Question,
-    Answer
+    User, BlackList,
+    Question, Answer
 )
 question = Question()
 answer = Answer()

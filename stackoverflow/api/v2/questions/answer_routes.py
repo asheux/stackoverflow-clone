@@ -34,9 +34,9 @@ class UserAnswerResource(Resource):
         data = request.json
         answer = data['answer']
         question = Question.get_item_by_id(question_id)
-        result = Answer.get_one_by_field('answer', data['answer'])
+        answers = Answer.get_one_by_field('answer', data['answer'])
 
-        if result is not None:
+        if answers is not None:
             response_obj = {
                 'message': 'Same answer exist already, please vote on it'
             }
@@ -64,7 +64,7 @@ class UserAnswerResource(Resource):
         question = Question.get_item_by_id(question_id)
         data = Answer.get_all()
         answers = [answer for answer in data
-                   if answer['question'] == question_id]
+                   if answer['question'] == question['id']]
         if answers == []:
             response = {
                 'status': 'fail',
@@ -135,8 +135,8 @@ class AcceptAnswerResourceItem(Resource):
     @v2_api.response(200, 'Success')
     def patch(self, answer_id, question_id):
         """This resource enables users accept an answer to their question"""
-        answer_doesnt_exists(answer_id)
         question_doesnt_exists(question_id)
+        answer_doesnt_exists(answer_id)
         allquiz = Question.get_all()
         allanswers = Answer.get_all()
         questions = [quiz for quiz in allquiz
@@ -164,7 +164,7 @@ class AcceptAnswerResourceItem(Resource):
                     'message': 'Answer accepted'}
                 return response, 200
             response_obj = {
-                'message': 'Could not perform action'}
+                'message': 'Could not perform action, check the id you provided'}
             return response_obj, 404
 @ns.route('/myquestions')
 class UserQuestions(Resource):
