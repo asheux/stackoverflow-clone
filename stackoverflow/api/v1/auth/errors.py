@@ -1,6 +1,10 @@
+"""
+Imports
+
+"""
 import re
 from stackoverflow.database import questionsdb, answersdb
-from stackoverflow.api.restplus import api
+from stackoverflow.api.restplus import API
 
 def user_is_valid(data):
     """user error handling"""
@@ -15,16 +19,16 @@ def user_is_valid(data):
         errors['username'] = resp
     return errors
 
-def answer_doesnt_exists(id):
+def answer_doesnt_exists(answer_id):
     """return error if answer not in db"""
-    if id not in answersdb:
-        api.abort(404, "Answer with id {} doesn't exist".format(id))
+    if answer_id not in answersdb:
+        API.abort(404, "Answer with id {} doesn't exist".format(answer_id))
 
-def question_doesnt_exists(id):
+def question_doesnt_exists(question_id):
     """Checks if given id exists in the database"""
-    if id not in questionsdb:
-        result = "Question with id {} doesn't exist".format(id)
-        api.abort(404, result)
+    if question_id not in questionsdb:
+        result = "Question with id {} doesn't exist".format(question_id)
+        API.abort(404, result)
 
 def check_valid_email(email):
     """Checks if the email provided is valid"""

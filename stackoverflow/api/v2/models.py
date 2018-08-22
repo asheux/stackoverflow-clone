@@ -1,3 +1,9 @@
+"""
+Imports
+
+"""
+
+from datetime import datetime
 from flask import json
 import psycopg2
 from psycopg2.extras import RealDictCursor
@@ -5,7 +11,6 @@ from stackoverflow.api.v1.models import (
     MainModel, User,
     Question, Answer
 )
-from datetime import datetime
 from stackoverflow import database_config, settings
 
 class DatabaseCollector(MainModel):
@@ -26,8 +31,8 @@ class DatabaseCollector(MainModel):
         try:
             cur.execute("DROP TABLE {}".format(cls.__table__))
             conn.commit()
-        except Exception as e:
-            print(e)
+        except Exception as error:
+            print(error)
         conn.close()
 
     @classmethod
@@ -39,8 +44,8 @@ class DatabaseCollector(MainModel):
             cur.execute("SELECT * FROM {}".format(cls.__table__))
             items = cur.fetchall()
             item = [cls.to_json(i) for i in items]
-        except Exception as e:
-            print(e)
+        except Exception as error:
+            print(error)
         conn.close()
         return item
 
@@ -54,13 +59,14 @@ class DatabaseCollector(MainModel):
             cur.execute(query, (value,))
             items = cur.fetchall()
             item = [cls.to_json(i) for i in items]
-        except Exception as e:
-            print(e)
+        except Exception as error:
+            print(error)
         conn.close()
         return item
 
     @classmethod
     def update(cls, field, item, _id):
+        """Update the database"""
         conn = psycopg2.connect(**cls.config)
         cur = conn.cursor(cursor_factory=RealDictCursor)
         try:
@@ -70,14 +76,15 @@ class DatabaseCollector(MainModel):
                 )
             )
             conn.commit()
-        except Exception as e:
-            print(e)
+        except Exception as error:
+            print(error)
         conn.close()
 
     @classmethod
     def get_one_by_field(cls, field, value):
         """Get a user from the database by key or field"""
-        if cls.get_all() is None:return []
+        if cls.get_all() is None:
+            return []
         for item in cls.get_all():
             if item[field] == value:
                 return item
@@ -89,8 +96,8 @@ class DatabaseCollector(MainModel):
         try:
             cur.execute("DELETE FROM {} WHERE id = %s".format(cls.__table__), (_id,))
             conn.commit()
-        except Exception as e:
-            print(e)
+        except Exception as error:
+            print(error)
         conn.close()
 
     @classmethod
@@ -101,9 +108,10 @@ class DatabaseCollector(MainModel):
         try:
             cur.execute("SELECT * FROM {} WHERE id = %s".format(cls.__table__), (_id,))
             item = cur.fetchone()
-            if item is None:return None
-        except Exception as e:
-            print(e)
+            if item is None:
+                return None
+        except Exception as error:
+            print(error)
         conn.close()
         return cls.to_json(item)
 
@@ -113,6 +121,7 @@ class User(User, DatabaseCollector):
 
     @classmethod
     def create_table(cls):
+        """Creates the table users"""
         conn = psycopg2.connect(**cls.config)
         cur = conn.cursor(cursor_factory=RealDictCursor)
         cur.execute(
@@ -146,9 +155,10 @@ class User(User, DatabaseCollector):
             )
             conn.commit()
             result = cur.fetchone()
-            if result is not None:self.id = result['id']
-        except Exception as e:
-            print(e)
+            if result is not None:
+                self.id = result['id']
+        except Exception as error:
+            print(error)
         conn.close()
         return result
 
@@ -158,6 +168,7 @@ class Question(Question, DatabaseCollector):
 
     @classmethod
     def create_table(cls):
+        """creates the table questions"""
         conn = psycopg2.connect(**cls.config)
         cur = conn.cursor(cursor_factory=RealDictCursor)
         cur.execute(
@@ -185,21 +196,25 @@ class Question(Question, DatabaseCollector):
                     VALUES(%s, %s, %s, %s, %s) RETURNING id
                     """
             cur.execute(query, (
-                    self.title, self.description,
-                    self.created_by, self.answers,
-                    self.date_created
-                )
-            )
+                self.title, self.description,
+                self.created_by, self.answers,
+                self.date_created
+            ))
             conn.commit()
             result = cur.fetchone()
-            if result is not None:self.id = result['id']
-        except Exception as e:
-            print(e)
+            if result is not None:
+                self.id = result['id']
+        except Exception as error:
+            print(error)
         conn.close()
         return result
 
     @classmethod
     def transform_for_search(cls):
+        """
+        Concatenate and transforms the column
+        title and description in metadata
+        """
         conn = psycopg2.connect(**cls.config)
         cur = conn.cursor(cursor_factory=RealDictCursor)
         try:
@@ -214,6 +229,10 @@ class Question(Question, DatabaseCollector):
 
     @classmethod
     def fts_search_query(cls, search_item):
+        """
+        Search the transformed document in
+        the database and return if found
+        """
         conn = psycopg2.connect(**cls.config)
         cur = conn.cursor(cursor_factory=RealDictCursor)
         try:
@@ -224,8 +243,8 @@ class Question(Question, DatabaseCollector):
             )
             result = cur.fetchall()
             items = [cls.to_json(item) for item in result]
-        except Exception as e:
-            print(e)
+        except Exception as error:
+            print(error)
         conn.close()
         return items
 
@@ -235,6 +254,7 @@ class Answer(Answer, DatabaseCollector):
 
     @classmethod
     def create_table(cls):
+        """Creates answer table"""
         conn = psycopg2.connect(**cls.config)
         cur = conn.cursor(cursor_factory=RealDictCursor)
         cur.execute(
@@ -268,9 +288,10 @@ class Answer(Answer, DatabaseCollector):
             )
             conn.commit()
             result = cur.fetchone()
-            if result is not None:self.id = result['id']
-        except Exception as e:
-            print(e)
+            if result is not None:
+                self.id = result['id']
+        except Exception as error:
+            print(error)
         conn.close()
         return result
 
@@ -284,6 +305,7 @@ class BlackList(DatabaseCollector):
 
     @classmethod
     def create_table(cls):
+        """creates the blacklist table"""
         conn = psycopg2.connect(**cls.config)
         cur = conn.cursor(cursor_factory=RealDictCursor)
         cur.execute(
@@ -308,6 +330,6 @@ class BlackList(DatabaseCollector):
                 )
             )
             conn.commit()
-        except Exception as e:
-            print(e)
+        except Exception as error:
+            print(error)
         conn.close()

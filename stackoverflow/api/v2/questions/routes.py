@@ -1,33 +1,35 @@
-import heapq
+"""
+Imports
+
+"""
+
 from flask import request
 from flask_restplus import Resource
 from flask_jwt_extended import (
     jwt_required,
     get_jwt_identity
 )
-
+from stackoverflow import V2_API
+from stackoverflow.api.v2.models import Question
 from ..auth.errors import (
-    question_doesnt_exists,
-    answer_doesnt_exists
+    question_doesnt_exists
 )
-from stackoverflow import v2_api
-from ..auth.serializers import questions, answers
-from stackoverflow.api.v2.models import Question, Answer
-from stackoverflow import settings
+from ..auth.serializers import QUESTIONS
 
-ns = v2_api.namespace('questions', description='Questions operations')
+NS = V2_API.namespace('questions', description='Questions operations')
 
 def get_quiz_dict(list_obj):
+    """Get on item in a list"""
     for item in list_obj:
         return item
 
-@ns.route('')
+@NS.route('')
 class UserQuestionsResource(Resource):
     """Question resource endpoint"""
     @jwt_required # add jwt token based authentication
-    @v2_api.doc('Question resource')
-    @v2_api.response(201, 'Successfully created')
-    @v2_api.expect(questions)
+    @V2_API.doc('Question resource')
+    @V2_API.response(201, 'Successfully created')
+    @V2_API.expect(QUESTIONS)
     def post(self):
         """Post a new question"""
         try:
@@ -46,16 +48,16 @@ class UserQuestionsResource(Resource):
                 'data': questions.toJSON()
             }
             return response, 201
-        except Exception as e:
+        except Exception as error:
             response = {
                 'status': 'error',
-                'message': 'Cannot post a question: {}'.format(e)
+                'message': 'Cannot post a question: {}'.format(error)
             }
             return response, 500
 
     @jwt_required # add jwt token based authentication
-    @v2_api.doc('Question resource')
-    @v2_api.response(200, 'success')
+    @V2_API.doc('Question resource')
+    @V2_API.response(200, 'success')
     def get(self):
         """get all questions in the platform"""
         data = Question.get_all()
@@ -72,13 +74,13 @@ class UserQuestionsResource(Resource):
         }
         return response, 200
 
-@ns.route('/<int:question_id>')
-@v2_api.response(404, 'question with the given id not found')
+@NS.route('/<int:question_id>')
+@V2_API.response(404, 'question with the given id not found')
 class UserQuestionItem(Resource):
     """Single question resource"""
     @jwt_required # add jwt token based authentication
-    @v2_api.doc('Single question resource')
-    @v2_api.response(200, 'Success')
+    @V2_API.doc('Single question resource')
+    @V2_API.response(200, 'Success')
     def get(self, question_id):
         """Get a question"""
         question_doesnt_exists(question_id)
@@ -90,16 +92,16 @@ class UserQuestionItem(Resource):
                 'data': question
             }
             return response, 200
-        except Exception as e:
+        except Exception as error:
             response = {
                 'status': 'fail',
-                'message': 'Could not fetch the question: {}'.format(e)
+                'message': 'Could not fetch the question: {}'.format(error)
             }
             return response, 500
 
     @jwt_required # add jwt token based authentication
-    @v2_api.doc('Delete question resource')
-    @v2_api.response(200, 'Successfully deleted')
+    @V2_API.doc('Delete question resource')
+    @V2_API.response(200, 'Successfully deleted')
     def delete(self, question_id):
         """Deletes a question with the given id"""
         question_doesnt_exists(question_id)
@@ -110,12 +112,9 @@ class UserQuestionItem(Resource):
                 'message': 'You are not permitted to delete this question'
             }
             return response, 401
-        else:
-            Question.delete(question_id)
-            response = {
-                'status': 'success',
-                'message': 'question deleted successfully'
-            }
-            return response, 200
-
-
+        Question.delete(question_id)
+        response = {
+            'status': 'success',
+            'message': 'question deleted successfully'
+        }
+        return response, 200

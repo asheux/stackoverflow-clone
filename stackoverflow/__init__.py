@@ -1,3 +1,7 @@
+"""
+Imports
+
+"""
 import logging.config
 import os
 from urllib.parse import urlparse
@@ -8,13 +12,13 @@ from flask import Flask, Blueprint
 from flask_jwt_extended import JWTManager
 from stackoverflow import settings
 from stackoverflow.base.routes import index_blueprint
-from stackoverflow.api.restplus import blueprint, api, authorizations
-from stackoverflow.api.v1.auth.routes.routes import ns as user_namespace
-from stackoverflow.api.v1.questions.routes import ns as question_namespace
+from stackoverflow.api.restplus import BLUEPRINT, API, AUTHORIZATIONS
+from stackoverflow.api.v1.auth.routes.routes import NS as user_namespace
+from stackoverflow.api.v1.questions.routes import NS as question_namespace
 
-logging_conf_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '../logging.conf'))
-logging.config.fileConfig(logging_conf_path)
-log = logging.getLogger(__name__)
+LOGGING_FILE_PATH = os.path.normpath(os.path.join(os.path.dirname(__file__), '../logging.conf'))
+logging.config.fileConfig(LOGGING_FILE_PATH)
+LOG = logging.getLogger(__name__)
 
 def database_config(db_url):
     """This creates the database configuration"""
@@ -34,33 +38,39 @@ def database_config(db_url):
 
 
 class Database:
+    """Connecting to the database"""
     def __init__(self, conf):
         self.config = database_config(conf)
 
     def init_db(self):
+        """Initializes the database"""
         self.connection = psycopg2.connect(**self.config)
         self.cursor = self.connection.cursor(cursor_factory=RealDictCursor)
         self.connection.close()
 
-v2_db = Database(settings.DATABASE_URL)
-v2_blueprint = Blueprint('api_v2', __name__, url_prefix='/api/v2')
-v2_api = Api(v2_blueprint, authorizations=authorizations, version='1.1', title='V2 of stackoverflow-lite questions API',
+V2_DB = Database(settings.DATABASE_URL)
+V2_BLUEPRINT = Blueprint('api_v2', __name__, url_prefix='/api/v2')
+V2_API = Api(V2_BLUEPRINT, authorizations=AUTHORIZATIONS, version='1.1',
+             title='V2 of stackoverflow-lite questions API',
              description=(
-                 "This is an api for StackOverflow-lite platform where people can ask questions and provide answers.\n\n"
+                 "This is an api for StackOverflow-lite platform \
+                 where people can ask questions and provide answers.\n\n"
                  "##Exploring the demo.\n"
-                 "Create a new user at the 'POST /auth/register' endpoint. Get the user access token from the response."
+                 "Create a new user at the 'POST /auth/register' endpoint. \
+                 Get the user access token from the response."
                  "Click the authorize button and add the token in the following format.\n\n"
                  "`Bearer (jwt-token without the brackets)`\n\n"
 
                  "## Authorization token (using)\n"
                  "`Jwt-Extended`"
              ),
-        )
+             )
 
 def configure_app(flask_app):
-    from stackoverflow.api.v2.auth.routes.routes import ns as v2_user_namespace
-    from stackoverflow.api.v2.questions.routes import ns as q_namespace
-    from stackoverflow.api.v2.questions.answer_routes import ns as q_namespace
+    """Configures the app"""
+    from stackoverflow.api.v2.auth.routes.routes import NS as v2_user_namespace
+    from stackoverflow.api.v2.questions.routes import NS as q_namespace
+    from stackoverflow.api.v2.questions.answer_routes import NS as q_namespace
     flask_app.config['SWAGGER_UI_DOC_EXPANSION'] = settings.RESTPLUS_SWAGGER_UI_DOC_EXPANSION
     flask_app.config['RESTPLUS_VALIDATE'] = settings.RESTPLUS_VALIDATE
     flask_app.config['RESTPLUS_MASK_SWAGGER'] = settings.RESTPLUS_MASK_SWAGGER
@@ -72,32 +82,36 @@ def configure_app(flask_app):
     flask_app.config['DATABASE_URL'] = settings.DATABASE_URL
 
 def initialize_app(flask_app):
+    """Runs the configuration"""
     configure_app(flask_app)
     jwt = JWTManager(flask_app)
 
-    jwt._set_error_handler_callbacks(api)
-    jwt._set_error_handler_callbacks(v2_api)
+    jwt._set_error_handler_callbacks(API)
+    jwt._set_error_handler_callbacks(V2_API)
     flask_app.register_blueprint(index_blueprint)
-    flask_app.register_blueprint(v2_blueprint)
-    flask_app.register_blueprint(blueprint)
-    v2_db.init_db()
+    flask_app.register_blueprint(V2_BLUEPRINT)
+    flask_app.register_blueprint(BLUEPRINT)
+    V2_DB.init_db()
 
     @jwt.token_in_blacklist_loader
     def check_if_token_in_blacklist(decrypted_token):
+        """Checks for blacklisted tokens"""
         from stackoverflow.api.v1.models import BlackListToken
         jti = decrypted_token['jti']
         return BlackListToken.check_blacklist(jti)
 
     @jwt.token_in_blacklist_loader
     def check_token(token):
+        """Checks if token has been blacklisted"""
         from stackoverflow.api.v2.models import BlackList
         return BlackList.get_one_by_field(field='jti', value=token['jti']) is not None
 
 def create_app(config_name):
+    """Creates the flask app"""
     app = Flask(__name__)
     app.config.from_object(config_name)
     initialize_app(app)
 
-    log.info('Starting development server at http://{}'.format(settings.FLASK_SERVER_NAME))
+    LOG.info('Starting development server at http://{}'.format(settings.FLASK_SERVER_NAME))
 
     return app

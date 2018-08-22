@@ -1,3 +1,7 @@
+"""
+Imports
+
+"""
 from flask_bcrypt import Bcrypt
 from flask import request
 from flask_jwt_extended import (
@@ -5,7 +9,7 @@ from flask_jwt_extended import (
 )
 from .collections import store
 
-flask_bcrypt = Bcrypt()
+FLASK_BCRYPT = Bcrypt()
 
 class Auth:
     """The class handles all authentications"""
@@ -20,18 +24,17 @@ class Auth:
                     'status': 'fail',
                     'message': 'The username you provided does not exist'}
                 return response, 404
-            elif not flask_bcrypt.check_password_hash(user['password_hash'], data.get('password')):
+            if not FLASK_BCRYPT.check_password_hash(user['password_hash'], data.get('password')):
                 response = {
                     'status': 'fail',
                     'message': 'The password you provided did not match the database password'}
                 return response, 401
-            else:
-                response = {
-                    'status': 'success',
-                    'message': 'Successfully logged in as {}'.format(user['name']),
-                    'Authorization': {
-                        'access_token': create_access_token(user['username'])}}
-                return response, 201
+            response = {
+                'status': 'success',
+                'message': 'Successfully logged in as {}'.format(user['name']),
+                'Authorization': {
+                    'access_token': create_access_token(user['username'])}}
+            return response, 201
         except Exception as e:
             response = {
                 'message': 'Could not login: {}, try again.'.format(e)}
@@ -60,9 +63,8 @@ class Auth:
                 }
             }
             return response_obj, 200
-        else:
-            response_obj = {
-                'status': 'fail',
-                'message': 'user is none'
-            }
-            return response_obj, 404
+        response_obj = {
+            'status': 'fail',
+            'message': 'user is none'
+        }
+        return response_obj, 404
