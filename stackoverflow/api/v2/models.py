@@ -72,9 +72,7 @@ class DatabaseCollector(MainModel):
         try:
             cur.execute(
                 "UPDATE {} SET {} = %s WHERE id = %s".format(cls.__table__, field), (
-                    item, _id
-                )
-            )
+                    item, _id))
             conn.commit()
         except Exception as error:
             print(error)
@@ -118,21 +116,19 @@ class DatabaseCollector(MainModel):
 class User(User, DatabaseCollector):
     __table__ = "users"
     config = database_config(settings.DATABASE_URL)
-
-    @classmethod
-    def create_table(cls):
-        """Creates the table users"""
-        conn = psycopg2.connect(**cls.config)
-        cur = conn.cursor(cursor_factory=RealDictCursor)
-        cur.execute(
-            """
+    query = """
             CREATE TABLE IF NOT EXISTS users(
                 id serial PRIMARY KEY, name VARCHAR,
                 username VARCHAR, email VARCHAR,
                 password_hash VARCHAR, registered_on timestamp
             )
             """
-        )
+    @classmethod
+    def create_table(cls):
+        """Creates the table users"""
+        conn = psycopg2.connect(**cls.config)
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+        cur.execute(cls.query)
         conn.commit()
 
     def insert(self):
@@ -147,9 +143,7 @@ class User(User, DatabaseCollector):
                     self.username,
                     self.email,
                     self.password_hash,
-                    self.registered_on
-                )
-            )
+                    self.registered_on))
             conn.commit()
             result = cur.fetchone()
             if result is not None:
@@ -166,10 +160,7 @@ class Question(Question, DatabaseCollector):
     @classmethod
     def create_table(cls):
         """creates the table questions"""
-        conn = psycopg2.connect(**cls.config)
-        cur = conn.cursor(cursor_factory=RealDictCursor)
-        cur.execute(
-            """
+        query = """
             CREATE TABLE IF NOT EXISTS questions(
                 id serial PRIMARY KEY,
                 title VARCHAR, description VARCHAR,
@@ -178,7 +169,9 @@ class Question(Question, DatabaseCollector):
                 FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE
             )
             """
-        )
+        conn = psycopg2.connect(**cls.config)
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+        cur.execute(query)
         conn.commit()
 
     def insert(self):
@@ -193,8 +186,7 @@ class Question(Question, DatabaseCollector):
             cur.execute(query, (
                 self.title, self.description,
                 self.created_by, self.answers,
-                self.date_created
-            ))
+                self.date_created))
             conn.commit()
             result = cur.fetchone()
             if result is not None:
@@ -216,8 +208,7 @@ class Question(Question, DatabaseCollector):
             cur.execute(
                 "SELECT title || '. ' || description as document, "
                 "to_tsvector(title || '. ' || description) as metadata "
-                "FROM questions"
-            )
+                "FROM questions")
         except Exception as e:
             print(e)
         conn.close()
@@ -234,8 +225,7 @@ class Question(Question, DatabaseCollector):
             cur.execute(
                 "SELECT * FROM questions "
                 "WHERE to_tsvector(title || '. ' || description) @@ "
-                "to_tsquery('{}')".format(search_item)
-            )
+                "to_tsquery('{}')".format(search_item))
             result = cur.fetchall()
             items = [cls.to_json(item) for item in result]
         except Exception as error:
@@ -250,9 +240,9 @@ class Answer(Answer, DatabaseCollector):
     @classmethod
     def create_table(cls):
         """Creates answer table"""
-        connection = psycopg2.connect(**cls.config)
-        cursor = connection.cursor(cursor_factory=RealDictCursor)
-        cursor.execute(
+        conn = psycopg2.connect(**cls.config)
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+        cur.execute(
             """
             CREATE TABLE IF NOT EXISTS answers(
                 id serial PRIMARY KEY,
@@ -261,10 +251,9 @@ class Answer(Answer, DatabaseCollector):
                 question INTEGER REFERENCES questions(id) ON DELETE CASCADE,
                 date_created timestamp
             )
-            """
-        )
-        connection.commit()
-        connection.close()
+            """)
+        conn.commit()
+        conn.close()
 
     def insert(self):
         """save to the database"""
@@ -276,9 +265,7 @@ class Answer(Answer, DatabaseCollector):
                 "question, date_created) VALUES(%s, %s, %s, %s, %s, %s) RETURNING id", (
                     self.answer, self.accepted,
                     self.votes, self.owner,
-                    self.question, self.date_created
-                )
-            )
+                    self.question, self.date_created))
             conn.commit()
             result = cur.fetchone()
             if result is not None:
@@ -299,18 +286,17 @@ class BlackList(DatabaseCollector):
     @classmethod
     def create_table(cls):
         """creates the blacklist table"""
-        con = psycopg2.connect(**cls.config)
-        curs = con.cursor(cursor_factory=RealDictCursor)
-        curs.execute(
+        conn = psycopg2.connect(**cls.config)
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+        cur.execute(
             """
             CREATE TABLE IF NOT EXISTS blacklist(
                 id serial PRIMARY KEY,
                 jti VARCHAR,
                 blacklisted_on timestamp
             )
-            """
-        )
-        con.commit()
+            """)
+        conn.commit()
 
     def insert(self):
         """save to the database"""
@@ -319,9 +305,7 @@ class BlackList(DatabaseCollector):
         try:
             cur.execute(
                 "INSERT INTO blacklist(jti, blacklisted_on) VALUES(%s, %s) RETURNING id", (
-                    self.jti, self.blacklisted_on
-                )
-            )
+                    self.jti, self.blacklisted_on))
             conn.commit()
         except Exception as error:
             print(error)
