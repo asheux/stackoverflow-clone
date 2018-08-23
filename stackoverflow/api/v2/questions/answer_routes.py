@@ -44,7 +44,7 @@ class UserAnswerResource(Resource):
             response_obj = {
                 'message': 'Same answer exist already, please vote on it'
             }
-            return response_obj, 503
+            return response_obj, 409
         answer = Answer(answer,
                         owner=get_jwt_identity(),
                         question=question['id']
@@ -155,7 +155,6 @@ class AcceptAnswerResourceItem(Resource):
                      if quiz['created_by'] == get_jwt_identity()]
         answers = [answer for answer in allanswers
                    if answer['question'] == answer_dict(questions)['id']]
-        print(answers)
         if answers == []:
             response = {
                 'status': 'fail',

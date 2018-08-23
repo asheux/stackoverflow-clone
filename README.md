@@ -90,12 +90,6 @@ $ pip install -r requirements.txt
 
 After the configuration, you will run the app
 
-Setup the application for development to make sure all the requirements are installed
-
-```
-$ python setup.py develop
-
-```
 ## Create your local exports
 
 ```
@@ -110,6 +104,10 @@ Run the application
 
 ```
 $ flask run
+
+or
+
+$ python app.py
 
 ```
 
