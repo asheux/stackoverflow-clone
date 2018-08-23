@@ -1,6 +1,6 @@
 # StackOverflow-lite
 
-![Travis](https://travis-ci.com/asheuh/StackOverflow-lite.svg?branch=develop-v2)
+![Travis](https://travis-ci.com/asheuh/StackOverflow-lite.svg?branch=develop)
 [![Coverage Status](https://coveralls.io/repos/github/asheuh/StackOverflow-lite/badge.svg?branch=develop-v2)](https://coveralls.io/github/asheuh/StackOverflow-lite?branch=develop-v2)
 [![Maintainability](https://api.codeclimate.com/v1/badges/465755288bc6481668ed/maintainability)](https://codeclimate.com/github/asheuh/StackOverflow-lite/maintainability)
 ![GitHub last commit](https://img.shields.io/github/last-commit/asheuh/StackOverflow-lite/develop-v2.svg)
