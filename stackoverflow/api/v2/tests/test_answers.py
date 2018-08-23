@@ -180,6 +180,7 @@ class TestAnswerResource(BaseTestCase):
                 content_type='application/json'
             )
             response_data = json.loads(resp.data.decode())
+            print(response_data)
             self.assertTrue(response_data['status'] == 'success')
             self.assertTrue(response_data['message'] == 'Answer accepted')
             self.assertEqual(resp.status_code, 200)

@@ -38,11 +38,11 @@ class UsersCollection(Resource):
     def post(self):
         """Creates a new user"""
         data = request.json
-        valid_email = 'Not a valid email address, please try again'
+        invalid_email = 'Not a valid email address, please try again'
         errors = user_is_valid(data)
         if check_valid_email(data['email']) is None:
             response = {'status': 'error',
-                'message': valid_email}
+                'message': invalid_email}
             return response, 403
         if validate_username(data['username']):
             return validate_username(data['username'])
@@ -69,20 +69,20 @@ class UserLoginResource(Resource):
     @V2_API.expect(LOGIN, validate=True)
     def post(self):
         """Logs in a user"""
-        usernameerr = 'The username you provided does not exist in the database'
-        passerr = 'The password you provided did not match the database password'
+        user_name_err = 'The username you provided does not exist in the database'
+        pass_err = 'The password you provided did not match the database password'
         try:
             data = request.json
             user = User.get_one_by_field(field='username', value=data.get('username'))
             if not user:
                 response = {
                     'status': 'fail',
-                    'message': usernameerr}
+                    'message': user_name_err}
                 return response, 404
             elif not FLASK_BCRYPT.check_password_hash(user['password_hash'], data.get('password')):
                 response = {
                     'status': 'fail',
-                    'message': passerr}
+                    'message': pass_err}
                 return response, 401
             response = {
                 'status': 'success',
@@ -93,7 +93,7 @@ class UserLoginResource(Resource):
         except Exception as error:
             response = {
                 'message': 'Could not login: {}, try again'.format(error)}
-            return response, 500
+            return response, 400
 
 @NS_AUTH.route('/logout_access')
 class UserLogoutResourceAccess(Resource):
@@ -104,9 +104,9 @@ class UserLogoutResourceAccess(Resource):
     def post(self):
         # get auth token
         """Logout a user"""
-        jti = get_raw_jwt()['jti']
+        jwt = get_raw_jwt()['jti']
         try:
-            blacklist_token = BlackList(jti=jti)
+            blacklist_token = BlackList(jti=jwt)
             blacklist_token.insert()
             response = {
                 'status': 'success',
@@ -115,6 +115,6 @@ class UserLogoutResourceAccess(Resource):
             return response, 200
         except Exception as error:
             response = {
-                'message': 'could not generat access token: {}'.format(error)
+                'message': 'could not generate access token: {}'.format(error)
             }
-            return response, 500
+            return response, 400
