@@ -2,132 +2,30 @@
 Imports
 
 """
-
 import json
+from stackoverflow import settings
 from .base_test import BaseTestCase
 
-class TestUserQuestions(BaseTestCase):
-    """Test user post questions"""
-    def test_post_question(self):
-        """Test user can post a question"""
-        with self.client:
-            resp_register = self.client.post(
-                '/api/v2/auth/register',
-                data=json.dumps(dict(
-                    name='Brian Mboya',
-                    email='asheuh@gmail.com',
-                    username='asheuh',
-                    password='Mermaid12'
-                )),
-                content_type='application/json'
-            )
-            response = self.client.post(
-                '/api/v2/questions',
-                headers=dict(
-                    Authorization='Bearer ' + json.loads(
-                        resp_register.data.decode()
-                    )['Authorization']['access_token']
-                ),
-                data=json.dumps(dict(
-                    title='Gjango cli',
-                    description='How to create cli project in django?'
-                )),
-                content_type='application/json'
-            )
-            response_data = json.loads(response.data.decode())
-            self.assertTrue(response_data['status'] == 'success')
-            self.assertTrue(response_data['message'] == 'Question posted successfully')
-            self.assertEqual(response.status_code, 201)
+def register(my_client):
+    """Function that holds data for register"""
+    resp_register = my_client.post(
+        '/api/v2/auth/register',
+        data=json.dumps(dict(
+            name='Ivy Mboya',
+            email='ivy@gmail.com',
+            username='ivy',
+            password='Mermaid12'
+        )),
+        content_type='application/json'
+    )
+    return resp_register
 
-    def test_user_retrieves_all_questions(self):
-        """Test user can retrieve all questions"""
+class TestAnswerResource(BaseTestCase):
+    """Test answer resource"""
+    def test_user_can_post_answer_to_a_question(self):
+        """Test user can post an answer"""
         with self.client:
-            resp_register = self.client.post(
-                '/api/v2/auth/register',
-                data=json.dumps(dict(
-                    name='Brian Mboya',
-                    email='asheuh@gmail.com',
-                    username='asheuh',
-                    password='Mermaid12'
-                )),
-                content_type='application/json'
-            )
-            resp = self.client.post(
-                '/api/v2/questions',
-                headers=dict(
-                    Authorization='Bearer ' + json.loads(
-                        resp_register.data.decode()
-                    )['Authorization']['access_token']
-                ),
-                data=json.dumps(dict(
-                    title='Gjango cli',
-                    description='How to create cli project in django?'
-                )),
-                content_type='application/json'
-            )
-            resp = self.client.get(
-                '/api/v2/questions',
-                headers=dict(
-                    Authorization='Bearer ' + json.loads(
-                        resp_register.data.decode()
-                    )['Authorization']['access_token']
-                )
-            )
-            response_data = json.loads(resp.data.decode())
-            self.assertTrue(response_data['status'] == 'success')
-            self.assertEqual(resp.status_code, 200)
-
-    def test_user_retrieves_one_question(self):
-        """Test user can retrieve one question"""
-        with self.client:
-            resp_register = self.client.post(
-                '/api/v2/auth/register',
-                data=json.dumps(dict(
-                    name='Brian Mboya',
-                    email='asheuh@gmail.com',
-                    username='asheuh',
-                    password='Mermaid12'
-                )),
-                content_type='application/json'
-            )
-            resp = self.client.post(
-                '/api/v2/questions',
-                headers=dict(
-                    Authorization='Bearer ' + json.loads(
-                        resp_register.data.decode()
-                    )['Authorization']['access_token']
-                ),
-                data=json.dumps(dict(
-                    title='Gjango cli',
-                    description='How to create cli project in django?'
-                )),
-                content_type='application/json'
-            )
-            resp = self.client.get(
-                '/api/v2/questions/1',
-                headers=dict(
-                    Authorization='Bearer ' + json.loads(
-                        resp_register.data.decode()
-                    )['Authorization']['access_token']
-                )
-            )
-            response_data = json.loads(resp.data.decode())
-            self.assertTrue(response_data['status'] == 'success')
-            self.assertEqual(resp.status_code, 200)
-
-    def test_user_can_delete_their_question(self):
-        """Test user can delete a question"""
-        with self.client:
-            resp_register = self.client.post(
-                '/api/v2/auth/register',
-                data=json.dumps(dict(
-                    name='Ivy Mboya',
-                    email='ivy@gmail.com',
-                    username='ivy',
-                    password='Mermaid12'
-                )),
-                content_type='application/json'
-            )
+            resp_register = register(self.client)
             resp = self.client.post(
                 '/api/v2/questions',
                 headers=dict(
@@ -141,8 +39,54 @@ class TestUserQuestions(BaseTestCase):
                 )),
                 content_type='application/json'
             )
-            resp = self.client.delete(
-                '/api/v2/questions/1',
+            resp = self.client.post(
+                '/api/v2/questions/1/answers',
+                headers=dict(
+                    Authorization='Bearer ' + json.loads(
+                        resp_register.data.decode()
+                    )['Authorization']['access_token']
+                ),
+                data=json.dumps(dict(
+                    answer='Use click cli'
+                )),
+                content_type='application/json'
+            )
+            response_data = json.loads(resp.data.decode())
+            self.assertTrue(response_data['status'] == 'success')
+            self.assertTrue(response_data['message'] == 'Answer posted successfully')
+            self.assertEqual(resp.status_code, 201)
+
+    def test_user_can_upvote_an_answer_to_a_question(self):
+        """Test user can upvote an answer"""
+        with self.client:
+            resp_register = register(self.client)
+            resp = self.client.post(
+                '/api/v2/questions',
+                headers=dict(
+                    Authorization='Bearer ' + json.loads(
+                        resp_register.data.decode()
+                    )['Authorization']['access_token']
+                ),
+                data=json.dumps(dict(
+                    title='Flask Cli',
+                    description='How to create cli project in flask?'
+                )),
+                content_type='application/json'
+            )
+            resp = self.client.post(
+                '/api/v2/questions/1/answers',
+                headers=dict(
+                    Authorization='Bearer ' + json.loads(
+                        resp_register.data.decode()
+                    )['Authorization']['access_token']
+                ),
+                data=json.dumps(dict(
+                    answer='Use click cli'
+                )),
+                content_type='application/json'
+            )
+            resp = self.client.patch(
+                '/api/v2/questions/1/answers/1/upvote',
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
@@ -153,19 +97,10 @@ class TestUserQuestions(BaseTestCase):
             self.assertTrue(response_data['status'] == 'success')
             self.assertEqual(resp.status_code, 200)
 
-    def test_user_retrieves_all_their_questions(self):
-        """Test user can retrieve all their questions"""
+    def test_user_can_down_vote_an_answer_to_a_question(self):
+        """Test user can downvote an answer"""
         with self.client:
-            resp_register = self.client.post(
-                '/api/v2/auth/register',
-                data=json.dumps(dict(
-                    name='Brian Mboya',
-                    email='asheuh@gmail.com',
-                    username='asheuh',
-                    password='Mermaid12'
-                )),
-                content_type='application/json'
-            )
+            resp_register = register(self.client)
             resp = self.client.post(
                 '/api/v2/questions',
                 headers=dict(
@@ -174,13 +109,25 @@ class TestUserQuestions(BaseTestCase):
                     )['Authorization']['access_token']
                 ),
                 data=json.dumps(dict(
-                    title='Gjango cli',
-                    description='How to create cli project in django?'
+                    title='Flask Cli',
+                    description='How to create cli project in flask?'
                 )),
                 content_type='application/json'
             )
-            resp = self.client.get(
-                '/api/v2/questions/myquestions',
+            resp = self.client.post(
+                '/api/v2/questions/1/answers',
+                headers=dict(
+                    Authorization='Bearer ' + json.loads(
+                        resp_register.data.decode()
+                    )['Authorization']['access_token']
+                ),
+                data=json.dumps(dict(
+                    answer='Use click cli'
+                )),
+                content_type='application/json'
+            )
+            resp = self.client.patch(
+                '/api/v2/questions/1/answers/1/downvote',
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
@@ -189,4 +136,50 @@ class TestUserQuestions(BaseTestCase):
             )
             response_data = json.loads(resp.data.decode())
             self.assertTrue(response_data['status'] == 'success')
+            self.assertEqual(resp.status_code, 200)
+
+    def test_user_can_accept_an_answer_to_their_question(self):
+        """test user can accept an answer"""
+        with self.client:
+            resp_register = register(self.client)
+            resp = self.client.post(
+                '/api/v2/questions',
+                headers=dict(
+                    Authorization='Bearer ' + json.loads(
+                        resp_register.data.decode()
+                    )['Authorization']['access_token']
+                ),
+                data=json.dumps(dict(
+                    title='Flask Cli',
+                    description='How to create cli project in flask?'
+                )),
+                content_type='application/json'
+            )
+            resp = self.client.post(
+                '/api/v2/questions/1/answers',
+                headers=dict(
+                    Authorization='Bearer ' + json.loads(
+                        resp_register.data.decode()
+                    )['Authorization']['access_token']
+                ),
+                data=json.dumps(dict(
+                    answer='Use click cli'
+                )),
+                content_type='application/json'
+            )
+            resp = self.client.patch(
+                '/api/v2/questions/1/answers/1/accept',
+                headers=dict(
+                    Authorization='Bearer ' + json.loads(
+                        resp_register.data.decode()
+                    )['Authorization']['access_token']
+                ),
+                data=json.dumps(dict(
+                    accepted=settings.ACCEPT
+                )),
+                content_type='application/json'
+            )
+            response_data = json.loads(resp.data.decode())
+            self.assertTrue(response_data['status'] == 'success')
+            self.assertTrue(response_data['message'] == 'Answer accepted')
             self.assertEqual(resp.status_code, 200)

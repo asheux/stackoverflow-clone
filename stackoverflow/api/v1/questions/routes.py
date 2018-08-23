@@ -1,35 +1,39 @@
+"""
+Imports
+"""
+
 from flask import request
 from flask_restplus import Resource
 from flask_jwt_extended import (
     jwt_required,
     get_jwt_identity
 )
+from stackoverflow import settings
+from stackoverflow.api.restplus import API
 from ..auth.collections import questionstore, answerstore
 from ..auth.errors import (
     question_doesnt_exists,
     answer_doesnt_exists
 )
-from stackoverflow.api.restplus import api
-from ..auth.serializers import questions, answers
-from stackoverflow import settings
+from ..auth.serializers import QUESTIONS, ANSWERS
 
-ns = api.namespace('questions', description='Questions operations')
+NS = API.namespace('questions', description='Questions operations')
 
-@ns.route('')
+@NS.route('')
 class UserQuestionsResource(Resource):
     """Question resource endpoint"""
     @jwt_required
-    @api.doc('Question resource')
-    @api.response(201, 'Successfully created')
-    @api.expect(questions)
+    @API.doc('Question resource')
+    @API.response(201, 'Successfully created')
+    @API.expect(QUESTIONS)
     def post(self):
         """Post a new question"""
         data = request.json
         return questionstore.create_question(data=data)
 
     @jwt_required
-    @api.doc('Question resource')
-    @api.response(200, 'success')
+    @API.doc('Question resource')
+    @API.response(200, 'success')
     def get(self):
         """get all questions in the platform"""
         data = questionstore.get_all()
@@ -47,13 +51,13 @@ class UserQuestionsResource(Resource):
         }
         return response, 200
 
-@ns.route('/<int:question_id>')
-@api.response(404, 'question with the given id not found')
+@NS.route('/<int:question_id>')
+@API.response(404, 'question with the given id not found')
 class UserQuestionItem(Resource):
     """Single question resource"""
     @jwt_required
-    @api.doc('Single question resource')
-    @api.response(200, 'Success')
+    @API.doc('Single question resource')
+    @API.response(200, 'Success')
     def get(self, question_id):
         """Get a question"""
         question_doesnt_exists(question_id)
@@ -66,8 +70,8 @@ class UserQuestionItem(Resource):
         return response, 200
 
     @jwt_required
-    @api.doc('Delete question resource')
-    @api.response(200, 'Successfully deleted')
+    @API.doc('Delete question resource')
+    @API.response(200, 'Successfully deleted')
     def delete(self, question_id):
         """Deletes a question with the given id"""
         question_doesnt_exists(question_id)
@@ -77,24 +81,22 @@ class UserQuestionItem(Resource):
                 'status': 'fail',
                 'message': 'You are not permitted to delete this question'
             }
-
             return response, 401
-        else:
-            questionstore.delete(question_id)
-            response = {
-                'status': 'success',
-                'message': 'question deleted successfully'
-            }
-            return response, 200
+        questionstore.delete(question_id)
+        response = {
+            'status': 'success',
+            'message': 'question deleted successfully'
+        }
+        return response, 200
 
-@ns.route('/<int:question_id>/answers')
-@api.response(404, 'question with the given id not found')
+@NS.route('/<int:question_id>/answers')
+@API.response(404, 'question with the given id not found')
 class UserAnswerResource(Resource):
     """Single question resource"""
     @jwt_required
-    @api.doc('Single question resource')
-    @api.response(200, 'Success')
-    @api.expect(answers)
+    @API.doc('Single question resource')
+    @API.response(200, 'Success')
+    @API.expect(ANSWERS)
     def post(self, question_id):
         """Post an answer to this particular question"""
         question_doesnt_exists(question_id)
@@ -104,21 +106,22 @@ class UserAnswerResource(Resource):
             if i is not None and i['accepted'] == False:
                 response = {
                     'status': 'fail',
-                    'message': 'This answer was provided and is not accepted yet, please react on it'
+                    'message': 'This answer was provided and is not accepted yet, \
+                    please react on it'
                 }
-                return response, 500
+                return response, 406
         return answerstore.post_answer(question_id, data)
 
     @jwt_required
-    @api.doc('Answer resource')
-    @api.response(200, 'success')
+    @API.doc('Answer resource')
+    @API.response(200, 'success')
     def get(self, question_id):
         """get all answers for this particular question"""
         question_doesnt_exists(question_id)
         question = questionstore.get_one(question_id)
         data = answerstore.get_all()
         answers = [answer for answer in data.values()
-                   if answer['question'] == question_id]
+                   if answer['question'] == question['id']]
         if answers == []:
             response = {
                 'message': 'There are no answers in the db for this question'
@@ -131,13 +134,13 @@ class UserAnswerResource(Resource):
         }
         return response, 200
 
-@ns.route('/<int:question_id>/answers/<int:answer_id>/accept')
-@api.response(404, 'answer with the given id not found')
+@NS.route('/<int:question_id>/answers/<int:answer_id>/accept')
+@API.response(404, 'answer with the given id not found')
 class AcceptAnswerResourceItem(Resource):
     """Single answer resource"""
     @jwt_required
-    @api.doc('Single answer resource')
-    @api.response(200, 'Success')
+    @API.doc('Single answer resource')
+    @API.response(200, 'Success')
     def patch(self, answer_id, question_id):
         """This resource enables users accept an answer to their question"""
         allquiz = questionstore.get_all()
@@ -151,27 +154,27 @@ class AcceptAnswerResourceItem(Resource):
                 response = {
                     'message': 'Question with the provided id does not exist'}
                 return response, 404
-            elif answer['id'] != answer_id:
+            if answer['id'] != answer_id:
                 response = {
                     'message': 'Answer with the given id doesnt exists'}
                 return response, 404
-            elif answer['accepted'] != False:
+            if answer['accepted'] != False:
                 response = {
                     'message': 'This answer has been accepted already'}
-                return response, 403
+                return response, 406
             answer['accepted'] = settings.ACCEPT
             response = {
                 'status': 'success',
                 'message': 'Answer accepted'}
             return response, 200
 
-@ns.route('/<int:question_id>/answers/<int:answer_id>/upvote')
-@api.response(404, 'answer with the given id not found')
+@NS.route('/<int:question_id>/answers/<int:answer_id>/upvote')
+@API.response(404, 'answer with the given id not found')
 class UpvoteAnswerResourceItem(Resource):
     """Single answer resource"""
     @jwt_required
-    @api.doc('Single answer resource')
-    @api.response(200, 'Success')
+    @API.doc('Single answer resource')
+    @API.response(200, 'Success')
     def patch(self, answer_id, question_id):
         """This resource enables users upvote an answer to a question"""
         answer_doesnt_exists(answer_id)
@@ -188,13 +191,13 @@ class UpvoteAnswerResourceItem(Resource):
                 }
                 return response, 200
 
-@ns.route('/<int:question_id>/answers/<int:answer_id>/downvote')
-@api.response(404, 'answer with the given id not found')
+@NS.route('/<int:question_id>/answers/<int:answer_id>/downvote')
+@API.response(404, 'answer with the given id not found')
 class DownvoteAnswerResourceItem(Resource):
     """Single answer resource"""
     @jwt_required
-    @api.doc('Single answer resource')
-    @api.response(200, 'Success')
+    @API.doc('Single answer resource')
+    @API.response(200, 'Success')
     def patch(self, answer_id, question_id):
         """This resource enables users upvote an answer to a question"""
         answer_doesnt_exists(answer_id)

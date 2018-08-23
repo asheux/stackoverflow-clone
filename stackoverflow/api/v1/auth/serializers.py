@@ -1,22 +1,31 @@
-from flask_restplus import fields
-from stackoverflow.api.restplus import api
+"""
+Imports
 
-register_data = dict(
+"""
+from flask_restplus import fields
+from stackoverflow.api.restplus import API
+
+REGISTER_DATA = dict(
     name=fields.String(required=True, default='Paulla Mboya', description='User fullname'),
     username=fields.String(required=True, default='paulla', description='Username'),
-    email=fields.String(required=True, default='paulla@gmail.com', description='The user\'s email address'),
-    password=fields.String(required=True, default='barryazah', description='The users secret password'),
+    email=fields.String(required=True, default='paulla@gmail.com',
+                        description='The user\'s email address'),
+    password=fields.String(required=True, default='barryazah',
+                           description='The users secret password'),
 )
-user_register = api.model('Register Model', register_data)
+USER_REGISTER = API.model('Register Model', REGISTER_DATA)
 
-head = 'Flask restful app'
-desc = 'How to build a restful api in flask'
-questions_data = dict(
-    title=fields.String(required=True, default=head, description='Question name'),
-    description=fields.String(required=True, default=desc, description='the question description here')
+HEAD = 'Flask restful app'
+DESC = 'How to build a restful api in flask'
+QUESTIONS_DATA = dict(
+    title=fields.String(required=True, default=HEAD,
+                        description='Question name'),
+    description=fields.String(required=True, default=DESC,
+                              description='the question description here')
 )
-questions = api.model('Question Model', questions_data)
+QUESTIONS = API.model('Question Model', QUESTIONS_DATA)
 
-answers = api.model('Answer Model', {
-    'answer': fields.String(required=True, default='create a dictionary of data', description='answer description')
+ANSWERS = API.model('Answer Model', {
+    'answer': fields.String(required=True, default='create a dictionary of data',
+                            description='answer description')
 })

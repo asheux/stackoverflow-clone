@@ -1,3 +1,7 @@
+"""
+Imports
+
+"""
 import heapq
 from flask import request
 from flask_restplus import Resource
@@ -5,29 +9,29 @@ from flask_jwt_extended import (
     jwt_required,
     get_jwt_identity
 )
-
+from stackoverflow.api.v2.models import Question, Answer
+from stackoverflow import V2_API, settings
 from ..auth.errors import (
     question_doesnt_exists,
     answer_doesnt_exists
 )
-from stackoverflow import v2_api
-from ..auth.serializers import questions, answers
-from stackoverflow.api.v2.models import Question, Answer
-from stackoverflow import settings
+from ..auth.serializers import ANSWERS
 
-ns = v2_api.namespace('questions', description='Questions operations')
+NS = V2_API.namespace('questions', description='Questions operations')
 
 def answer_dict(my_list):
-    for i in my_list:return i
+    """Get an item from a list"""
+    for i in my_list:
+        return i
 
-@ns.route('/<int:question_id>/answers')
-@v2_api.response(404, 'question with the given id not found')
+@NS.route('/<int:question_id>/answers')
+@V2_API.response(404, 'question with the given id not found')
 class UserAnswerResource(Resource):
     """Single question resource"""
     @jwt_required # add jwt token based authentication
-    @v2_api.doc('Single question resource')
-    @v2_api.response(200, 'Success')
-    @v2_api.expect(answers)
+    @V2_API.doc('Single question resource')
+    @V2_API.response(200, 'Success')
+    @V2_API.expect(ANSWERS)
     def post(self, question_id):
         """Post an answer to this particular question"""
         question_doesnt_exists(question_id)
@@ -56,8 +60,8 @@ class UserAnswerResource(Resource):
         return response, 201
 
     @jwt_required
-    @v2_api.doc('All answers for this question')
-    @v2_api.response(200, 'success')
+    @V2_API.doc('All answers for this question')
+    @V2_API.response(200, 'success')
     def get(self, question_id):
         """Gets all the answers for this particular question"""
         question_doesnt_exists(question_id)
@@ -78,13 +82,13 @@ class UserAnswerResource(Resource):
         }
         return response, 200
 
-@ns.route('/<int:question_id>/answers/<int:answer_id>/upvote')
-@v2_api.response(404, 'answer with the given id not found')
+@NS.route('/<int:question_id>/answers/<int:answer_id>/upvote')
+@V2_API.response(404, 'answer with the given id not found')
 class UpvoteAnswerResourceItem(Resource):
     """Single answer resource"""
     @jwt_required # add jwt token based authentication
-    @v2_api.doc('Single answer resource')
-    @v2_api.response(200, 'Success')
+    @V2_API.doc('Single answer resource')
+    @V2_API.response(200, 'Success')
     def patch(self, answer_id, question_id):
         """This resource enables users upvote an answer to a question"""
         answer_doesnt_exists(answer_id)
@@ -102,13 +106,13 @@ class UpvoteAnswerResourceItem(Resource):
                 }
                 return response, 200
 
-@ns.route('/<int:question_id>/answers/<int:answer_id>/downvote')
-@v2_api.response(404, 'answer with the given id not found')
+@NS.route('/<int:question_id>/answers/<int:answer_id>/downvote')
+@V2_API.response(404, 'answer with the given id not found')
 class DownvoteAnswerResourceItem(Resource):
     """Single answer resource"""
     @jwt_required # add jwt token based authentication
-    @v2_api.doc('Single answer resource')
-    @v2_api.response(200, 'Success')
+    @V2_API.doc('Single answer resource')
+    @V2_API.response(200, 'Success')
     def patch(self, answer_id, question_id):
         """This resource enables users down vote an answer to a question"""
         answer_doesnt_exists(answer_id)
@@ -126,13 +130,13 @@ class DownvoteAnswerResourceItem(Resource):
                 }
                 return response, 200
 
-@ns.route('/<int:question_id>/answers/<int:answer_id>/accept')
-@v2_api.response(404, 'answer with the given id not found')
+@NS.route('/<int:question_id>/answers/<int:answer_id>/accept')
+@V2_API.response(404, 'answer with the given id not found')
 class AcceptAnswerResourceItem(Resource):
     """Single answer resource"""
     @jwt_required # add jwt token based authentication
-    @v2_api.doc('Single answer resource')
-    @v2_api.response(200, 'Success')
+    @V2_API.doc('Single answer resource')
+    @V2_API.response(200, 'Success')
     def patch(self, answer_id, question_id):
         """This resource enables users accept an answer to their question"""
         question_doesnt_exists(question_id)
@@ -154,7 +158,7 @@ class AcceptAnswerResourceItem(Resource):
                 response_obj = {
                     'message': 'This answers has already been accepted'
                 }
-                return response_obj, 500
+                return response_obj, 400
             elif my_answer['id'] == answer_id \
                     and my_answer['question'] == question_id:
                 my_answer['accepted'] = settings.ACCEPT
@@ -166,11 +170,12 @@ class AcceptAnswerResourceItem(Resource):
             response_obj = {
                 'message': 'Could not perform action, check the id you provided'}
             return response_obj, 404
-@ns.route('/myquestions')
+@NS.route('/myquestions')
 class UserQuestions(Resource):
+    """User questions posted"""
     @jwt_required # add jwt token based authentication
-    @v2_api.doc('All questions for user')
-    @v2_api.response(200, 'Success')
+    @V2_API.doc('All questions for user')
+    @V2_API.response(200, 'Success')
     def get(self):
         """Get all questions for this user"""
         data = Question.get_all()
@@ -189,11 +194,12 @@ class UserQuestions(Resource):
         }
         return response, 200
 
-@ns.route('/mostanswers')
+@NS.route('/mostanswers')
 class UserQuestionAnswer(Resource):
+    """Most answered question"""
     @jwt_required
-    @v2_api.doc('Question with most answers')
-    @v2_api.response(200, 'Success')
+    @V2_API.doc('Question with most answers')
+    @V2_API.response(200, 'Success')
     def get(self):
         """Get the question with the most answers"""
         questions = Question.get_all()
@@ -214,11 +220,12 @@ class UserQuestionAnswer(Resource):
         }
         return response, 200
 
-@ns.route('/search/<string:search_item>')
+@NS.route('/search/<string:search_item>')
 class UserSearchQuestion(Resource):
+    """Search resource"""
     @jwt_required
-    @v2_api.doc('Searching a question in the platform')
-    @v2_api.response(200, 'success')
+    @V2_API.doc('Searching a question in the platform')
+    @V2_API.response(200, 'success')
     def get(self, search_item):
         """Search question resource"""
         Question.transform_for_search()
