@@ -2,7 +2,6 @@
 Imports
 
 """
-import logging.config
 import os
 from urllib.parse import urlparse
 import psycopg2
@@ -16,9 +15,6 @@ from stackoverflow.api.restplus import BLUEPRINT, API, AUTHORIZATIONS
 from stackoverflow.api.v1.auth.routes.routes import NS as user_namespace
 from stackoverflow.api.v1.questions.routes import NS as question_namespace
 
-LOGGING_FILE_PATH = os.path.normpath(os.path.join(os.path.dirname(__file__), '../logging.conf'))
-logging.config.fileConfig(LOGGING_FILE_PATH)
-LOG = logging.getLogger(__name__)
 
 def database_config(db_url):
     """This creates the database configuration"""
@@ -111,7 +107,5 @@ def create_app(config_name):
     app = Flask(__name__)
     app.config.from_object(config_name)
     initialize_app(app)
-
-    LOG.info('Starting development server at http://{}'.format(settings.FLASK_SERVER_NAME))
 
     return app
