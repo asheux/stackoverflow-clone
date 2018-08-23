@@ -11,6 +11,7 @@ from stackoverflow.api.v1.models import (
     MainModel, User,
     Question, Answer
 )
+from .utils import QUERY1, QUERY2, QUERY3
 from stackoverflow import database_config, settings
 
 class DatabaseCollector(MainModel):
@@ -31,8 +32,8 @@ class DatabaseCollector(MainModel):
         try:
             cur.execute("DROP TABLE {}".format(cls.__table__))
             conn.commit()
-        except Exception as error:
-            print(error)
+        except Exception:
+            pass
         conn.close()
 
     @classmethod
@@ -44,8 +45,8 @@ class DatabaseCollector(MainModel):
             cur.execute("SELECT * FROM {}".format(cls.__table__))
             items = cur.fetchall()
             item = [cls.to_json(i) for i in items]
-        except Exception as error:
-            print(error)
+        except Exception:
+            pass
         conn.close()
         return item
 
@@ -59,8 +60,8 @@ class DatabaseCollector(MainModel):
             cur.execute(query, (value,))
             items = cur.fetchall()
             item = [cls.to_json(i) for i in items]
-        except Exception as error:
-            print(error)
+        except Exception:
+            pass
         conn.close()
         return item
 
@@ -74,8 +75,8 @@ class DatabaseCollector(MainModel):
                 "UPDATE {} SET {} = %s WHERE id = %s".format(cls.__table__, field), (
                     item, _id))
             conn.commit()
-        except Exception as error:
-            print(error)
+        except Exception:
+            pass
         conn.close()
 
     @classmethod
@@ -94,8 +95,8 @@ class DatabaseCollector(MainModel):
         try:
             cur.execute("DELETE FROM {} WHERE id = %s".format(cls.__table__), (_id,))
             conn.commit()
-        except Exception as error:
-            print(error)
+        except Exception:
+            pass
         conn.close()
 
     @classmethod
@@ -108,27 +109,21 @@ class DatabaseCollector(MainModel):
             item = cur.fetchone()
             if item is None:
                 return None
-        except Exception as error:
-            print(error)
+        except Exception:
+            pass
         conn.close()
         return cls.to_json(item)
 
 class User(User, DatabaseCollector):
     __table__ = "users"
     config = database_config(settings.DATABASE_URL)
-    query = """
-            CREATE TABLE IF NOT EXISTS users(
-                id serial PRIMARY KEY, name VARCHAR,
-                username VARCHAR, email VARCHAR,
-                password_hash VARCHAR, registered_on timestamp
-            )
-            """
+
     @classmethod
     def create_table(cls):
         """Creates the table users"""
         conn = psycopg2.connect(**cls.config)
         cur = conn.cursor(cursor_factory=RealDictCursor)
-        cur.execute(cls.query)
+        cur.execute(QUERY1)
         conn.commit()
 
     def insert(self):
@@ -148,8 +143,8 @@ class User(User, DatabaseCollector):
             result = cur.fetchone()
             if result is not None:
                 self.id = result['id']
-        except Exception as error:
-            print(error)
+        except Exception:
+            pass
         conn.close()
         return result
 
@@ -160,18 +155,9 @@ class Question(Question, DatabaseCollector):
     @classmethod
     def create_table(cls):
         """creates the table questions"""
-        query = """
-            CREATE TABLE IF NOT EXISTS questions(
-                id serial PRIMARY KEY,
-                title VARCHAR, description VARCHAR,
-                created_by INTEGER,
-                answers INTEGER, date_created timestamp,
-                FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE
-            )
-            """
         conn = psycopg2.connect(**cls.config)
         cur = conn.cursor(cursor_factory=RealDictCursor)
-        cur.execute(query)
+        cur.execute(QUERY2)
         conn.commit()
 
     def insert(self):
@@ -191,8 +177,8 @@ class Question(Question, DatabaseCollector):
             result = cur.fetchone()
             if result is not None:
                 self.id = result['id']
-        except Exception as error:
-            print(error)
+        except Exception:
+            pass
         conn.close()
         return result
 
@@ -209,8 +195,8 @@ class Question(Question, DatabaseCollector):
                 "SELECT title || '. ' || description as document, "
                 "to_tsvector(title || '. ' || description) as metadata "
                 "FROM questions")
-        except Exception as e:
-            print(e)
+        except Exception:
+            pass
         conn.close()
 
     @classmethod
@@ -228,8 +214,8 @@ class Question(Question, DatabaseCollector):
                 "to_tsquery('{}')".format(search_item))
             result = cur.fetchall()
             items = [cls.to_json(item) for item in result]
-        except Exception as error:
-            print(error)
+        except Exception:
+            pass
         conn.close()
         return items
 
@@ -242,16 +228,7 @@ class Answer(Answer, DatabaseCollector):
         """Creates answer table"""
         conn = psycopg2.connect(**cls.config)
         cur = conn.cursor(cursor_factory=RealDictCursor)
-        cur.execute(
-            """
-            CREATE TABLE IF NOT EXISTS answers(
-                id serial PRIMARY KEY,
-                answer VARCHAR, accepted BOOL, votes INTEGER,
-                owner INTEGER REFERENCES users(id) ON DELETE CASCADE,
-                question INTEGER REFERENCES questions(id) ON DELETE CASCADE,
-                date_created timestamp
-            )
-            """)
+        cur.execute(QUERY3)
         conn.commit()
         conn.close()
 
@@ -270,8 +247,8 @@ class Answer(Answer, DatabaseCollector):
             result = cur.fetchone()
             if result is not None:
                 self.id = result['id']
-        except Exception as error:
-            print(error)
+        except Exception:
+            pass
         conn.close()
         return result
 
@@ -307,6 +284,6 @@ class BlackList(DatabaseCollector):
                 "INSERT INTO blacklist(jti, blacklisted_on) VALUES(%s, %s) RETURNING id", (
                     self.jti, self.blacklisted_on))
             conn.commit()
-        except Exception as error:
-            print(error)
+        except Exception:
+            pass
         conn.close()
