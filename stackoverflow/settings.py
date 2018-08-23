@@ -23,8 +23,8 @@ PENDING = False
 VOTES = 0
 DOWNVOTE = VOTES - 1
 # DATABASE_URL = 'postgresql+psycopg2://postgres:@bashtech1234@localhost:5432/stackoverflow'
-DATABASE_URL = 'postgresql+psycopg2://pjvmdmcqfvaqgw:827f38aa834a1513d332505d119a804d06977472ba52797717628a98c05daf1c@ec2-54-235-242-63.compute-1.amazonaws.com:5432/dbdp9cg15rds46'
-# DATABASE_URL = os.getenv('DATABASE_URL')
+# DATABASE_URL = 'postgresql+psycopg2://pjvmdmcqfvaqgw:827f38aa834a1513d332505d119a804d06977472ba52797717628a98c05daf1c@ec2-54-235-242-63.compute-1.amazonaws.com:5432/dbdp9cg15rds46'
+DATABASE_URL = os.getenv('DATABASE_URL')
 # Jwt settings
 JWT_BLACKLIST_ENABLED = True
 JWT_BLACKLIST_TOKEN_CHECKS = ['access', 'refresh']
