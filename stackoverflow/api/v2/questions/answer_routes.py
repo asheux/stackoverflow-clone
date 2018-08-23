@@ -105,6 +105,10 @@ class UpvoteAnswerResourceItem(Resource):
                     'message': 'You upvoted this answer, thanks for the feedback'
                 }
                 return response, 200
+            response = {
+                'message': 'the answer given does not exist'
+            }
+            return response, 404
 
 @NS.route('/<int:question_id>/answers/<int:answer_id>/downvote')
 @V2_API.response(404, 'answer with the given id not found')
@@ -129,6 +133,10 @@ class DownvoteAnswerResourceItem(Resource):
                     'message': 'You down voted this answer, thanks for the feedback'
                 }
                 return response, 200
+            response = {
+                'message': 'No answer with that id'
+            }
+            return response, 404
 
 @NS.route('/<int:question_id>/answers/<int:answer_id>/accept')
 @V2_API.response(404, 'answer with the given id not found')

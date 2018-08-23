@@ -45,11 +45,11 @@ class UsersCollection(Resource):
                 'message': valid_email}
             return response, 403
         if validate_username(data['username']):
-            validate_username(data['username'])
+            return validate_username(data['username'])
         if validate_str_field(data['name']):
-            validate_str_field(data['name'])
+            return validate_str_field(data['name'])
         if validate_password(data['password']):
-            validate_password(data['password'])
+            return validate_password(data['password'])
         if errors:
             response = {'status': 'error', 'message': errors}
             return response, 401
