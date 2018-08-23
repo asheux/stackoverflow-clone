@@ -53,7 +53,7 @@ class UserQuestionsResource(Resource):
                 'status': 'error',
                 'message': 'Cannot post a question: {}'.format(error)
             }
-            return response, 500
+            return response, 400
 
     @jwt_required # add jwt token based authentication
     @V2_API.doc('Question resource')
@@ -97,7 +97,7 @@ class UserQuestionItem(Resource):
                 'status': 'fail',
                 'message': 'Could not fetch the question: {}'.format(error)
             }
-            return response, 500
+            return response, 400
 
     @jwt_required # add jwt token based authentication
     @V2_API.doc('Delete question resource')

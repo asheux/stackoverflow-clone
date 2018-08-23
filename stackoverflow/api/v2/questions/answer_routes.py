@@ -2,7 +2,6 @@
 Imports
 
 """
-
 import heapq
 from flask import request
 from flask_restplus import Resource
@@ -10,9 +9,8 @@ from flask_jwt_extended import (
     jwt_required,
     get_jwt_identity
 )
-from stackoverflow import V2_API
-from stackoverflow import settings
 from stackoverflow.api.v2.models import Question, Answer
+from stackoverflow import V2_API, settings
 from ..auth.errors import (
     question_doesnt_exists,
     answer_doesnt_exists
@@ -22,7 +20,7 @@ from ..auth.serializers import ANSWERS
 NS = V2_API.namespace('questions', description='Questions operations')
 
 def answer_dict(my_list):
-    """Gets one item from a list"""
+    """Get an item from a list"""
     for i in my_list:
         return i
 
@@ -47,7 +45,10 @@ class UserAnswerResource(Resource):
                 'message': 'Same answer exist already, please vote on it'
             }
             return response_obj, 503
-        answer = Answer(answer, owner=get_jwt_identity(), question=question['id'])
+        answer = Answer(answer,
+                        owner=get_jwt_identity(),
+                        question=question['id']
+                    )
         answer.insert()
         question['answers'] += 1
         Question.update('answers', question['answers'], question_id)
@@ -146,25 +147,32 @@ class AcceptAnswerResourceItem(Resource):
                      if quiz['created_by'] == get_jwt_identity()]
         answers = [answer for answer in allanswers
                    if answer['question'] == answer_dict(questions)['id']]
+        print(answers)
         if answers == []:
-            response = {'status': 'fail', 'message': 'There are no answers for this question'}
+            response = {
+                'status': 'fail',
+                'message': 'There are no answers for this question'}
             return response, 404
         for my_answer in answers:
             if my_answer['accepted'] != False:
-                response_obj = {'message': 'This answers has already been accepted'}
-                return response_obj, 406
-            if my_answer['id'] == answer_id \
+                response_obj = {
+                    'message': 'This answers has already been accepted'
+                }
+                return response_obj, 400
+            elif my_answer['id'] == answer_id \
                     and my_answer['question'] == question_id:
                 my_answer['accepted'] = settings.ACCEPT
                 Answer.update('accepted', my_answer['accepted'], answer_id)
-                response = {'status': 'success', 'message': 'Answer accepted'}
+                response = {
+                    'status': 'success',
+                    'message': 'Answer accepted'}
                 return response, 200
-            response_obj = {'message': 'Could not perform action, check the id you provided'}
-            return response_obj, 405
-
+            response_obj = {
+                'message': 'Could not perform action, check the id you provided'}
+            return response_obj, 404
 @NS.route('/myquestions')
 class UserQuestions(Resource):
-    """My questions resource"""
+    """User questions posted"""
     @jwt_required # add jwt token based authentication
     @V2_API.doc('All questions for user')
     @V2_API.response(200, 'Success')
@@ -188,7 +196,7 @@ class UserQuestions(Resource):
 
 @NS.route('/mostanswers')
 class UserQuestionAnswer(Resource):
-    """This class create the get most answered question"""
+    """Most answered question"""
     @jwt_required
     @V2_API.doc('Question with most answers')
     @V2_API.response(200, 'Success')
@@ -214,7 +222,7 @@ class UserQuestionAnswer(Resource):
 
 @NS.route('/search/<string:search_item>')
 class UserSearchQuestion(Resource):
-    """This class create the search resource"""
+    """Search resource"""
     @jwt_required
     @V2_API.doc('Searching a question in the platform')
     @V2_API.response(200, 'success')
