@@ -3,7 +3,10 @@ Imports
 
 """
 import os
-from urllib.parse import urlparse
+try:
+    from urllib.parse import urlparse
+except ImportError:
+     from urlparse import urlparse
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from flask_restplus import Api

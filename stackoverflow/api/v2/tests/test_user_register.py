@@ -75,6 +75,7 @@ class TestUserRegister(BaseTestCase):
             )
 
             response_data = json.loads(response.data.decode())
+            print(response_data)
             errors = {
                 "username": "The username you provided already exists",
                 "email": "The email you provided is in use by another user"

@@ -52,6 +52,7 @@ class TestAnswerResource(BaseTestCase):
                 content_type='application/json'
             )
             response_data = json.loads(resp.data.decode())
+            print(response_data)
             self.assertTrue(response_data['status'] == 'success')
             self.assertTrue(response_data['message'] == 'Answer posted successfully')
             self.assertEqual(resp.status_code, 201)
@@ -94,6 +95,7 @@ class TestAnswerResource(BaseTestCase):
                 )
             )
             response_data = json.loads(resp.data.decode())
+            print(response_data)
             self.assertTrue(response_data['status'] == 'success')
             self.assertEqual(resp.status_code, 200)
 
@@ -135,6 +137,7 @@ class TestAnswerResource(BaseTestCase):
                 )
             )
             response_data = json.loads(resp.data.decode())
+            print(response_data)
             self.assertTrue(response_data['status'] == 'success')
             self.assertEqual(resp.status_code, 200)
 

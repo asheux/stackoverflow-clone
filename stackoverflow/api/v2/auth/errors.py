@@ -3,6 +3,7 @@ Imports
 
 """
 import re
+from flask import jsonify
 from stackoverflow.api.restplus import API
 from ..models import User, Question, Answer
 
@@ -22,22 +23,22 @@ def validate_str_field(string):
     """Validate the user has input as string"""
     regex = re.match("^[ A-Za-z0-9_-]*$", string)
     if not regex:
-        return {"message": "Invalid data for username"}, 400
+        return jsonify({"message": "Invalid data for username"}), 400
     return None
 
 def validate_password(string):
     """validates user has followed Password rules"""
     passerror = "The password should have at least 1 digit, 1 caps, 1 number and minimum of 6 chars"
     if not re.match(r'(?=.*?[0-9])(?=.*?[A-Z])(?=.*?[a-z]).{6}', string):
-        return {
+        return jsonify({
             "message": passerror
-        }, 400
+        }), 400
     return None
 
 def validate_username(string):
     """validate the user has input the right username format"""
     if not re.match("^[A-Za-z0-9_-]*$", string):
-        return {"message": "Name should only contain letters, numbers, underscores and dashes"}, 400
+        return jsonify({"message": "Name should only contain letters, numbers, underscores and dashes"}), 400
     return None
 
 def question_doesnt_exists(question_id):
@@ -52,7 +53,7 @@ def answer_doesnt_exists(answer_id):
         response_obj = {
             'message': 'The answer with the given id does not exist'
         }
-        return response_obj, 404
+        return jsonify(response_obj), 404
     return None
 
 def check_valid_email(email):
