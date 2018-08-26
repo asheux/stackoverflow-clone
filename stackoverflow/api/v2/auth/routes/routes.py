@@ -42,8 +42,7 @@ class UsersCollection(Resource):
         invalid_email = 'Not a valid email address, please try again'
         errors = user_is_valid(data)
         if check_valid_email(data['email']) is None:
-            response = {'status': 'error',
-                'message': invalid_email}
+            response = {'message': invalid_email}
             return jsonify(response), 403
         if validate_username(data['username']):
             return validate_username(data['username'])
@@ -52,14 +51,14 @@ class UsersCollection(Resource):
         if validate_password(data['password']):
             return validate_password(data['password'])
         if errors:
-            response = {'status': 'error', 'message': errors}
+            response = {'message': errors}
             return jsonify(response), 401
         user = User(data['name'], data['username'], data['email'], data['password'])
         user.insert()
         access_token = create_access_token(user.id)
-        response = {'status': 'success',
+        response = {
             'message': 'user created successfully',
-            'Authorization': {'access_token': access_token}}
+            'access_token': access_token}
         return jsonify(response), 201
 
 @NS_AUTH.route('/login')
@@ -77,20 +76,15 @@ class UserLoginResource(Resource):
             data = request.json
             user = User.get_one_by_field(field='username', value=data.get('username'))
             if not user:
-                response = {
-                    'status': 'fail',
-                    'message': user_name_err}
+                response = {'message': user_name_err}
                 return jsonify(response), 404
             elif not FLASK_BCRYPT.check_password_hash(user['password_hash'], data.get('password')):
-                response = {
-                    'status': 'fail',
-                    'message': pass_err}
+                response = {'message': pass_err}
                 return jsonify(response), 401
             response = {
-                'status': 'success',
                 'message': 'Successfully logged in',
-                'Authorization': {
-                    'access_token': create_access_token(user['id'])}}
+                'access_token': create_access_token(user['id'])
+            }
             return jsonify(response), 200
         except Exception as error:
             response = {
@@ -112,7 +106,6 @@ class UserLogoutResourceAccess(Resource):
             blacklist_token = BlackList(jti=jwt)
             blacklist_token.insert()
             response = {
-                'status': 'success',
                 'message': 'Access token has been revoked, you are now logged out'
             }
             return jsonify(response), 200

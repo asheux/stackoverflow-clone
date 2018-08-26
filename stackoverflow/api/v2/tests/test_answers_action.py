@@ -31,7 +31,7 @@ class TestAnswerAction(BaseTestCase):
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
-                    )['Authorization']['access_token']
+                    )['access_token']
                 ),
                 data=json.dumps(dict(
                     title='Flask Cli',
@@ -44,7 +44,7 @@ class TestAnswerAction(BaseTestCase):
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
-                    )['Authorization']['access_token']
+                    )['access_token']
                 ),
                 data=json.dumps(dict(
                     answer='Use click cli'
@@ -56,11 +56,10 @@ class TestAnswerAction(BaseTestCase):
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
-                    )['Authorization']['access_token']
+                    )['access_token']
                 )
             )
             response_data = json.loads(resp.data.decode())
-            self.assertTrue(response_data['status'] == 'success')
             self.assertEqual(resp.status_code, 200)
 
     def test_user_retrieves_all_answers_to_a_questions_if_none(self):
@@ -72,7 +71,7 @@ class TestAnswerAction(BaseTestCase):
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
-                    )['Authorization']['access_token']
+                    )['access_token']
                 ),
                 data=json.dumps(dict(
                     title='Flask Cli',
@@ -85,11 +84,10 @@ class TestAnswerAction(BaseTestCase):
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
-                    )['Authorization']['access_token']
+                    )['access_token']
                 )
             )
             response_data = json.loads(resp.data.decode())
-            self.assertTrue(response_data['status'] == 'fail')
             self.assertEqual(resp.status_code, 404)
 
     def test_user_retrieves_all_questions_with_most_answers(self):
@@ -101,7 +99,7 @@ class TestAnswerAction(BaseTestCase):
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
-                    )['Authorization']['access_token']
+                    )['access_token']
                 ),
                 data=json.dumps(dict(
                     title='Flask Cli',
@@ -114,7 +112,7 @@ class TestAnswerAction(BaseTestCase):
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
-                    )['Authorization']['access_token']
+                    )['access_token']
                 ),
                 data=json.dumps(dict(
                     answer='Use click cli'
@@ -126,11 +124,10 @@ class TestAnswerAction(BaseTestCase):
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
-                    )['Authorization']['access_token']
+                    )['access_token']
                 )
             )
             response_data = json.loads(resp.data.decode())
-            self.assertTrue(response_data['status'] == 'success')
             self.assertEqual(resp.status_code, 200)
 
     def test_user_retrieves_all_questions_with_most_answers_if_none(self):
@@ -142,12 +139,10 @@ class TestAnswerAction(BaseTestCase):
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
-                    )['Authorization']['access_token']
+                    )['access_token']
                 )
             )
             response_data = json.loads(resp.data.decode())
-            self.assertTrue(response_data['status'] == 'fail')
-            self.assertTrue(response_data['message'] == 'There are no questions')
             self.assertEqual(resp.status_code, 404)
 
     def test_user_retrieves_user_search_results_of_questions(self):
@@ -159,7 +154,7 @@ class TestAnswerAction(BaseTestCase):
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
-                    )['Authorization']['access_token']
+                    )['access_token']
                 ),
                 data=json.dumps(dict(
                     title='Flask Cli',
@@ -172,12 +167,10 @@ class TestAnswerAction(BaseTestCase):
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
-                    )['Authorization']['access_token']
+                    )['access_token']
                 )
             )
             response_data = json.loads(resp.data.decode())
-            print(response_data)
-            self.assertTrue(response_data['status'] == 'success')
             self.assertEqual(resp.status_code, 200)
 
     def test_user_retrieves_user_search_results_if_none(self):
@@ -189,7 +182,7 @@ class TestAnswerAction(BaseTestCase):
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
-                    )['Authorization']['access_token']
+                    )['access_token']
                 ),
                 data=json.dumps(dict(
                     title='Flask Cli',
@@ -202,10 +195,8 @@ class TestAnswerAction(BaseTestCase):
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
-                    )['Authorization']['access_token']
+                    )['access_token']
                 )
             )
             response_data = json.loads(resp.data.decode())
-            self.assertTrue(response_data['status'] == 'fail')
-            self.assertTrue(response_data['message'] == 'No results for your search')
             self.assertEqual(resp.status_code, 404)

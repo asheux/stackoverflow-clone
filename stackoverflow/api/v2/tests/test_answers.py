@@ -31,7 +31,7 @@ class TestAnswerResource(BaseTestCase):
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
-                    )['Authorization']['access_token']
+                    )['access_token']
                 ),
                 data=json.dumps(dict(
                     title='Flask Cli',
@@ -44,7 +44,7 @@ class TestAnswerResource(BaseTestCase):
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
-                    )['Authorization']['access_token']
+                    )['access_token']
                 ),
                 data=json.dumps(dict(
                     answer='Use click cli'
@@ -52,9 +52,6 @@ class TestAnswerResource(BaseTestCase):
                 content_type='application/json'
             )
             response_data = json.loads(resp.data.decode())
-            print(response_data)
-            self.assertTrue(response_data['status'] == 'success')
-            self.assertTrue(response_data['message'] == 'Answer posted successfully')
             self.assertEqual(resp.status_code, 201)
 
     def test_user_can_upvote_an_answer_to_a_question(self):
@@ -66,7 +63,7 @@ class TestAnswerResource(BaseTestCase):
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
-                    )['Authorization']['access_token']
+                    )['access_token']
                 ),
                 data=json.dumps(dict(
                     title='Flask Cli',
@@ -79,7 +76,7 @@ class TestAnswerResource(BaseTestCase):
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
-                    )['Authorization']['access_token']
+                    )['access_token']
                 ),
                 data=json.dumps(dict(
                     answer='Use click cli'
@@ -91,12 +88,10 @@ class TestAnswerResource(BaseTestCase):
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
-                    )['Authorization']['access_token']
+                    )['access_token']
                 )
             )
             response_data = json.loads(resp.data.decode())
-            print(response_data)
-            self.assertTrue(response_data['status'] == 'success')
             self.assertEqual(resp.status_code, 200)
 
     def test_user_can_down_vote_an_answer_to_a_question(self):
@@ -108,7 +103,7 @@ class TestAnswerResource(BaseTestCase):
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
-                    )['Authorization']['access_token']
+                    )['access_token']
                 ),
                 data=json.dumps(dict(
                     title='Flask Cli',
@@ -121,7 +116,7 @@ class TestAnswerResource(BaseTestCase):
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
-                    )['Authorization']['access_token']
+                    )['access_token']
                 ),
                 data=json.dumps(dict(
                     answer='Use click cli'
@@ -133,12 +128,10 @@ class TestAnswerResource(BaseTestCase):
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
-                    )['Authorization']['access_token']
+                    )['access_token']
                 )
             )
             response_data = json.loads(resp.data.decode())
-            print(response_data)
-            self.assertTrue(response_data['status'] == 'success')
             self.assertEqual(resp.status_code, 200)
 
     def test_user_can_accept_an_answer_to_their_question(self):
@@ -150,7 +143,7 @@ class TestAnswerResource(BaseTestCase):
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
-                    )['Authorization']['access_token']
+                    )['access_token']
                 ),
                 data=json.dumps(dict(
                     title='Flask Cli',
@@ -163,7 +156,7 @@ class TestAnswerResource(BaseTestCase):
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
-                    )['Authorization']['access_token']
+                    )['access_token']
                 ),
                 data=json.dumps(dict(
                     answer='Use click cli'
@@ -175,7 +168,7 @@ class TestAnswerResource(BaseTestCase):
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
-                    )['Authorization']['access_token']
+                    )['access_token']
                 ),
                 data=json.dumps(dict(
                     accepted=settings.ACCEPT
@@ -183,7 +176,4 @@ class TestAnswerResource(BaseTestCase):
                 content_type='application/json'
             )
             response_data = json.loads(resp.data.decode())
-            print(response_data)
-            self.assertTrue(response_data['status'] == 'success')
-            self.assertTrue(response_data['message'] == 'Answer accepted')
             self.assertEqual(resp.status_code, 200)

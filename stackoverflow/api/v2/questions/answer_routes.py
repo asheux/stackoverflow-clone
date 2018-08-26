@@ -54,7 +54,6 @@ class UserAnswerResource(Resource):
         question['answers'] += 1
         Question.update('answers', question['answers'], question_id)
         response = {
-            'status': 'success',
             'message': 'Answer posted successfully',
             'answer': answer.toJSON()
         }
@@ -73,12 +72,10 @@ class UserAnswerResource(Resource):
                    if answer['question'] == question['id']]
         if answers == []:
             response = {
-                'status': 'fail',
                 'message': 'There are answers in the database for this question'
             }
             return jsonify(response), 404
         response = {
-            'status': 'success',
             'total': len(answers),
             'data': answers
         }
@@ -104,7 +101,6 @@ class UpvoteAnswerResourceItem(Resource):
                 answer['votes'] += 1
                 Answer.update('votes', answer['votes'], answer_id)
                 response = {
-                    'status': 'success',
                     'message': 'You upvoted this answer, thanks for the feedback'
                 }
                 return jsonify(response), 200
@@ -133,7 +129,6 @@ class DownvoteAnswerResourceItem(Resource):
                 answer['votes'] -= 1
                 Answer.update('votes', answer['votes'], answer_id)
                 response = {
-                    'status': 'success',
                     'message': 'You down voted this answer, thanks for the feedback'
                 }
                 return jsonify(response), 200
@@ -162,7 +157,6 @@ class AcceptAnswerResourceItem(Resource):
                    if answer['question'] == answer_dict(questions)['id']]
         if answers == []:
             response = {
-                'status': 'fail',
                 'message': 'There are no answers for this question'}
             return jsonify(response), 404
         for my_answer in answers:
@@ -176,7 +170,6 @@ class AcceptAnswerResourceItem(Resource):
                 my_answer['accepted'] = settings.ACCEPT
                 Answer.update('accepted', my_answer['accepted'], answer_id)
                 response = {
-                    'status': 'success',
                     'message': 'Answer accepted'}
                 return jsonify(response), 200
             response_obj = {
@@ -196,12 +189,10 @@ class UserQuestions(Resource):
                        if quezes['created_by'] == get_jwt_identity()]
         if myquestions == []:
             response = {
-                'status': 'fail',
                 'message': 'There are no questions in the db for you'
             }
             return jsonify(response), 404
         response = {
-            'status': 'success',
             'total': len(myquestions),
             'data': myquestions
         }
@@ -220,7 +211,6 @@ class UserQuestionAnswer(Resource):
         list_num = [question['answers'] for question in questions]
         if questions == []:
             response = {
-                'status': 'fail',
                 'message': 'There are no questions'
             }
             return jsonify(response), 404
@@ -228,7 +218,6 @@ class UserQuestionAnswer(Resource):
         all_quiz = [quiz for quiz in questions
                     if quiz['answers'] in most_answer]
         response = {
-            'status': 'success',
             'total': len(all_quiz),
             'data': all_quiz
         }
@@ -247,12 +236,10 @@ class UserSearchQuestion(Resource):
         result = Question.fts_search_query(search_item)
         if result == []:
             response = {
-                'status': 'fail',
                 'message': 'No results for your search'
             }
             return jsonify(response), 404
         response = {
-            'status': 'success',
             'total': len(result),
             'data': result
         }

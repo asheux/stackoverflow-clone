@@ -44,14 +44,11 @@ class UserQuestionsResource(Resource):
             )
             questions.insert()
             response = {
-                'status': 'success',
-                'message': 'Question posted successfully',
-                'data': questions.toJSON()
+                'message': 'Question posted successfully'
             }
             return jsonify(response), 201
         except Exception as error:
             response = {
-                'status': 'error',
                 'message': 'Cannot post a question: {}'.format(error)
             }
             return jsonify(response), 400
@@ -65,12 +62,10 @@ class UserQuestionsResource(Resource):
         data = Question.get_all()
         if data == []:
             response = {
-                'status': 'fail',
                 'message': 'There is no questions in the db'
             }
             return jsonify(response), 404
         response = {
-            'status': 'success',
             'total': len(data),
             'data': data
         }
@@ -91,13 +86,11 @@ class UserQuestionItem(Resource):
             question = Question.get_item_by_id(question_id)
             question_doesnt_exists(question_id)
             response = {
-                'status': 'success',
                 'data': question
             }
             return jsonify(response), 200
         except Exception as error:
             response = {
-                'status': 'fail',
                 'message': 'Could not fetch the question: {}'.format(error)
             }
             return jsonify(response), 400
@@ -112,13 +105,11 @@ class UserQuestionItem(Resource):
         my_question = Question.get_item_by_id(question_id)
         if my_question['created_by'] != get_jwt_identity():
             response = {
-                'status': 'fail',
                 'message': 'You are not permitted to delete this question'
             }
             return jsonify(response), 401
         Question.delete(question_id)
         response = {
-            'status': 'success',
             'message': 'question deleted successfully'
         }
         return jsonify(response), 200

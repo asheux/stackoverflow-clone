@@ -20,10 +20,8 @@ class TestLogout(BaseTestCase):
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         response_register.data.decode()
-                    )['Authorization']['access_token']
+                    )['access_token']
                 )
             )
             data = json.loads(response.data.decode())
-            self.assertTrue(data['status'] == 'success')
-            self.assertTrue(data['message'] == 'Access token has been revoked, you are now logged out')
             self.assertEqual(response.status_code, 200)
