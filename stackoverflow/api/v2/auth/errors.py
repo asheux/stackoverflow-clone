@@ -58,4 +58,6 @@ def answer_doesnt_exists(answer_id):
 
 def check_valid_email(email):
     """Checks if the email provided is valid"""
+    if email.split('@'[-1])[-1].count('.') > 1:
+        return None
     return re.match(r'^.+@([?)[a-zA-Z0-9-.])+.([a-zA-Z]{2,3}|[0-9]{1,3})(]?)$', email)
