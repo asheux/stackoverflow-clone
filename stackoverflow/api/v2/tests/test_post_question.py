@@ -26,7 +26,7 @@ class TestUserQuestions(BaseTestCase):
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
-                    )['Authorization']['access_token']
+                    )['access_token']
                 ),
                 data=json.dumps(dict(
                     title='Gjango cli',
@@ -35,8 +35,6 @@ class TestUserQuestions(BaseTestCase):
                 content_type='application/json'
             )
             response_data = json.loads(response.data.decode())
-            self.assertTrue(response_data['status'] == 'success')
-            self.assertTrue(response_data['message'] == 'Question posted successfully')
             self.assertEqual(response.status_code, 201)
 
     def test_user_retrieves_all_questions(self):
@@ -57,7 +55,7 @@ class TestUserQuestions(BaseTestCase):
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
-                    )['Authorization']['access_token']
+                    )['access_token']
                 ),
                 data=json.dumps(dict(
                     title='Gjango cli',
@@ -70,11 +68,10 @@ class TestUserQuestions(BaseTestCase):
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
-                    )['Authorization']['access_token']
+                    )['access_token']
                 )
             )
             response_data = json.loads(resp.data.decode())
-            self.assertTrue(response_data['status'] == 'success')
             self.assertEqual(resp.status_code, 200)
 
     def test_user_retrieves_one_question(self):
@@ -95,7 +92,7 @@ class TestUserQuestions(BaseTestCase):
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
-                    )['Authorization']['access_token']
+                    )['access_token']
                 ),
                 data=json.dumps(dict(
                     title='Gjango cli',
@@ -108,11 +105,10 @@ class TestUserQuestions(BaseTestCase):
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
-                    )['Authorization']['access_token']
+                    )['access_token']
                 )
             )
             response_data = json.loads(resp.data.decode())
-            self.assertTrue(response_data['status'] == 'success')
             self.assertEqual(resp.status_code, 200)
 
     def test_user_can_delete_their_question(self):
@@ -133,7 +129,7 @@ class TestUserQuestions(BaseTestCase):
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
-                    )['Authorization']['access_token']
+                    )['access_token']
                 ),
                 data=json.dumps(dict(
                     title='Flask Cli',
@@ -146,11 +142,10 @@ class TestUserQuestions(BaseTestCase):
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
-                    )['Authorization']['access_token']
+                    )['access_token']
                 )
             )
             response_data = json.loads(resp.data.decode())
-            self.assertTrue(response_data['status'] == 'success')
             self.assertEqual(resp.status_code, 200)
 
     def test_user_retrieves_all_their_questions(self):
@@ -171,7 +166,7 @@ class TestUserQuestions(BaseTestCase):
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
-                    )['Authorization']['access_token']
+                    )['access_token']
                 ),
                 data=json.dumps(dict(
                     title='Gjango cli',
@@ -184,9 +179,8 @@ class TestUserQuestions(BaseTestCase):
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
-                    )['Authorization']['access_token']
+                    )['access_token']
                 )
             )
             response_data = json.loads(resp.data.decode())
-            self.assertTrue(response_data['status'] == 'success')
             self.assertEqual(resp.status_code, 200)

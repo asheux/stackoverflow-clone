@@ -3,11 +3,15 @@ Imports
 
 """
 import os
-from urllib.parse import urlparse
+try:
+    from urllib.parse import urlparse
+except ImportError:
+     from urlparse import urlparse
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from flask_restplus import Api
 from flask import Flask, Blueprint
+from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from stackoverflow import settings
 from stackoverflow.base.routes import index_blueprint
@@ -80,6 +84,7 @@ def configure_app(flask_app):
 def initialize_app(flask_app):
     """Runs the configuration"""
     configure_app(flask_app)
+    CORS(flask_app)
     jwt = JWTManager(flask_app)
 
     jwt._set_error_handler_callbacks(API)

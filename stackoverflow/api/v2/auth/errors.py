@@ -3,6 +3,7 @@ Imports
 
 """
 import re
+from flask import jsonify
 from stackoverflow.api.restplus import API
 from ..models import User, Question, Answer
 
@@ -18,33 +19,33 @@ def user_is_valid(data):
 
     return errors
 
-def validate_str_field(string):
+def validate_str_field(name):
     """Validate the user has input as string"""
-    regex = re.match("^[ A-Za-z0-9_-]*$", string)
-    if not regex:
-        return {"message": "Invalid data for username"}, 400
+    if name == '':
+        return jsonify({"message": {"name":"You name field cannot be empty!"}}), 400
     return None
 
 def validate_password(string):
     """validates user has followed Password rules"""
     passerror = "The password should have at least 1 digit, 1 caps, 1 number and minimum of 6 chars"
+    if string == '':
+        return jsonify({'message': {'password':'Password field cannot be empty!'}})
     if not re.match(r'(?=.*?[0-9])(?=.*?[A-Z])(?=.*?[a-z]).{6}', string):
-        return {
-            "message": passerror
-        }, 400
+        return jsonify({
+            "message": {'message': {'password': passerror}
+        }}), 400
     return None
 
 def validate_username(string):
     """validate the user has input the right username format"""
-    if not re.match("^[A-Za-z0-9_-]*$", string):
-        return {"message": "Name should only contain letters, numbers, underscores and dashes"}, 400
+    if string == '':
+        return jsonify({'message': {'username':'Username field cannot be empty!'}})
     return None
 
 def question_doesnt_exists(question_id):
     """Checks if given id exists in the database"""
     if not Question.get_one_by_field('id', value=question_id):
-        API.abort(404, "Question with id {} doesn't exist \
-                  or your provided an id that does not belong to you".format(question_id))
+        API.abort(404, "Question with id {} doesn't exist or your provided an id that does not belong to you".format(question_id))
 
 def answer_doesnt_exists(answer_id):
     """Checks if given id exists in the database"""
@@ -52,9 +53,11 @@ def answer_doesnt_exists(answer_id):
         response_obj = {
             'message': 'The answer with the given id does not exist'
         }
-        return response_obj, 404
+        return jsonify(response_obj), 404
     return None
 
 def check_valid_email(email):
     """Checks if the email provided is valid"""
+    if email.split('@'[-1])[-1].count('.') > 1:
+        return None
     return re.match(r'^.+@([?)[a-zA-Z0-9-.])+.([a-zA-Z]{2,3}|[0-9]{1,3})(]?)$', email)

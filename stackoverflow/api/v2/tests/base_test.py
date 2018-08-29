@@ -1,5 +1,6 @@
 from unittest import TestCase
-from stackoverflow import create_app, settings
+from flask_restplus import Api, Resource, cors
+from stackoverflow import create_app, settings, V2_API
 from migrate import DBMigration
 
 class BaseTestCase(TestCase):

@@ -10,13 +10,13 @@ REGISTER = V2_API.model('Register Model', {
     'username': fields.String(required=True, default='asheuh', description='Username'),
     'email': fields.String(required=True, default='asheuh@gmail.com',
                            description='The user\'s email address'),
-    'password': fields.String(required=True, default='mermaid',
+    'password': fields.String(required=True, default='Mermaid12',
                               description='The users secret password'),
 })
 
 DATA = {
     'username': fields.String(required=True, default='asheuh', description='Your username'),
-    'password': fields.String(required=True, default='mermaid', description='Your password'),
+    'password': fields.String(required=True, default='Mermaid12', description='Your password'),
 }
 LOGIN = V2_API.model('Login Model', DATA)
 D_HEAD = 'Django restful api'

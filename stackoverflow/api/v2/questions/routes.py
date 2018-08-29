@@ -3,8 +3,8 @@ Imports
 
 """
 
-from flask import request
-from flask_restplus import Resource
+from flask import request, jsonify
+from flask_restplus import Resource, cors
 from flask_jwt_extended import (
     jwt_required,
     get_jwt_identity
@@ -26,6 +26,7 @@ def get_quiz_dict(list_obj):
 @NS.route('')
 class UserQuestionsResource(Resource):
     """Question resource endpoint"""
+    @cors.crossdomain(origin='*')
     @jwt_required # add jwt token based authentication
     @V2_API.doc('Question resource')
     @V2_API.response(201, 'Successfully created')
@@ -36,6 +37,14 @@ class UserQuestionsResource(Resource):
             data = request.json
             title = data['title']
             description = data['description']
+            questions = Question.get_one_by_field('title', data['title'])
+
+            if questions is not None:
+                response_obj = {
+                    'message': 'Same question exist already, please search to get it'
+                }
+                return jsonify(response_obj), 409
+
             questions = Question(
                 title,
                 description,
@@ -43,18 +52,16 @@ class UserQuestionsResource(Resource):
             )
             questions.insert()
             response = {
-                'status': 'success',
-                'message': 'Question posted successfully',
-                'data': questions.toJSON()
+                'message': 'Question posted successfully'
             }
-            return response, 201
+            return jsonify(response), 201
         except Exception as error:
             response = {
-                'status': 'error',
                 'message': 'Cannot post a question: {}'.format(error)
             }
-            return response, 400
+            return jsonify(response), 400
 
+    @cors.crossdomain(origin='*')
     @jwt_required # add jwt token based authentication
     @V2_API.doc('Question resource')
     @V2_API.response(200, 'success')
@@ -63,21 +70,20 @@ class UserQuestionsResource(Resource):
         data = Question.get_all()
         if data == []:
             response = {
-                'status': 'fail',
                 'message': 'There is no questions in the db'
             }
-            return response, 404
+            return jsonify(response), 404
         response = {
-            'status': 'success',
             'total': len(data),
             'data': data
         }
-        return response, 200
+        return jsonify(response), 200
 
 @NS.route('/<int:question_id>')
 @V2_API.response(404, 'question with the given id not found')
 class UserQuestionItem(Resource):
     """Single question resource"""
+    @cors.crossdomain(origin='*')
     @jwt_required # add jwt token based authentication
     @V2_API.doc('Single question resource')
     @V2_API.response(200, 'Success')
@@ -88,17 +94,16 @@ class UserQuestionItem(Resource):
             question = Question.get_item_by_id(question_id)
             question_doesnt_exists(question_id)
             response = {
-                'status': 'success',
                 'data': question
             }
-            return response, 200
+            return jsonify(response), 200
         except Exception as error:
             response = {
-                'status': 'fail',
                 'message': 'Could not fetch the question: {}'.format(error)
             }
-            return response, 400
+            return jsonify(response), 400
 
+    @cors.crossdomain(origin='*')
     @jwt_required # add jwt token based authentication
     @V2_API.doc('Delete question resource')
     @V2_API.response(200, 'Successfully deleted')
@@ -108,13 +113,11 @@ class UserQuestionItem(Resource):
         my_question = Question.get_item_by_id(question_id)
         if my_question['created_by'] != get_jwt_identity():
             response = {
-                'status': 'fail',
                 'message': 'You are not permitted to delete this question'
             }
-            return response, 401
+            return jsonify(response), 401
         Question.delete(question_id)
         response = {
-            'status': 'success',
             'message': 'question deleted successfully'
         }
-        return response, 200
+        return jsonify(response), 200
