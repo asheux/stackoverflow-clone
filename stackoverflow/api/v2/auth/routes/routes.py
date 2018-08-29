@@ -2,6 +2,7 @@
 Imports
 
 """
+import re
 import logging
 from flask import request, jsonify
 from flask_bcrypt import Bcrypt
@@ -41,15 +42,19 @@ class UsersCollection(Resource):
         data = request.json
         invalid_email = 'Not a valid email address, please try again'
         errors = user_is_valid(data)
+        if data['email'] == '':
+            return jsonify({'message': {'email':'Email field cannot be empty!'}})
         if check_valid_email(data['email']) is None:
-            response = {'message': invalid_email}
+            response = {'message': {'email': invalid_email}}
             return jsonify(response), 403
-        if validate_username(data['username']):
-            return validate_username(data['username'])
         if validate_str_field(data['name']):
-            return validate_str_field(data['name'])
+            return validate_str_field(data['name']), 401
+        if validate_username(data['username']):
+            return validate_username(data['username']), 401
+        if validate_str_field(data['name']):
+            return validate_str_field(data['name']), 401
         if validate_password(data['password']):
-            return validate_password(data['password'])
+            return validate_password(data['password']), 401
         if errors:
             response = {'message': errors}
             return jsonify(response), 401
@@ -75,6 +80,12 @@ class UserLoginResource(Resource):
         try:
             data = request.json
             user = User.get_one_by_field(field='username', value=data.get('username'))
+            if not re.match("^[A-Za-z0-9_-]*$", data['username']):
+                return jsonify({'message': 'Username should only be letters, numbers with underscores and dashes"'})
+            if validate_username(data['username']):
+                return jsonify({'message': 'Username field cannot be empty!'}), 401
+            if data['password'] == '':
+                return jsonify({'message': 'Password field cannot be empty!'}), 401
             if not user:
                 response = {'message': user_name_err}
                 return jsonify(response), 404

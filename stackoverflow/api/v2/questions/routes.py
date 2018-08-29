@@ -37,6 +37,14 @@ class UserQuestionsResource(Resource):
             data = request.json
             title = data['title']
             description = data['description']
+            questions = Question.get_one_by_field('title', data['title'])
+
+            if questions is not None:
+                response_obj = {
+                    'message': 'Same question exist already, please search to get it'
+                }
+                return jsonify(response_obj), 409
+
             questions = Question(
                 title,
                 description,
