@@ -70,10 +70,11 @@ class UserQuestionsResource(Resource):
         data = Question.get_all()
         if data == []:
             response = {
-                'message': 'There is no questions in the db'
+                'message': 'There is no questions found'
             }
             return jsonify(response), 404
         response = {
+            'status': 'success',
             'total': len(data),
             'data': data
         }
@@ -118,6 +119,6 @@ class UserQuestionItem(Resource):
             return jsonify(response), 401
         Question.delete(question_id)
         response = {
-            'message': 'question deleted successfully'
+            'message': 'Question deleted successfully'
         }
         return jsonify(response), 200

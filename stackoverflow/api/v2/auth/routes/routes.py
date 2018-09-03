@@ -42,19 +42,17 @@ class UsersCollection(Resource):
         data = request.json
         invalid_email = 'Not a valid email address, please try again'
         errors = user_is_valid(data)
+        if validate_str_field(data['name']):
+            return validate_str_field(data['name'])
+        if validate_username(data['username']):
+            return validate_username(data['username'])
+        if validate_password(data['password']):
+            return validate_password(data['password'])
         if data['email'] == '':
             return jsonify({'message': {'email':'Email field cannot be empty!'}})
         if check_valid_email(data['email']) is None:
             response = {'message': {'email': invalid_email}}
             return jsonify(response), 403
-        if validate_str_field(data['name']):
-            return validate_str_field(data['name']), 401
-        if validate_username(data['username']):
-            return validate_username(data['username']), 401
-        if validate_str_field(data['name']):
-            return validate_str_field(data['name']), 401
-        if validate_password(data['password']):
-            return validate_password(data['password']), 401
         if errors:
             response = {'message': errors}
             return jsonify(response), 401
@@ -62,7 +60,7 @@ class UsersCollection(Resource):
         user.insert()
         access_token = create_access_token(user.id)
         response = {
-            'message': 'user created successfully',
+            'message': 'User created successfully',
             'access_token': access_token}
         return jsonify(response), 201
 
@@ -75,8 +73,8 @@ class UserLoginResource(Resource):
     @V2_API.expect(LOGIN, validate=True)
     def post(self):
         """Logs in a user"""
-        user_name_err = 'The username you provided does not exist in the database'
-        pass_err = 'The password you provided did not match the database password'
+        user_name_err = 'Username does not exist!'
+        pass_err = 'Wrong password!'
         try:
             data = request.json
             user = User.get_one_by_field(field='username', value=data.get('username'))

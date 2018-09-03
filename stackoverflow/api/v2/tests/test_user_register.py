@@ -72,8 +72,8 @@ class TestUserRegister(BaseTestCase):
 
             response_data = json.loads(response.data.decode())
             errors = {
-                "username": "The username you provided already exists",
-                "email": "The email you provided is in use by another user"
+                "username": "The username already exists",
+                "email": "The email already exists"
             }
             self.assertTrue(response_data['message'] == errors)
             self.assertEqual(response.status_code, 401)
