@@ -22,7 +22,7 @@ class TestUserQuestions(BaseTestCase):
                 content_type='application/json'
             )
             response = self.client.post(
-                '/api/v2/questions',
+                '/api/v2/questions/newquestion',
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
@@ -51,7 +51,7 @@ class TestUserQuestions(BaseTestCase):
                 content_type='application/json'
             )
             resp = self.client.post(
-                '/api/v2/questions',
+                '/api/v2/questions/newquestion',
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
@@ -88,7 +88,7 @@ class TestUserQuestions(BaseTestCase):
                 content_type='application/json'
             )
             resp = self.client.post(
-                '/api/v2/questions',
+                '/api/v2/questions/newquestion',
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
@@ -101,7 +101,7 @@ class TestUserQuestions(BaseTestCase):
                 content_type='application/json'
             )
             resp = self.client.get(
-                '/api/v2/questions/1',
+                '/api/v2/questions/details/1',
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
@@ -125,7 +125,7 @@ class TestUserQuestions(BaseTestCase):
                 content_type='application/json'
             )
             resp = self.client.post(
-                '/api/v2/questions',
+                '/api/v2/questions/newquestion',
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
@@ -138,7 +138,7 @@ class TestUserQuestions(BaseTestCase):
                 content_type='application/json'
             )
             resp = self.client.delete(
-                '/api/v2/questions/1',
+                '/api/v2/questions/details/1',
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
@@ -162,7 +162,7 @@ class TestUserQuestions(BaseTestCase):
                 content_type='application/json'
             )
             resp = self.client.post(
-                '/api/v2/questions',
+                '/api/v2/questions/newquestion',
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()

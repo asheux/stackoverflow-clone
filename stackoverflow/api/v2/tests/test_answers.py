@@ -27,7 +27,7 @@ class TestAnswerResource(BaseTestCase):
         with self.client:
             resp_register = register(self.client)
             resp = self.client.post(
-                '/api/v2/questions',
+                '/api/v2/questions/newquestion',
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
@@ -59,7 +59,7 @@ class TestAnswerResource(BaseTestCase):
         with self.client:
             resp_register = register(self.client)
             resp = self.client.post(
-                '/api/v2/questions',
+                '/api/v2/questions/newquestion',
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
@@ -99,7 +99,7 @@ class TestAnswerResource(BaseTestCase):
         with self.client:
             resp_register = register(self.client)
             resp = self.client.post(
-                '/api/v2/questions',
+                '/api/v2/questions/newquestion',
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
@@ -139,7 +139,7 @@ class TestAnswerResource(BaseTestCase):
         with self.client:
             resp_register = register(self.client)
             resp = self.client.post(
-                '/api/v2/questions',
+                '/api/v2/questions/newquestion',
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
