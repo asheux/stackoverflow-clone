@@ -87,6 +87,7 @@ class DatabaseCollector(MainModel):
         for item in cls.get_all():
             if item[field] == value:
                 return item
+
     @classmethod
     def delete(cls, _id):
         """deletes an item from the database"""
@@ -222,6 +223,19 @@ class Question(Question, DatabaseCollector):
 class Answer(Answer, DatabaseCollector):
     __table__ = "answers"
     config = database_config(settings.DATABASE_URL)
+
+    @classmethod
+    def get_question_answers(cls, id):
+        """Gets all answers for a particular question"""
+        conn = psycopg2.connect(**cls.config)
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+        cur.execute(
+            "SELECT * FROM answers WHERE question = {}".format(id)
+        )
+        result = cur.fetchall()
+        items = [cls.to_json(item) for item in result]
+        conn.close()
+        return items
 
     @classmethod
     def create_table(cls):

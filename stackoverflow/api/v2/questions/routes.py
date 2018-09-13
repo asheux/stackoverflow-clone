@@ -10,7 +10,7 @@ from flask_jwt_extended import (
     get_jwt_identity
 )
 from stackoverflow import V2_API
-from stackoverflow.api.v2.models import Question
+from stackoverflow.api.v2.models import Question, User, Answer
 from ..auth.errors import (
     question_doesnt_exists
 )
@@ -23,7 +23,16 @@ def get_quiz_dict(list_obj):
     for item in list_obj:
         return item
 
-@NS.route('')
+def get_current_user():
+    """Gets the current logged in user"""
+    user = User.get_one_by_field('id', value=get_jwt_identity())
+    response = {
+        'name': user['name'],
+        'username': user['username'],
+    }
+    return jsonify(response)
+
+@NS.route('/newquestion')
 class UserQuestionsResource(Resource):
     """Question resource endpoint"""
     @cors.crossdomain(origin='*')
@@ -61,6 +70,8 @@ class UserQuestionsResource(Resource):
             }
             return jsonify(response), 400
 
+@NS.route('')
+class AllQuestions(Resource):
     @cors.crossdomain(origin='*')
     @jwt_required # add jwt token based authentication
     @V2_API.doc('Question resource')
@@ -70,16 +81,17 @@ class UserQuestionsResource(Resource):
         data = Question.get_all()
         if data == []:
             response = {
-                'message': 'There is no questions in the db'
+                'message': 'There is no questions found'
             }
             return jsonify(response), 404
         response = {
+            'status': 'success',
             'total': len(data),
             'data': data
         }
         return jsonify(response), 200
 
-@NS.route('/<int:question_id>')
+@NS.route('/details/<int:question_id>')
 @V2_API.response(404, 'question with the given id not found')
 class UserQuestionItem(Resource):
     """Single question resource"""
@@ -89,12 +101,16 @@ class UserQuestionItem(Resource):
     @V2_API.response(200, 'Success')
     def get(self, question_id):
         """Get a question"""
+        answers = Answer.get_question_answers(question_id)
         question_doesnt_exists(question_id)
         try:
             question = Question.get_item_by_id(question_id)
             question_doesnt_exists(question_id)
             response = {
-                'data': question
+                'data': {
+                    'question': question,
+                    'answers': answers
+                }
             }
             return jsonify(response), 200
         except Exception as error:
@@ -118,6 +134,6 @@ class UserQuestionItem(Resource):
             return jsonify(response), 401
         Question.delete(question_id)
         response = {
-            'message': 'question deleted successfully'
+            'message': 'Question deleted successfully'
         }
         return jsonify(response), 200

@@ -38,6 +38,12 @@ class UserAnswerResource(Resource):
         question_doesnt_exists(question_id)
         data = request.json
         answer = data['answer']
+        if answer == '':
+            response = {
+                'message': 'Cannot post empty answer'
+            }
+            return jsonify(response)
+
         question = Question.get_item_by_id(question_id)
         answers = Answer.get_one_by_field('answer', data['answer'])
 
@@ -72,7 +78,7 @@ class UserAnswerResource(Resource):
                    if answer['question'] == question['id']]
         if answers == []:
             response = {
-                'message': 'There are answers in the database for this question'
+                'message': 'There are answers for this question'
             }
             return jsonify(response), 404
         response = {
@@ -170,7 +176,8 @@ class AcceptAnswerResourceItem(Resource):
                 my_answer['accepted'] = settings.ACCEPT
                 Answer.update('accepted', my_answer['accepted'], answer_id)
                 response = {
-                    'message': 'Answer accepted'}
+                    'message': 'Answer accepted',
+                    'data': my_answer}
                 return jsonify(response), 200
             response_obj = {
                 'message': 'Could not perform action, check the id you provided'}
@@ -208,15 +215,25 @@ class UserQuestionAnswer(Resource):
     def get(self):
         """Get the question with the most answers"""
         questions = Question.get_all()
-        list_num = [question['answers'] for question in questions]
+        myquestions = [question for question in questions
+                       if question['created_by'] == get_jwt_identity()]
+        list_num = [question['answers'] for question in questions
+                    if question['created_by'] == get_jwt_identity()]
         if questions == []:
             response = {
                 'message': 'There are no questions'
             }
             return jsonify(response), 404
         most_answer = heapq.nlargest(2, list_num)
-        all_quiz = [quiz for quiz in questions
-                    if quiz['answers'] in most_answer]
+        print(most_answer)
+        for i in most_answer:
+            if i < 0:
+                response = {
+                    'message': 'Your question has no answers'
+                }
+                return jsonify(response)
+        all_quiz = [quiz for quiz in myquestions
+                    if quiz['answers'] in most_answer and quiz['answers'] > 0]
         response = {
             'total': len(all_quiz),
             'data': all_quiz

@@ -10,6 +10,7 @@ from flask_restplus import Resource, cors
 from flask_jwt_extended import (
     jwt_required,
     get_raw_jwt,
+    get_jwt_identity,
     create_access_token
 )
 from stackoverflow import V2_API
@@ -29,7 +30,8 @@ from ..errors import (
 FLASK_BCRYPT = Bcrypt()
 LOG = logging.getLogger(__name__)
 NS_AUTH = V2_API.namespace('auth', description='Authentication operations')
-NS = V2_API.namespace('user', description='User operations')
+NS = V2_API.namespace('users', description='User operations')
+
 
 @NS_AUTH.route('/register')
 class UsersCollection(Resource):
@@ -42,19 +44,17 @@ class UsersCollection(Resource):
         data = request.json
         invalid_email = 'Not a valid email address, please try again'
         errors = user_is_valid(data)
+        if validate_str_field(data['name']):
+            return validate_str_field(data['name'])
+        if validate_username(data['username']):
+            return validate_username(data['username'])
+        if validate_password(data['password']):
+            return validate_password(data['password'])
         if data['email'] == '':
             return jsonify({'message': {'email':'Email field cannot be empty!'}})
         if check_valid_email(data['email']) is None:
             response = {'message': {'email': invalid_email}}
             return jsonify(response), 403
-        if validate_str_field(data['name']):
-            return validate_str_field(data['name']), 401
-        if validate_username(data['username']):
-            return validate_username(data['username']), 401
-        if validate_str_field(data['name']):
-            return validate_str_field(data['name']), 401
-        if validate_password(data['password']):
-            return validate_password(data['password']), 401
         if errors:
             response = {'message': errors}
             return jsonify(response), 401
@@ -62,8 +62,10 @@ class UsersCollection(Resource):
         user.insert()
         access_token = create_access_token(user.id)
         response = {
-            'message': 'user created successfully',
-            'access_token': access_token}
+            'message': 'User created successfully',
+            'access_token': access_token,
+            'data': user.toJSON()
+        }
         return jsonify(response), 201
 
 @NS_AUTH.route('/login')
@@ -75,8 +77,8 @@ class UserLoginResource(Resource):
     @V2_API.expect(LOGIN, validate=True)
     def post(self):
         """Logs in a user"""
-        user_name_err = 'The username you provided does not exist in the database'
-        pass_err = 'The password you provided did not match the database password'
+        user_name_err = 'Username does not exist!'
+        pass_err = 'Wrong username/password!'
         try:
             data = request.json
             user = User.get_one_by_field(field='username', value=data.get('username'))
@@ -94,7 +96,8 @@ class UserLoginResource(Resource):
                 return jsonify(response), 401
             response = {
                 'message': 'Successfully logged in',
-                'access_token': create_access_token(user['id'])
+                'access_token': create_access_token(user['id']),
+                'data': user
             }
             return jsonify(response), 200
         except Exception as error:
@@ -125,3 +128,50 @@ class UserLogoutResourceAccess(Resource):
                 'message': 'could not generate access token: {}'.format(error)
             }
             return jsonify(response), 400
+
+@NS.route('/userprofile')
+class UserProfileResource(Resource):
+    @cors.crossdomain(origin='*')
+    @V2_API.doc('User profile')
+    @V2_API.response(200, 'Success')
+    @jwt_required
+    def get(self):
+        """Get user details"""
+        user = User.get_one_by_field('id', value=get_jwt_identity())
+        if user:
+            response = {
+                'status': 'success',
+                'data': {
+                    'name': user['name'],
+                    'username': user['username'],
+                    'email': user['email'],
+                    'password': user['password_hash'],
+                    'registered_on': user['registered_on']
+                }
+            }
+            return jsonify(response), 200
+        response = {
+            "message": "No logged in user"
+        }
+        return jsonify(response), 404
+
+@NS.route('')
+class AllUsersResource(Resource):
+    @cors.crossdomain(origin='*')
+    @V2_API.doc('User profile')
+    @V2_API.response(200, 'Success')
+    @jwt_required
+    def get(self):
+        """Get all users"""
+        users = User.get_all()
+        if users:
+            response = {
+                'status': 'success',
+                'allusers': users,
+                'total': len(users)
+            }
+            return jsonify(response), 200
+        response = {
+            'message': 'there are no users'
+        }
+        return jsonify(response), 404
