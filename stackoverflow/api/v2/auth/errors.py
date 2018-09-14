@@ -25,6 +25,13 @@ def validate_str_field(name):
         return jsonify({"message": {"name":"You name field cannot be empty!"}}), 400
     return None
 
+def validate_string_field(name):
+    """Validate the user has input as string"""
+    if name == '':
+        return jsonify({"message": "Input field cannot be empty!"}), 400
+    return None
+
+
 def validate_password(string):
     """validates user has followed Password rules"""
     passerror = "Password should have 1 digit, one caps, and mix digits should "

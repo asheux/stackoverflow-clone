@@ -12,7 +12,8 @@ from flask_jwt_extended import (
 from stackoverflow import V2_API
 from stackoverflow.api.v2.models import Question, User, Answer
 from ..auth.errors import (
-    question_doesnt_exists
+    question_doesnt_exists,
+    validate_string_field
 )
 from ..auth.serializers import QUESTIONS
 
@@ -47,7 +48,10 @@ class UserQuestionsResource(Resource):
             title = data['title']
             description = data['description']
             questions = Question.get_one_by_field('title', data['title'])
-
+            if validate_string_field(title):
+                return validate_string_field(title)
+            if validate_string_field(description):
+                return validate_string_field(description)
             if questions is not None:
                 response_obj = {
                     'message': 'Same question exist already, please search to get it'
